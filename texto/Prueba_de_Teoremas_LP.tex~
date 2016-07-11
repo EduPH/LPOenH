@@ -1,0 +1,6 @@
+\chapter{Prueba de teoremas en lógica de predicados}
+
+Este capítulo pretende aplicar métodos de tableros para la demostración
+de teoremas en lógica de predicados. El contenido de este capítulo
+se encuentra en el módulo \texttt{PTLP}.
+\entrada{PTLP}

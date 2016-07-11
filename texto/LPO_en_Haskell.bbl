@@ -1,0 +1,39 @@
+\begin{thebibliography}{1}
+
+\bibitem{Alonso-15b}
+J.~Alonso.
+\newblock
+  \href{https://www.cs.us.es/~jalonso/cursos/i1m-15/temas/2015-16-IM-temas-PF.pdf}
+  {Temas de programación funcional}.
+\newblock Technical report, Univ. de Sevilla, 2015.
+
+\bibitem{Alonso-15a}
+J.~Alonso.
+\newblock
+  \href{https://www.cs.us.es/~jalonso/cursos/lmf-15/temas/temas-LMF-2015-16.pdf}
+  {Temas de Lógica matemática y fundamentos}.
+\newblock Technical report, Univ. de Sevilla, 2015.
+
+\bibitem{Serrano-14}
+A.~S. Mena.
+\newblock
+  \href{https://www.amazon.com/Beginning-Haskell-Alejandro-Serrano-Mena/dp/1430262508}
+  {Beginning in Haskell}.
+\newblock Technical report, Utrecht University, 2014.
+
+\bibitem{Eijck-03}
+J.~van Eijck.
+\newblock
+  \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.467.1441&rep=rep1&type=pdf}
+  {Computational semantics and type theory}.
+\newblock Technical report, CWI (Centre for Mathematics and Computer Science),
+  Amsterdam, 2003.
+
+\bibitem{YerPal-90}
+Y.~A.~P. Yu. L.~Yershov.
+\newblock
+  \href{http://www.casadellibro.com/libro-logica-matematica/9785884170773/968563}
+  {Lógica matemática}.
+\newblock Technical report, URSS, 1990.
+
+\end{thebibliography}

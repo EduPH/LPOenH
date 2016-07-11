@@ -1,0 +1,42 @@
+\begin{theindex}
+
+  \item \texttt{algun}, \hyperpage{13}
+  \item \texttt{aplicafun}, \hyperpage{11}
+  \item \texttt{aquellosQuecumplen}, \hyperpage{12}
+  \item \texttt{composicion}, \hyperpage{39}
+  \item \texttt{conjuncion}, \hyperpage{13}
+  \item \texttt{contieneLaLetra}, \hyperpage{10}
+  \item \texttt{conversion}, \hyperpage{29}
+  \item \texttt{cuadrado}, \hyperpage{9}
+  \item \texttt{disyuncion}, \hyperpage{13}
+  \item \texttt{divideEntre2}, \hyperpage{16}
+  \item \texttt{divisiblePor}, \hyperpage{10}
+  \item \texttt{dominio}, \hyperpage{38}
+  \item \texttt{esVariable}, \hyperpage{28}
+  \item \texttt{factorial}, \hyperpage{14}
+  \item \texttt{formulaAbierta}, \hyperpage{34}
+  \item \texttt{identidad}, \hyperpage{38}
+  \item \texttt{listaInversa}, \hyperpage{15}
+  \item \texttt{noPertenece}, \hyperpage{14}
+  \item \texttt{pertenece}, \hyperpage{14}
+  \item \texttt{plegadoPorlaDerecha}, \hyperpage{14}
+  \item \texttt{plegadoPorlaIzquierda}, \hyperpage{15}
+  \item \texttt{primerElemento}, \hyperpage{12}
+  \item \texttt{raizCuadrada}, \hyperpage{10}
+  \item \texttt{recorrido}, \hyperpage{38}
+  \item \texttt{reflexiva}, \hyperpage{24}
+  \item \texttt{segundoElemento}, \hyperpage{12}
+  \item \texttt{simetrica}, \hyperpage{24}
+  \item \texttt{sumaLaLista}, \hyperpage{14}
+  \item \texttt{susTerms}, \hyperpage{38}
+  \item \texttt{susTerm}, \hyperpage{38}
+  \item \texttt{sustitucionForm}, \hyperpage{39}
+  \item \texttt{sustituye}, \hyperpage{24}
+  \item \texttt{todos}, \hyperpage{13}
+  \item \texttt{valor}, \hyperpage{25}
+  \item \texttt{val}, \hyperpage{29}
+  \item \texttt{varEnForm}, \hyperpage{33}
+  \item \texttt{varEnTerms}, \hyperpage{33}
+  \item \texttt{varEnTerm}, \hyperpage{33}
+
+\end{theindex}
