@@ -26,18 +26,33 @@ Nuestro interés está en poder trabajar de manera local y poder tanto actualiza
 GitHub como nuestra carpeta local. Los pasos a seguir son
 \begin{enumerate}
 \item Generar una clave SSH mediante el comando
-  \texttt{ssh-keygen -t rsa -b 4096 -C ``tuCorreo''}, indicando una contraseña.
-  Si queremos podemos dar una localización de guardado de la clave pública.
+\begin{verbatim}
+  ssh-keygen -t rsa -b 4096 -C ``tuCorreo''
+\end{verbatim}
+  Indicando una contraseña. Si queremos podemos dar una localización de guardado
+  de la clave pública.
 \item Añadir la clave a \texttt{ssh-agent}, mediante
-  
-AAA
-  
+\begin{verbatim}
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_rsa
+\end{verbatim}
+
 \item Añadir la clave a nuestra cuenta. Para ello: \texttt{Setting} $\rightarrow$
   \texttt{SSH and GPG keys} $\rightarrow$ \texttt{New SSH key}. En esta última
-  sección se copia el contenido de , por defecto. Podríamos
-  haber puesto otra localización en el primer paso.
-\item Se puede comprobar la conexión mediante el comando \texttt{ssh -T git@github.com}.
-\item Se introducen tu nombre y correo 
+  sección se copia el contenido de
+\begin{verbatim}
+~/.ssh/id_rsa.pub
+\end{verbatim}
+, por defecto. Podríamos haber puesto otra localización en el primer paso.
+\item Se puede comprobar la conexión mediante el comando
+\begin{verbatim}
+ssh -T git@github.com
+\end{verbatim}
+\item Se introducen tu nombre y correo
+\begin{verbatim}
+ git config --global user.name "Nombre"
+ git config --global user.email "<tuCorreo>"
+\end{verbatim}
 \end{enumerate}
 
 \section{Pull y push}
