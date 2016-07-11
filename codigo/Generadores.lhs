@@ -122,7 +122,7 @@ i75
 \end{sesion}
 
 \subsubsection{Generador de Fórmulas}
-
+Hay que solucionar problema de infinitud.
 \begin{code}
 generaFormula :: Gen Formula
 generaFormula = oneof [liftM2 Atomo genNombre (listOf generaVariable),
