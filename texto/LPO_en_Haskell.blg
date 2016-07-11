@@ -5,11 +5,12 @@ A level-1 auxiliary file: Introduccion.aux
 A level-1 auxiliary file: Programacion_funcional_con_Haskell.aux
 A level-1 auxiliary file: Logica_de_predicados_en_Haskell.aux
 A level-1 auxiliary file: Prueba_de_teoremas_LP.aux
+A level-1 auxiliary file: TrabajoGitHub.aux
 The style file: abbrv.bst
 Database file #1: LPO_en_Haskell.bib
 You've used 5 entries,
             2118 wiz_defined-function locations,
-            527 strings with 4685 characters,
+            528 strings with 4702 characters,
 and the built_in function-call counts, 1000 in all, are:
 = -- 105
 > -- 35

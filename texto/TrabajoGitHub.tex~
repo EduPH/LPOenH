@@ -1,0 +1,44 @@
+\chapter{Apéndice: GitHub}
+En este apéndice se pretende introducir al lector en
+el empleo de \href{https://github.com/}{GitHub}, sistema remoto de versiones.
+\section{Crear una cuenta}
+
+El primer paso es crear una cuenta en la página web de \href{https://github.com/}{GitHub},
+para ello \texttt{sign up} y se rellena el formulario.
+
+\section{Crear un repositorio}
+
+Mediante \texttt{New repository} se crea un repositorio nuevo.
+Un repositorio es una carpeta de trabajo. En ella se guardarán todas
+las versiones y modificaciones de nuestros archivos.
+
+Necesitamos darle un nombre adecuado y seleccionar
+\begin{enumerate}
+\item En \texttt{Add.gitignore} se selecciona \texttt{Haskell}.
+\item En \texttt{add a license} se selecciona \texttt{GNU General Public License v3.0}.
+\end{enumerate}
+
+Finalmente \texttt{Create repository}
+
+\section{Conexión}
+
+Nuestro interés está en poder trabajar de manera local y poder tanto actualizar
+GitHub como nuestra carpeta local. Los pasos a seguir son
+\begin{enumerate}
+\item Generar una clave SSH mediante el comando
+  \texttt{ssh-keygen -t rsa -b 4096 -C ``tuCorreo''}, indicando una contraseña.
+  Si queremos podemos dar una localización de guardado de la clave pública.
+\item Añadir la clave a \texttt{ssh-agent}, mediante
+  
+AAA
+  
+\item Añadir la clave a nuestra cuenta. Para ello: \texttt{Setting} $\rightarrow$
+  \texttt{SSH and GPG keys} $\rightarrow$ \texttt{New SSH key}. En esta última
+  sección se copia el contenido de , por defecto. Podríamos
+  haber puesto otra localización en el primer paso.
+\item Se puede comprobar la conexión mediante el comando \texttt{ssh -T git@github.com}.
+\item Se introducen tu nombre y correo 
+\end{enumerate}
+\section{Pull y push}
+Una vez hecho los pasos anteriores, ya estamos conectados con GitHub y podemos
+actualizar nuestros ficheros. Nos resta aprender a actualizarlos.

@@ -20,13 +20,18 @@
 \contentsline {section}{\numberline {2.5}T\IeC {\'e}rminos funcionales}{27}{section.2.5}
 \contentsline {subsection}{\numberline {2.5.1}Generadores}{31}{subsection.2.5.1}
 \contentsline {subsubsection}{Generador de Nombres}{31}{section*.5}
-\contentsline {subsubsection}{Generador de \IeC {\'I}ndices}{32}{section*.6}
-\contentsline {subsubsection}{Generador de Variables}{32}{section*.7}
-\contentsline {subsubsection}{Generador de F\IeC {\'o}rmulas}{32}{section*.8}
-\contentsline {subsubsection}{Generador de T\IeC {\'e}rminos}{32}{section*.9}
-\contentsline {subsection}{\numberline {2.5.2}Funciones \IeC {\'u}tiles en el manejo de f\IeC {\'o}rmulas}{33}{subsection.2.5.2}
-\contentsline {chapter}{\numberline {3}Prueba de teoremas en l\IeC {\'o}gica de predicados}{37}{chapter.3}
-\contentsline {section}{\numberline {3.1}Sustituci\IeC {\'o}n}{37}{section.3.1}
-\contentsline {section}{\numberline {3.2}Unificaci\IeC {\'o}n}{40}{section.3.2}
-\contentsline {chapter}{Bibliograf\IeC {\'\i }a}{41}{Item.14}
-\contentsline {chapter}{Indice de definiciones}{41}{chapter*.10}
+\contentsline {subsubsection}{Generador de \IeC {\'I}ndices}{33}{section*.6}
+\contentsline {subsubsection}{Generador de variables}{33}{section*.7}
+\contentsline {subsubsection}{Generador de F\IeC {\'o}rmulas}{34}{section*.8}
+\contentsline {subsubsection}{Generador de T\IeC {\'e}rminos}{34}{section*.9}
+\contentsline {subsection}{\numberline {2.5.2}Funciones \IeC {\'u}tiles en el manejo de f\IeC {\'o}rmulas}{35}{subsection.2.5.2}
+\contentsline {chapter}{\numberline {3}Prueba de teoremas en l\IeC {\'o}gica de predicados}{39}{chapter.3}
+\contentsline {section}{\numberline {3.1}Sustituci\IeC {\'o}n}{39}{section.3.1}
+\contentsline {section}{\numberline {3.2}Unificaci\IeC {\'o}n}{42}{section.3.2}
+\contentsline {chapter}{\numberline {4}Ap\IeC {\'e}ndice: GitHub}{43}{chapter.4}
+\contentsline {section}{\numberline {4.1}Crear una cuenta}{43}{section.4.1}
+\contentsline {section}{\numberline {4.2}Crear un repositorio}{43}{section.4.2}
+\contentsline {section}{\numberline {4.3}Conexi\IeC {\'o}n}{43}{section.4.3}
+\contentsline {section}{\numberline {4.4}Pull y push}{44}{section.4.4}
+\contentsline {chapter}{Bibliograf\IeC {\'\i }a}{45}{Item.24}
+\contentsline {chapter}{Indice de definiciones}{45}{chapter*.10}

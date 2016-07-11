@@ -22,7 +22,7 @@ genLetra = elements abecedario
 Ejemplo de generación de letras
 
 \begin{sesion}
-λ> sample genLetra
+ghci> sample genLetra
 'w'
 'r'
 'l'
@@ -53,7 +53,7 @@ genNombre2 = do
 Ejemplo de generación de nombres
 
 \begin{sesion}
-λ> sample genNombre2
+ghci> sample genNombre2
 "z"
 "u"
 "j"
@@ -80,7 +80,7 @@ genIndice =  liftM (take 1) (listOf1 genNumero)
 Ejemplo
 
 \begin{sesion}
-λ> sample genIndice
+ghci> sample genIndice
 [98]
 [62]
 [50]
@@ -107,7 +107,7 @@ instance Arbitrary (Variable) where
 Ejemplo
 
 \begin{sesion}
-λ> sample generaVariable
+ghci> sample generaVariable
 q10
 e5
 m97
