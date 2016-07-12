@@ -149,8 +149,16 @@ Y comprobando con QuickCheck, no lo es
 
 \begin{sesion}
 ghci> quickCheck composicionConmutativa
-*** Failed! Falsifiable (after 4 tests and 3 shrinks) 
+*** Failed! Falsifiable (after 3 tests and 1 shrink): 
+[(i3,n)]
+[(c19,i)]
 \end{sesion}
+
+\begin{description}
+\item Nota: Las comprobaciones con QuickCheck emplean código del
+  módulo \texttt{Generadores}.
+\end{description}
+
 
 \begin{Def}
  Una unificación de las variables $x_1$ y $x_2$ es una sustitución $S$
