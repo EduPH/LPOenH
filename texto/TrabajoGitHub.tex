@@ -83,14 +83,17 @@ actualizar nuestros ficheros. Nos resta aprender a actualizarlos.
 \section{Ramificaciones :Branches}
 
 Uno de los puntos fuertes de Git es el uso de ramas. Para ello,
-creamos una nueva rama de trabajo.
-Para ello se emplean los comandos
-\begin{enumerate}
-\item Se crea una nueva rama
-\begin{verbatim}
-  git checkout -b [nombre de la rama]
-\end{verbatim}
-\item Se copian los archivos a la nueva rama
-\begin{verbatim}
-  git push origin [nombre de la rama]
-\end{verbatim}
+creamos una nueva rama de trabajo. En \texttt{(magit-status)}, se pulsa
+\texttt{b}, y luego \texttt{(c)} \texttt{(create a new branch and checkout)}.
+Checkout cambia de rama a la nueva, a la que habrá que dar un nombre.
+
+Se trabaja con normalidad y se guardan las modificaciones con magit-status.
+Una vez acabado el trabajo, se hace \texttt{(merge)} con la rama principal y
+la nueva.
+
+Se cambia de rama \texttt{(branch...)} y se hace \texttt{(pull)}
+como acostumbramos.
+
+Finalmente, eliminamos la rama mediante \texttt{(magit-status)}
+$\rightarrow $ \texttt{(b)} $\rightarrow$ \texttt{(k)}
+$\rightarrow $ \texttt{(Nombre de la nueva rama)}
