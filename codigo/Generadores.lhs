@@ -137,17 +137,19 @@ instance Arbitrary (Formula) where
                              liftM2 ParaTodo generaVariable generaFormula,
                              liftM2 Existe   generaVariable generaFormula]
               where
-                generaFormula = formula (div n 2)
+                generaFormula = formula (n-1)
 
 
 \end{code}
 
 \subsubsection{Generador de Términos}
 \begin{code}
-generaTermino :: Gen Termino
-generaTermino = oneof [liftM  Var generaVariable,
-                       liftM2 Ter genNombre (listOf generaTermino)]
 
 instance Arbitrary (Termino) where
-    arbitrary = generaTermino
+    arbitrary = sized termino
+        where
+          termino 0 = liftM Var generaVariable
+          termino n = liftM2 Ter genNombre (listOf generaTermino)
+              where
+              generaTermino = termino (n-1)
 \end{code}
