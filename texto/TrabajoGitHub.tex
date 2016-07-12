@@ -1,24 +1,27 @@
 \chapter{Apéndice: GitHub}
-En este apéndice se pretende introducir al lector en
-el empleo de \href{https://github.com/}{GitHub}, sistema remoto de versiones.
+
+En este apéndice se pretende introducir al lector en el empleo de
+\href{https://github.com/}{GitHub}, sistema remoto de versiones.
+
 \section{Crear una cuenta}
 
-El primer paso es crear una cuenta en la página web de \href{https://github.com/}{GitHub},
-para ello \texttt{sign up} y se rellena el formulario.
+El primer paso es crear una cuenta en la página web de
+\href{https://github.com/}{GitHub}, para ello \fbox{\texttt{sign up}} y se
+rellena el formulario.
 
 \section{Crear un repositorio}
 
-Mediante \texttt{New repository} se crea un repositorio nuevo.
-Un repositorio es una carpeta de trabajo. En ella se guardarán todas
-las versiones y modificaciones de nuestros archivos.
+Mediante \fbox{\texttt{New repository}} se crea un repositorio nuevo.  Un
+repositorio es una carpeta de trabajo. En ella se guardarán todas las versiones
+y modificaciones de nuestros archivos.
 
 Necesitamos darle un nombre adecuado y seleccionar
 \begin{enumerate}
-\item En \texttt{Add.gitignore} se selecciona \texttt{Haskell}.
-\item En \texttt{add a license} se selecciona \texttt{GNU General Public License v3.0}.
+\item En \fbox{\texttt{Add .gitignore}} se selecciona \texttt{Haskell}.
+\item En \fbox{\texttt{add a license}} se selecciona \texttt{GNU General Public License v3.0}.
 \end{enumerate}
 
-Finalmente \texttt{Create repository}
+Finalmente \fbox{\texttt{Create repository}}
 
 \section{Conexión}
 
@@ -27,31 +30,32 @@ GitHub como nuestra carpeta local. Los pasos a seguir son
 \begin{enumerate}
 \item Generar una clave SSH mediante el comando
 \begin{verbatim}
-  ssh-keygen -t rsa -b 4096 -C ``tuCorreo''
+   ssh-keygen -t rsa -b 4096 -C "tuCorreo"
 \end{verbatim}
   Indicando una contraseña. Si queremos podemos dar una localización de guardado
   de la clave pública.
 \item Añadir la clave a \texttt{ssh-agent}, mediante
 \begin{verbatim}
-  eval "$(ssh-agent -s)"
-  ssh-add ~/.ssh/id_rsa
+   eval "$(ssh-agent -s)"
+   ssh-add ~/.ssh/id_rsa
 \end{verbatim}
 
-\item Añadir la clave a nuestra cuenta. Para ello: \texttt{Setting} $\rightarrow$
-  \texttt{SSH and GPG keys} $\rightarrow$ \texttt{New SSH key}. En esta última
-  sección se copia el contenido de
+\item Añadir la clave a nuestra cuenta. Para ello: \texttt{Setting}
+  $\rightarrow$ \texttt{SSH and GPG keys}
+  $\rightarrow$ \fbox{\texttt{New SSH key}}. En esta última sección se copia el
+  contenido de
 \begin{verbatim}
-~/.ssh/id_rsa.pub
+   ~/.ssh/id_rsa.pub
 \end{verbatim}
-, por defecto. Podríamos haber puesto otra localización en el primer paso.
+ por defecto. Podríamos haber puesto otra localización en el primer paso.
 \item Se puede comprobar la conexión mediante el comando
 \begin{verbatim}
-ssh -T git@github.com
+   ssh -T git@github.com
 \end{verbatim}
 \item Se introducen tu nombre y correo
 \begin{verbatim}
- git config --global user.name "Nombre"
- git config --global user.email "<tuCorreo>"
+   git config --global user.name "Nombre"
+   git config --global user.email "<tuCorreo>"
 \end{verbatim}
 \end{enumerate}
 
@@ -62,34 +66,39 @@ actualizar nuestros ficheros. Nos resta aprender a actualizarlos.
 
 \begin{enumerate}
 \item Clonar el repositorio a una carpeta local:
+
   Para ello se ejecuta en una terminal
-  \texttt{git clone <enlace que obtienes en el repositorio>}. El enlace
-  que sale en el repositorio pinchando en \texttt{(clone or download)} y,
-  eligiendo \texttt{(use SSH)}.
+\begin{verbatim}
+   git clone <enlace que obtienes en el repositorio>
+\end{verbatim}
+  El enlace que sale en el repositorio pinchando en \fbox{\texttt{(clone or
+  download)}} y, eligiendo \fbox{\texttt{(use SSH)}}.
 
 \item Actualizar tus ficheros con la versión de GitHub:
-  Abierto emacs, se ejecuta \texttt{(Esc-x)+(magit-status)}.Para ver una
+
+  En emacs se ejecuta \fbox{\texttt{(Esc-x)+(magit-status)}}. Para ver una
   lista de los cambios que están \texttt{(unpulled)}, se ejecuta en
-  magit \texttt{remote update} . Se emplea \texttt{pull},y se actualiza.
+  magit \fbox{\texttt{remote update}}. Se emplea \texttt{pull},y se actualiza.
   \texttt{(Pull: origin/master)}
 \item Actualizar GitHub con tus archivos locales:
-  Abierto emacs, se ejecuta \texttt{(Esc-x)+(magit-status)}. Sale la lista
+
+  En emacs se ejecuta \texttt{(Esc-x)+(magit-status)}. Sale la lista
   de los cambios \texttt{(UnStages)}. Con la \texttt{(s)} se guarda,
-  la \texttt{(c)+(c)} hace \texttt{(commit)},Le ponemos un título y,
+  la \texttt{(c)+(c)} hace \texttt{(commit)}. Le ponemos un título y,
   finalmente \texttt{(Tab+P)+(P)} para hacer \texttt{(push)} y subirlos
   a GitHub.
 \end{enumerate}
 
-\section{Ramificaciones :Branches}
+\section{Ramificaciones (``branches'')}
 
 Uno de los puntos fuertes de Git es el uso de ramas. Para ello,
 creamos una nueva rama de trabajo. En \texttt{(magit-status)}, se pulsa
 \texttt{b}, y luego \texttt{(c)} \texttt{(create a new branch and checkout)}.
 Checkout cambia de rama a la nueva, a la que habrá que dar un nombre.
 
-Se trabaja con normalidad y se guardan las modificaciones con magit-status.
-Una vez acabado el trabajo, se hace \texttt{(merge)} con la rama principal y
-la nueva.
+Se trabaja con normalidad y se guardan las modificaciones con
+\texttt{magit-status}. Una vez acabado el trabajo, se hace \texttt{(merge)}
+con la rama principal y la nueva.
 
 Se cambia de rama \texttt{(branch...)} y se hace \texttt{(pull)}
 como acostumbramos.
@@ -97,3 +106,8 @@ como acostumbramos.
 Finalmente, eliminamos la rama mediante \texttt{(magit-status)}
 $\rightarrow $ \texttt{(b)} $\rightarrow$ \texttt{(k)}
 $\rightarrow $ \texttt{(Nombre de la nueva rama)}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "LPO_en_Haskell"
+%%% End:
