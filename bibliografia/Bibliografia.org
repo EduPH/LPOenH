@@ -1,3 +1,12 @@
+* Sobre Git
+** Libros y tutoriales
++ [[https://git-scm.com/book/es/v1][Pro Git]] ~ S. Chacon y B. Straub 
++ [[http://blog.santiagobasulto.com.ar/programacion/2011/11/27/tutorial-de-git-en-espanol.html][Tutorial de Git en español]]. ~ L. Vogel
+
+** Hojas de referencia y mini manuales
++ [[https://services.github.com/kit/downloads/es_ES/github-git-cheat-sheet.pdf][Hoja de referencia para GitHub Git]]. ~ GitHub
++ [[https://elbauldelprogramador.com/mini-tutorial-y-chuleta-de-comandos-git/][Git: Mini Tutorial y chuleta de comandos]].
+
 * Sobre QuickCheck
 + [[https://es.wikipedia.org/wiki/QuickCheck][QuickCheck]] (Tutorial en la Wikipedia).
 + [[https://www.eecs.northwestern.edu/~robby/courses/395-495-2009-fall/quick.pdf][QuickCheck: a lightweight tool for random testing of Haskell programs]].
@@ -12,3 +21,4 @@
 + Ejemplos de generadores usados en I1M [[http://bit.ly/29ok7oZ][pilas]], [[http://bit.ly/29okqk1][colas]], [[http://bit.ly/29ok8ta][colas de prioridad]],
   [[http://bit.ly/29ptd1t][conjuntos]], [[http://bit.ly/29okEHM][tablas]], [[http://bit.ly/29okq3e][árboles binarios de búsqueda]], [[http://bit.ly/29okjVy][montículos]], [[http://bit.ly/29okv72][polinomios]],
   [[http://bit.ly/29pt7GK][árboles binarios]], [[http://bit.ly/29ptIIO][relaciones binarias]] y [[http://bit.ly/29ok2BI][grafos]].
+
