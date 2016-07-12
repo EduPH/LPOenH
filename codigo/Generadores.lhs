@@ -122,30 +122,24 @@ i75
 \end{sesion}
 
 \subsubsection{Generador de Fórmulas}
-Hay que solucionar problema de infinitud.
+
 \begin{code}
-generaFormula :: Gen Formula
-generaFormula = oneof [liftM2 Atomo genNombre (listOf generaVariable),
-                       liftM  Negacion generaFormula,
-                       liftM2 Implica generaFormula generaFormula,
-                       liftM2 Equivalente generaFormula generaFormula,
-                       liftM Conjuncion (listOf generaFormula),
-                       liftM Disyuncion (listOf generaFormula),
-                       liftM2 ParaTodo generaVariable generaFormula,
-                       liftM2 Existe   generaVariable generaFormula]
 
 instance Arbitrary (Formula) where
-    arbitrary = generaFormula
+    arbitrary = sized formula
+        where
+          formula 0 = liftM2 Atomo genNombre (listOf generaVariable)
+          formula n = oneof [liftM  Negacion generaFormula,
+                             liftM2 Implica generaFormula generaFormula,
+                             liftM2 Equivalente generaFormula generaFormula,
+                             liftM Conjuncion (listOf generaFormula),
+                             liftM Disyuncion (listOf generaFormula),
+                             liftM2 ParaTodo generaVariable generaFormula,
+                             liftM2 Existe   generaVariable generaFormula]
+              where
+                generaFormula = formula (div n 2)
 
-generaFormula2 :: Gen Formula
-generaFormula2 = frequency [(5,liftM2 Atomo genNombre (listOf generaVariable)),
-                       (1,liftM  Negacion generaFormula2),
-                       (1,liftM2 Implica generaFormula2 generaFormula2),
-                       (1,liftM2 Equivalente generaFormula2 generaFormula2),
-                       (1,liftM Conjuncion (listOf generaFormula2)),
-                       (0,liftM Disyuncion (listOf generaFormula2)),
-                       (0,liftM2 ParaTodo generaVariable generaFormula2),
-                       (0,liftM2 Existe   generaVariable generaFormula2)]
+
 \end{code}
 
 \subsubsection{Generador de Términos}
