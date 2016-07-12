@@ -5,6 +5,8 @@
 
 ** Hojas de referencia y mini manuales
 + [[https://services.github.com/kit/downloads/es_ES/github-git-cheat-sheet.pdf][Hoja de referencia para GitHub Git]]. ~ GitHub
++ [[http://rogerdudler.github.io/git-guide/index.es.html][Git: la guía sencilla]].
++ [[http://gitref.org/][Git reference]].
 + [[https://elbauldelprogramador.com/mini-tutorial-y-chuleta-de-comandos-git/][Git: Mini Tutorial y chuleta de comandos]].
 
 * Sobre QuickCheck
