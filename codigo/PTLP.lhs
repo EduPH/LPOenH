@@ -195,3 +195,5 @@ unificaTermLista (t:ts) (r:rs) =
     [ composicion u1 u2 | u1 <- unificacionTerminos t r,
      u2 <- unificaTermLista (susTerms u1 ts) (susTerms u1 rs) ]   
 \end{code}
+
+\section{Skolem}
