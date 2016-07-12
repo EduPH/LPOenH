@@ -197,3 +197,4 @@ unificaTermLista (t:ts) (r:rs) =
 \end{code}
 
 \section{Skolem}
+Para una unificación eficiente 
