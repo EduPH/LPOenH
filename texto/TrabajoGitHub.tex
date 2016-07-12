@@ -83,7 +83,13 @@ actualizar nuestros ficheros. Nos resta aprender a actualizarlos.
 \section{Ramificaciones :Branches}
 
 Uno de los puntos fuertes de Git es el uso de ramas. Para ello,
-creamos una nueva rama de trabajo.
-Para ello en \texttt{(magit-status)}, se pulsa \texttt{b}, y luego
-\texttt{(c)} \texttt{(create a new branch and checkout)}. Checkout
-cambia de rama a la nueva, a la que habrá que dar un nombre.
+creamos una nueva rama de trabajo. En \texttt{(magit-status)}, se pulsa
+\texttt{b}, y luego \texttt{(c)} \texttt{(create a new branch and checkout)}.
+Checkout cambia de rama a la nueva, a la que habrá que dar un nombre.
+
+Se trabaja con normalidad y se guardan las modificaciones con magit-status.
+Una vez acabado el trabajo, se hace \texttt{(merge)} con la rama principal y
+la nueva.
+
+Finalmente, se cambia de rama \texttt{(branch...)} y se hace \texttt{(pull)}
+como acostumbramos.
