@@ -349,3 +349,9 @@ Construimos un ejemplo de un dominio de entidades compuesto por las letras del
 abecedario, declarando el tipo de dato \texttt{Entidades} contenido en el módulo
 \texttt{Dominio}
 \entrada{Dominio}
+
+\subsection{Generador de tipos en Haskell: Descripción de funciones}
+
+En esta sección se introducirán y describirán funciones útiles en la generación
+de ejemplos en tipos de datos abstractos. Estos generadores son útiles
+para las comprobació de propiedades con \texttt{QuickCheck}:
