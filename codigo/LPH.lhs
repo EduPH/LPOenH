@@ -472,13 +472,12 @@ varEnTerms = nub . concatMap varEnTerm
 
 \begin{description}
 \item[Nota 1:] La función \texttt{nub xs} elimina elementos repetidos en una
-  lista \texttt{xs}, se encuentra en el paquete \texttt{Data.List}.
+  lista \texttt{xs}. Se encuentra en el paquete \texttt{Data.List}.
 \item[Nota 2:] Se emplea un tipo de recursión cruzada entre funciones. Las
   funciones se llaman la una a la otra.
 \end{description}
 
-Por ejemplo
-
+Por ejemplo,
 \begin{sesion}
 ghci> varEnTerm tx
 [x]
@@ -486,20 +485,21 @@ ghci> varEnTerms [tx,ty,tz]
 [x,y,z]
 \end{sesion}
 
-La función \texttt{varEnForm} devuelve una lista de las variables
-que aparecen en una fórmula.
+La función \texttt{varEnForm} devuelve una lista de las variables que aparecen
+en una fórmula.
+
 \index{\texttt{varEnForm}}
 \begin{code}
 varEnForm :: Form -> [Variable]
-varEnForm (Atom str terms)    = varEnTerms terms
-varEnForm (Ig term1 term2)    = nub (varEnTerm term1 ++ varEnTerm term2)
-varEnForm (Neg form)          = varEnForm form
-varEnForm (Impl form1 form2)  = nub (varEnForm form1 ++ varEnForm form2)
-varEnForm (Equiv form1 form2) = nub (varEnForm form1 ++ varEnForm form2)
-varEnForm (Conj forms)        = nub (concatMap varEnForm forms)
-varEnForm (Disy forms)        = nub (concatMap varEnForm forms)
-varEnForm (PTodo x form)      = nub (x : varEnForm form)
-varEnForm (Ex x form)         = nub (x : varEnForm form)
+varEnForm (Atom _ ts)   = varEnTerms ts
+varEnForm (Ig t1 t2)    = nub (varEnTerm t1 ++ varEnTerm t2)
+varEnForm (Neg f)       = varEnForm f
+varEnForm (Impl f1 f2)  = nub (varEnForm f1 ++ varEnForm f2)
+varEnForm (Equiv f1 f2) = nub (varEnForm f1 ++ varEnForm f2)
+varEnForm (Conj fs)     = nub (concatMap varEnForm fs)
+varEnForm (Disy fs)     = nub (concatMap varEnForm fs)
+varEnForm (PTodo x f)   = nub (x : varEnForm f)
+varEnForm (Ex x f)      = nub (x : varEnForm f)
 \end{code}
 
 Por ejemplo
