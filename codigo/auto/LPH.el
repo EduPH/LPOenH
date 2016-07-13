@@ -7,7 +7,7 @@
     "\\texttt{sustituye}"
     "\\texttt{valor}"
     "\\texttt{esVariable}"
-    "\\texttt{conversion}"
+    "\\texttt{valorT}"
     "\\texttt{val}"
     "\\texttt{varEnTerm}"
     "\\texttt{varEnTerms}"
