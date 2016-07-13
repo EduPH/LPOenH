@@ -3,6 +3,7 @@
 *.bbl
 *.bib
 *.blg
+*.el
 *.idx
 *.ilg
 *.ind
@@ -14,9 +15,5 @@
 *.toc
 *_region_.tex
 *~
-/.dropbox
-/.gitignore
 /codigo/TAGS
-/texto/licencia*
-*.el
-*.el
+/codigo/auto/*
