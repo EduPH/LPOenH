@@ -141,10 +141,10 @@ B
 \end{sesion}
 
 \begin{Def}
-  Una estructura del lenguaje es un par $\textit{I} = (\textitt{U},I)$
+  Una estructura del lenguaje es un par $\textit{I} = (\textit{U},I)$
   tal que
   \begin{enumerate}
-  \item $\scriptI$ es un conjunto no vacío, denominado universo.
+  \item $\textit{I}$ es un conjunto no vacío, denominado universo.
   \item $I$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
   \end{enumerate}
 \end{Def}
