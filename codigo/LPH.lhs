@@ -291,7 +291,7 @@ esVariable _       = False
 
 Ahora, creamos el tipo de dato \texttt{Form} de manera análoga a como lo
 hicimos en la sección anterior considerando simplemente variables, pero en este
-caso considerándo términos.
+caso considerando términos.
 
 \begin{code}
 data Form = Atom Nombre [Termino]
