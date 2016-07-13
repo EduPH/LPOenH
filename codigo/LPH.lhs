@@ -514,8 +514,8 @@ varEnForm formula_4  ==  [x]
   un cuantificador existencial o universal. ($\forall x, \exists x$)
 \end{Def}
 
-La función \texttt{variablesLibres} devuelve las variables libres de una
-formula dada.
+La función \texttt{(variablesLibres f} devuelve las variables libres de la
+fórmula \texttt{f}.
 
 \begin{code}
 variablesLibres :: Form -> [Variable]
