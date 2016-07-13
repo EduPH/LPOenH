@@ -125,7 +125,7 @@ fórmulas.
 
 \begin{code}
 sustitucionForms :: Sust -> [Form] -> [Form]
-sustitucionForms s fs = map (sustitucionForm s) fs
+sustitucionForms s = map (sustitucionForm s)
 \end{code}
 
 Nos podemos preguntar si la sustitución conmuta con la composición. Para ello
