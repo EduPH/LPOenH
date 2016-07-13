@@ -181,23 +181,23 @@ unificadoresTerminos (Ter f ts) (Ter g rs) =
   [u | f == g, u <- unificaTermLista ts rs]
 \end{code}
 
-El valor de \texttt{(unificadoresLista ts rs)} es un unificador de las listas
+El valor de \texttt{(unificadoresListas ts rs)} es un unificador de las listas
 de términos \texttt{ts} y \texttt{rs}; es decir, una sustitución \texttt{s} tal
 que si \texttt{ts = [t1,...,tn]} y \texttt{rs = [r1,...,rn]} entonces
 \texttt{s(t1) = s(r1)}, \dots, \texttt{s(tn) = s(rn)}.
 
 \begin{code}
-unificadoresLista :: [Termino] -> [Termino] -> [Sust]
-unificadoresLista [] [] = [identidad]
-unificadoresLista [] _  = []
-unificadoresLista _ []  = []
-unificadoresLista (t:ts) (r:rs) = 
+unificadoresListas :: [Termino] -> [Termino] -> [Sust]
+unificadoresListas [] [] = [identidad]
+unificadoresListas [] _  = []
+unificadoresListas _ []  = []
+unificadoresListas (t:ts) (r:rs) = 
     [composicion u1 u2
     | u1 <- unificadoresTerminos t r
-    , u2 <- unificadoresLista (susTerms u1 ts) (susTerms u1 rs) ]   
+    , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs) ]   
 \end{code}
 
-\comentario{Añadir ejemplos de unificadoresLista}
+\comentario{Añadir ejemplos de unificadoresListas}
 
 \section{Skolem}
 
