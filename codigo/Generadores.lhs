@@ -4,7 +4,6 @@ import PFH
 import Modelo
 import LPH
 import Dominio
-import PTLP
 import Test.QuickCheck
 import Control.Monad
 \end{code}
