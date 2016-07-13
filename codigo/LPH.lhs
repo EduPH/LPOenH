@@ -143,7 +143,7 @@ B
 \begin{code}
 type Universo a = [a]
 
-type Interpretacion a = String -> [a] -> Bool   
+type InterpretacionR a = String -> [a] -> Bool   
 
 type Asignacion a = Variable -> a
 \end{code}
@@ -171,7 +171,7 @@ interpretaciones para las distintas conectivas lógicas
 \index{\texttt{valor}}
 \begin{code}
 valor :: Eq a => 
-         Universo a -> Interpretacion a -> Asignacion a 
+         Universo a -> InterpretacionR a -> Asignacion a 
                     -> Formula -> Bool
 valor _ i s (Atomo str vs)      = i str (map s vs)
 valor _ _ s (Igual v1 v2)       = s v1 == s v2
@@ -342,15 +342,20 @@ ghci> formula_3
 (R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
 \end{sesion}
 
-Para poder hacer las interpretaciones necesitamos primero una función auxiliar
-que extienda los valores de las variables a términos. Esta función es
-\texttt{(conversion s f str)}
-
-\index{\texttt{conversion}}
+La interpretación de los símbolos de funciones es
 \begin{code}
-conversion :: (Variable -> a) -> (String -> [a] -> a) -> (Termino -> a)
-conversion s f (Var v)    = s v
-conversion s f (Ter str ts) = f str (map (conversion s f) ts)
+type InterpretacionF a = String -> [a] -> a
+\end{code}
+
+Para poder hacer las interpretaciones necesitamos primero una función auxiliar
+para calcular el valor de los términos. Esta función es 
+\texttt{(valorT s f str)}
+
+\index{\texttt{valorT}}
+\begin{code}
+valorT :: Asignacion a -> InterpretacionF a -> Termino -> a
+valorT s f (Var v)    = s v
+valorT s f (Ter str ts) = f str (map (valorT s f) ts)
 \end{code}
 
 Siguiendo la linea de la sección anterior, definimos una función que determine
@@ -365,9 +370,9 @@ asignación, y \texttt{form} una fórmula.
 val :: Eq a =>
     [a] -> (String -> [a] -> Bool) -> (String -> [a] -> a)
         -> (Variable -> a)  -> Form -> Bool
-val u i f s (Atom str ts) = i str (map (conversion s f) ts)
+val u i f s (Atom str ts) = i str (map (valorT s f) ts)
 val u i f s (Ig t1 t2)    = 
-    conversion s f t1 == conversion s f t2
+    valorT s f t1 == valorT s f t2
 val u i f s (Neg g)       = not (val u i f s g)
 val u i f s (Impl f1 f2)  =
     not (val u i f s f1 && not (val u i f s f2))
