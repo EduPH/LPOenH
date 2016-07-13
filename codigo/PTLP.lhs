@@ -126,16 +126,15 @@ sustitucionForms :: Sust -> [Form] -> [Form]
 sustitucionForms s fs = map (sustitucionForm s) fs
 \end{code}
 
-Nos podemos preguntar si la sustitución conmuta con la composición.
-Para ello definimos la función \texttt{(composicion xs ys)}
+Nos podemos preguntar si la sustitución conmuta con la composición. Para ello
+definimos la función \texttt{(composicion s1 s2)}
 
 \index{\texttt{composicion}}
 \begin{code}
 composicion :: Sust -> Sust -> Sust
-composicion xs ys = 
-    (hacerApropiada [ (y,(susTerm xs y')) | (y,y') <- ys ])
-    ++
-    [ x | x <- xs, fst x `notElem` (dominio ys)]
+composicion s1 s2 = 
+    hacerApropiada [(y,susTerm s1 y') | (y,y') <- s2 ] ++
+    [x | x <- s1, fst x `notElem` dominio s2]
 \end{code}
 
 \begin{code}
