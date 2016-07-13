@@ -140,6 +140,24 @@ ghci> sustituye asignacion y B y
 B
 \end{sesion}
 
+\begin{Def}
+  Una estructura del lenguaje es un par $\scriptI = (\scriptU,I)$
+  tal que
+  \begin{enumerate}
+  \item $\scriptI$ es un conjunto no vacío, denominado universo.
+  \item $I$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
+  \end{enumerate}
+\end{Def}
+
+\begin{Def}
+  Una interpretación de una estructura del lenguaje es un par
+  $(\scriptI , A)$ formado por por una estructura de la estructura
+  del lenguaje, y una asignación $A$.
+\end{Def}
+
+Definimos los tipos de datos relativos a los elementos de la
+estructura del lenguaje.
+
 \begin{code}
 type Universo a = [a]
 
@@ -147,6 +165,33 @@ type InterpretacionR a = String -> [a] -> Bool
 
 type Asignacion a = Variable -> a
 \end{code}
+
+\begin{Def}
+  Una interpretación es una aplicación $I: VP \rightarrow Bool$, donde $VP$
+  representa el conjunto de las variables proposicionales.
+\end{Def}
+
+Una interpretación toma valores para las variables proposicionales, y se
+evalúan en una fórmula. Determinando si la fórmula es verdadera o falsa. Se
+definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
+
+\begin{Def}
+  Un modelo de una fórmula \texttt{F} es una interpretación en la que el valor de
+  \texttt{F} es verdadero.
+\end{Def}
+
+\begin{Def}
+  Una fórmula es válida si toda estructura es modelo de la fórmula.
+\end{Def}
+
+\begin{Def}
+  Una fórmula es satisfacible si existe alguna interpretación para la que
+  sea verdadera, es decir, algún modelo.
+\end{Def}
+
+\begin{Def}
+  Una fórmula es insatisfacible si no tiene ningún modelo.
+\end{Def}
 
 Definimos la función \texttt{(valor u i s form)} que calcula el valor de una
 fórmula en un universo \texttt{u}, con una interpretación \texttt{i} y la

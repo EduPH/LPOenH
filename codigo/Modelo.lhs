@@ -12,29 +12,10 @@ Trabajaremos con modelos a través de un dominio de entidades; en concreto,
 aquellas del módulo \texttt{Dominio}. Cada entidad de dicho módulo representa
 un sujeto. Cada sujeto cumplirá distintos predicados.
 
-\begin{Def}
-  Una interpretación es una aplicación $I: VP \rightarrow Bool$, donde $VP$
-  representa el conjunto de las variables proposicionales.
-\end{Def}
-
-Una interpretación toma valores para las variables proposicionales, y se
-evalúan en una fórmula. Determinando si la fórmula es verdadera o falsa. Se
-definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
-
-\begin{Def}
-  Un modelo de una fórmula $F$ es una interpretación en la que el valor de
-  $F$ es verdadero.
-\end{Def}
-
-\begin{Def}
-  Una fórmula es satisfacible si existe alguna interpretación para la que
-  sea verdadera, es decir, algún modelo.
-\end{Def}
-
-\begin{Def}
-  Una fórmula es insatisfacible si no tiene ningún modelo.
-\end{Def}
-
+Posteriormente, se definirá un modelo lógico. Aquí empleamos el término
+modelo como una representación de la realidad. En secciones posteriores
+estos modelos serán posibles interpretaciones para fórmulas.
+  
 A continuación damos un ejemplo de predicados lógicos para la clasificación
 botánica. La cual no es completa, pero da una idea de la potencia de Haskell
 para este tipo de uso.
