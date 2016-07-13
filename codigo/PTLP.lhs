@@ -215,7 +215,14 @@ unificadoresListas (t:ts) (r:rs) =
     , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs) ]   
 \end{code}
 
-\comentario{Añadir ejemplos de unificadoresListas}
+Por ejemplo
+
+\begin{sesion}
+ghci> unificadoresListas [tx] [ty]
+[[(x,y)]]
+ghci> unificadoresListas [tx] [tx]
+[[]]
+\end{sesion}
 
 \section{Skolem}
 
@@ -242,3 +249,14 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 Por ello, definimos la función \texttt{(elimImpEquiv f)}, para obtener
 fórmulas equivalentes sin equivalencias ni implicaciones. 
 
+\begin{code}
+elimImpEquiv :: Form -> Form
+elimImpEquiv (Equiv f1 f2) = Conj [ elimImpEquiv (Impl f1 f2),
+                                    elimImpEquiv (Impl f2 f1)]
+elimImpEquiv (Impl f1 f2) = Disy [ Neg f1, f2]
+elimImpEquiv (Neg f) = Neg (elimImpEquiv f)
+elimImpEquiv (Disy fs) = Disy (map (elimImpEquiv) fs)
+elimImpEquiv (Conj fs) = Conj (map (elimImpEquiv) fs)
+elimImpEquiv (PTodo x f) = PTodo x (elimImpEquiv f)
+elimImpEquiv (Ex x f) = Ex x (elimImpEquiv f)
+\end{code}
