@@ -138,8 +138,6 @@ instance Arbitrary (Formula) where
                              liftM2 Existe   generaVariable generaFormula]
               where
                 generaFormula = formula (n-1)
-
-
 \end{code}
 
 \subsubsection{Generador de Términos}
