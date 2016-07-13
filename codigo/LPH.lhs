@@ -510,8 +510,8 @@ varEnForm formula_4  ==  [x]
 \end{sesion}
 
 \begin{Def}
-  Una variable es libre en una fórmula si tiene una aparición ligada a un
-  cuantificador existencial o universal. ($\forall x, \exists x$)
+  Una variable es libre en una fórmula si no tiene ninguna aparición ligada a
+  un cuantificador existencial o universal. ($\forall x, \exists x$)
 \end{Def}
 
 La función \texttt{variablesLibres} devuelve las variables libres de una
