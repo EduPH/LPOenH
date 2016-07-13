@@ -409,35 +409,35 @@ ghci> formula_4
 
 En este caso tomamos como universo \texttt{u} los números naturales.
 Interpretamos \texttt{R} como la desigualdad $<$. Es decir, vamos a comprobar
-si es cierto que existe un número natural mayor que el 0.
+si es cierto que existe un número natural mayor que el 0. Por tanto, la
+interpretación de los símbolos de relación es
 
 \begin{code}
-interpretacion3:: String -> [Int] -> Bool
-interpretacion3 "R" [x,y] = x < y  
-interpretacion3 _ _       = False
+interpretacionR1 :: String -> [Int] -> Bool
+interpretacionR1 "R" [x,y] = x < y  
+interpretacionR1 _ _       = False
 \end{code}
 
-Interpretamos los símbolos; es decir, las interpretaciones de la \texttt{f}
+La interpretación de los símbolos de función es
 \begin{code}
-interpretacionDef :: String -> [Int] -> Int
-interpretacionDef "cero" []    = 0
-interpretacionDef "s"    [i]   = succ i
-interpretacionDef "mas"  [i,j] = i + j
-interpretacionDef "por"  [i,j] = i * j
-interpretacionDef _ _          = 0
+interpretacionF1 :: String -> [Int] -> Int
+interpretacionF1 "cero" []    = 0
+interpretacionF1 "s"    [i]   = succ i
+interpretacionF1 "mas"  [i,j] = i + j
+interpretacionF1 "por"  [i,j] = i * j
+interpretacionF1 _ _          = 0
 \end{code}
 
 Empleamos la asignación
-
 \begin{code}
 asignacion1 :: Variable -> Int
-asignacion1 x = 0
+asignacion1 _ = 0
 \end{code}
 
 Quedando el ejemplo
 
 \begin{sesion}
-ghci> valorF [0..] interpretacion3 interpretacionDef asignacion1 formula_4
+ghci> valorF [0..] (interpretacionR1,interpretacionF1) asignacion1 formula_4
 True
 \end{sesion}
 
