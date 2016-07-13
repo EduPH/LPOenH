@@ -82,8 +82,8 @@ basándonos en los términos, mediante las funciones \texttt{(susTerm xs t)} y
 \index{\texttt{susTerms}}
 \begin{code}
 susTerm :: Sust -> Termino -> Termino
-susTerm xs (Var y)    = sustituyeVar xs y
-susTerm xs (Ter n ts) = Ter n (susTerms xs ts)
+susTerm s (Var y)    = sustituyeVar s y
+susTerm s (Ter f ts) = Ter f (susTerms s ts)
 
 susTerms :: Sust -> [Termino] -> [Termino]
 susTerms = map . susTerm
