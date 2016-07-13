@@ -154,11 +154,11 @@ asignación \texttt{s}. Para ello vamos a definir previamente el valor de las
 interpretaciones para las distintas conectivas lógicas
 
 \begin{center}
-   \begin{tabular}{ | l | l | l | l| l | l| }
+   \begin{tabular}{ | l | c | c | c | c | c | }
      \hline
-     $\text{P}$   & $\text{Q}$  & $(\text{P} \wedge \text{Q})$ &
-     $(\text{P} \vee \text{Q})$ & $(\text{P} \rightarrow \text{Q})$ &
-     $(\text{P}\leftrightarrow  \text{Q})$  \\ \hline
+     $\text{P}$   & $\text{Q}$  & $\text{P} \wedge \text{Q}$ &
+     $\text{P} \vee \text{Q}$ & $\text{P} \rightarrow \text{Q}$ &
+     $\text{P}\leftrightarrow  \text{Q}$  \\ \hline
 
       $1$ & $1$ & $1$ & $1$ & $1$ & $1$ \\ \hline
       $1$ & $0$ & $0$ & $1$ & $0$ & $0$ \\ \hline
