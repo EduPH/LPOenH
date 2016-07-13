@@ -504,12 +504,9 @@ varEnForm (Ex x f)      = nub (x : varEnForm f)
 
 Por ejemplo
 \begin{sesion}
-ghci> varEnForm formula_2
-[x,y,z]
-ghci> varEnForm formula_3
-[x,y,z]
-ghci> varEnForm formula_4
-[x]
+varEnForm formula_2  ==  [x,y,z]
+varEnForm formula_3  ==  [x,y,z]
+varEnForm formula_4  ==  [x]
 \end{sesion}
 
 \begin{Def}
