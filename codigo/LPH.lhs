@@ -353,36 +353,45 @@ para calcular el valor de los términos. Esta función es
 
 \index{\texttt{valorT}}
 \begin{code}
-valorT :: Asignacion a -> InterpretacionF a -> Termino -> a
-valorT s f (Var v)    = s v
-valorT s f (Ter str ts) = f str (map (valorT s f) ts)
+valorT :: InterpretacionF a -> Asignacion a -> Termino -> a
+valorT i a (Var v)    = a v
+valorT i a (Ter f ts) = i f (map (valorT i a) ts)
 \end{code}
 
-Siguiendo la linea de la sección anterior, definimos una función que determine
-el valor de una interpretación aplicada a una fórmula dada.  Dicha función la
-denotamos por \texttt{(val u i f s form)}, en la que \texttt{u} denota el
-universo, \texttt{i} es la interpretación de las propiedades o relaciones,
-\texttt{f} es la interpretación del término funcional, \texttt{s} la
-asignación, y \texttt{form} una fórmula.
+Una interpretación es un par formado por las interpretaciones de los símbolos
+de relación y la de los símbolos de función.
+
+\begin{code}
+type Interpretacion a = (InterpretacionR a, InterpretacionF a)  
+\end{code}
+
+Siguiendo la línea de la sección anterior, definimos una función que determine
+el valor de una fórmula.  Dicha función la denotamos por 
+\texttt{(val u i f s form)}, en la que \texttt{u} denota el universo, \texttt{i} es la
+interpretación de las propiedades o relaciones, \texttt{f} es la interpretación
+del término funcional, \texttt{s} la asignación, y \texttt{form} una fórmula.
 
 \index{\texttt{val}}
 \begin{code}
-val :: Eq a =>
-    [a] -> (String -> [a] -> Bool) -> (String -> [a] -> a)
-        -> (Variable -> a)  -> Form -> Bool
-val u i f s (Atom str ts) = i str (map (valorT s f) ts)
-val u i f s (Ig t1 t2)    = 
-    valorT s f t1 == valorT s f t2
-val u i f s (Neg g)       = not (val u i f s g)
-val u i f s (Impl f1 f2)  =
-    not (val u i f s f1 && not (val u i f s f2))
-val u i f s (Equiv f1 f2) = val u i f s f1 == val u i f s f2
-val u i f s (Conj fs)     = all (val u i f s) fs
-val u i f s (Disy fs)     = any (val u i f s) fs
-val u i f s (PTodo v g)   = 
-    and [ val u i f (sustituye s v d) g | d <- u]
-val u i f s (Ex v g)      =
-    or  [ val u i f (sustituye s v d) g | d <- u]
+valorF :: Eq a => Universo a -> Interpretacion a -> Asignacion a -> Form -> Bool
+valorF u (iR,iF) a (Atom r ts) =
+  iR r (map (valorT iF a) ts)
+valorF u (_,iF) a (Ig t1 t2) = 
+  valorT iF a t1 == valorT iF a t2
+valorF u i a (Neg g) =
+  not (valorF u i a g)
+valorF u i a (Impl f1 f2) =
+  valorF u i a f1 <= valorF u i a f2
+valorF u i a (Equiv f1 f2) =
+  valorF u i a f1 == valorF u i a f2
+valorF u i a (Conj fs) =
+  all (valorF u i a) fs
+valorF u i a (Disy fs) =
+  any (valorF u i a) fs
+valorF u i a (PTodo v g) = 
+  and [valorF u i (sustituye a v d) g | d <- u]
+valorF u i a (Ex v g)  =
+  or  [valorF u i (sustituye a v d) g | d <- u]
 \end{code}
 
 Veamos un ejemplo. Para ello tenemos que interpretar los elementos de una
@@ -428,7 +437,7 @@ asignacion1 x = 0
 Quedando el ejemplo
 
 \begin{sesion}
-ghci> val [0..] interpretacion3 interpretacionDef asignacion1 formula_4
+ghci> valorF [0..] interpretacion3 interpretacionDef asignacion1 formula_4
 True
 \end{sesion}
 
