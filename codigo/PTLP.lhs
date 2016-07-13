@@ -117,13 +117,13 @@ sustitucionForm s (Ex v f) =
 \end{code}
 
 Se puede generalizar a una lista de fórmulas mediante la funcion
-\texttt{sustitucionForms xs fs}. La hemos necesitado en la definición
-de la función anterior, pues las conjunciones y disyunciones trabajan
-con listas de fórmulas.
+\texttt{(sustitucionForms s fs)}. La hemos necesitado en la definición de la
+función anterior, pues las conjunciones y disyunciones trabajan con listas de
+fórmulas.
 
 \begin{code}
 sustitucionForms :: Sust -> [Form] -> [Form]
-sustitucionForms xs fs = map (sustitucionForm xs) fs
+sustitucionForms s fs = map (sustitucionForm s) fs
 \end{code}
 
 Nos podemos preguntar si la sustitución conmuta con la composición.
