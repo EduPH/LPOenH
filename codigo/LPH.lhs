@@ -494,8 +494,8 @@ varEnForm :: Form -> [Variable]
 varEnForm (Atom _ ts)   = varEnTerms ts
 varEnForm (Ig t1 t2)    = nub (varEnTerm t1 ++ varEnTerm t2)
 varEnForm (Neg f)       = varEnForm f
-varEnForm (Impl f1 f2)  = nub (varEnForm f1 ++ varEnForm f2)
-varEnForm (Equiv f1 f2) = nub (varEnForm f1 ++ varEnForm f2)
+varEnForm (Impl f1 f2)  = varEnForm f1 `union` varEnForm f2
+varEnForm (Equiv f1 f2) = varEnForm f1 `union` varEnForm f2
 varEnForm (Conj fs)     = nub (concatMap varEnForm fs)
 varEnForm (Disy fs)     = nub (concatMap varEnForm fs)
 varEnForm (PTodo x f)   = nub (x : varEnForm f)
@@ -519,30 +519,31 @@ fórmula \texttt{f}.
 
 \begin{code}
 variablesLibres :: Form -> [Variable]
-variablesLibres (Atom str terms)    = varEnTerms terms
-variablesLibres (Ig term1 term2)    = 
-    nub (varEnTerm term1 ++ varEnTerm term2)
-variablesLibres (Neg form)          = variablesLibres form
-variablesLibres (Impl form1 form2)  = 
-    nub (variablesLibres form1 ++ variablesLibres form2)
-variablesLibres (Equiv form1 form2) = 
-    nub (variablesLibres form1 ++ variablesLibres form2)
-variablesLibres (Conj forms)        = 
-    nub (concatMap variablesLibres forms)
-variablesLibres (Disy forms)        = 
-    nub (concatMap variablesLibres forms)
-variablesLibres (PTodo x form)     = delete x (variablesLibres form)
-variablesLibres (Ex x form)        = delete x (variablesLibres form)
+variablesLibres (Atom _ ts) =
+  varEnTerms ts
+variablesLibres (Ig t1 t2) = 
+  varEnTerm t1 `union` varEnTerm t2
+variablesLibres (Neg f) =
+  variablesLibres f
+variablesLibres (Impl f1 f2)  = 
+  variablesLibres f1 `union` variablesLibres f2
+variablesLibres (Equiv f1 f2) = 
+  variablesLibres f1 `union` variablesLibres f2
+variablesLibres (Conj fs) = 
+  nub (concatMap variablesLibres fs)
+variablesLibres (Disy fs) = 
+  nub (concatMap variablesLibres fs)
+variablesLibres (PTodo x f) =
+  delete x (variablesLibres f)
+variablesLibres (Ex x f) =
+  delete x (variablesLibres f)
 \end{code}
 
 Se proponen varios ejemplos
 \begin{sesion}
-ghci> variablesLibres formula_2
-[]
-ghci> variablesLibres formula_3
-[x,y]
-ghci> variablesLibres formula_4
-[]
+variablesLibres formula_2  ==  []
+variablesLibres formula_3  ==  [x,y]
+variablesLibres formula_4  ==  []
 \end{sesion}
 
 \begin{Def}
