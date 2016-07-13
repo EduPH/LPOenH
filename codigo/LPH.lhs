@@ -373,7 +373,8 @@ del término funcional, \texttt{s} la asignación, y \texttt{form} una fórmula.
 
 \index{\texttt{val}}
 \begin{code}
-valorF :: Eq a => Universo a -> Interpretacion a -> Asignacion a -> Form -> Bool
+valorF :: Eq a => Universo a -> Interpretacion a -> Asignacion a 
+                             -> Form -> Bool
 valorF u (iR,iF) a (Atom r ts) =
   iR r (map (valorT iF a) ts)
 valorF u (_,iF) a (Ig t1 t2) = 
@@ -550,7 +551,7 @@ variablesLibres formula_4  ==  []
   Una fórmula abierta es una fórmula con variables libres.
 \end{Def}
 
-La función \texttt{formulaAbierta} determina si una fórmula dada es abierta.
+La función \texttt{(formulaAbierta f)} determina si una fórmula dada es abierta.
 
 \index{\texttt{formulaAbierta}}
 \begin{code}

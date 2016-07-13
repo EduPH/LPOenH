@@ -201,4 +201,26 @@ unificadoresListas (t:ts) (r:rs) =
 
 \section{Skolem}
 
-Para una unificación eficiente 
+\begin{Def}
+  La fórmula \texttt{F} está en forma de Skolem si es de la forma
+  $\forall x_1 \dots \forall x_n \texttt{G}$, donde $n\geq 0$ y \texttt{G}
+  no tiene cuantificadores.
+\end{Def}
+
+Para alcanzar una fórmula en forma de Skolem emplearemos sustituciones y
+unificaciones. Además, necesitamos eliminar las equivalencias e implicaciones.
+Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
+
+\begin{Def}
+  Las fórmulas \texttt{F} y \texttt{G} son equivalentes si para toda
+  interpretación valen lo mismo.
+\end{Def}
+
+\begin{Def}
+  Las fórmulas \texttt{F} y \texttt{G} son equisatisfacibles si se cumple
+  $(\texttt{ F} \text{ satisfacible } \Leftrightarrow \texttt{G} \text{ satisfacible })$
+\end{Def}
+
+Por ello, definimos la función \texttt{(elimImpEquiv f)}, para obtener
+fórmulas equivalentes sin equivalencias ni implicaciones. 
+

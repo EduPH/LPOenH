@@ -26,6 +26,15 @@ definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
   $F$ es verdadero.
 \end{Def}
 
+\begin{Def}
+  Una fórmula es satisfacible si existe alguna interpretación para la que
+  sea verdadera, es decir, algún modelo.
+\end{Def}
+
+\begin{Def}
+  Una fórmula es insatisfacible si no tiene ningún modelo.
+\end{Def}
+
 A continuación damos un ejemplo de predicados lógicos para la clasificación
 botánica. La cual no es completa, pero da una idea de la potencia de Haskell
 para este tipo de uso.
