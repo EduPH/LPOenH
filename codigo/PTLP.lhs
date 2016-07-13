@@ -178,7 +178,7 @@ unificadoresTerminos (Var x) t =
 unificadoresTerminos t (Var y) =
   [[(y,t)] | y `notElem` varEnTerm t]
 unificadoresTerminos (Ter f ts) (Ter g rs) = 
-  [u | f == g, u <- unificaTermLista ts rs]
+  [u | f == g, u <- unificadoresListas ts rs]
 \end{code}
 
 El valor de \texttt{(unificadoresListas ts rs)} es un unificador de las listas
