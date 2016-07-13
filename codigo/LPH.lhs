@@ -141,17 +141,17 @@ B
 \end{sesion}
 
 \begin{Def}
-  Una estructura del lenguaje es un par $\textit{I} = (\textit{U},I)$
+  Una estructura del lenguaje es un par $\mathcal{I} = (\mathcal{U},I)$
   tal que
   \begin{enumerate}
-  \item $\textit{I}$ es un conjunto no vacío, denominado universo.
+  \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
   \item $I$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
   \end{enumerate}
 \end{Def}
 
 \begin{Def}
   Una interpretación de una estructura del lenguaje es un par
-  $(\textit{I} , A)$ formado por por una estructura de la estructura
+  $(\mathcal{I} , A)$ formado por por una estructura de la estructura
   del lenguaje, y una asignación $A$.
 \end{Def}
 
