@@ -164,18 +164,21 @@ ghci> quickCheck composicionConmutativa
 \end{description}
 
 \begin{Def}
-  Una unificación de las variables $x_1$ y $x_2$ es una sustitución $S$ tal que
-  $S(x_1) = S(x_2)t$.
+  Un unificador de dos términos $t_1$ y $t_2$ es una sustitución $S$ tal que
+  $S(t_1) = S(t_2)$.
 \end{Def}
 
 \begin{code}
-unificacionTerminos :: Termino -> Termino -> [Sust]
-unificacionTerminos (Var x) (Var y)   | x==y      = [identidad]
-                                      | otherwise = [[(x,Var y)]]
-unificacionTerminos (Var x) t         = [ [(x,t)] | x `notElem` varEnTerm t]
-unificacionTerminos t (Var y)         = [ [(y,t)] | y `notElem` varEnTerm t]
-unificacionTerminos (Ter a ts) (Ter b rs) = 
-    [ u | a==b, u <- unificaTermLista ts rs ]
+unificadoresTerminos :: Termino -> Termino -> [Sust]
+unificadoresTerminos (Var x) (Var y)   
+  | x == y    = [identidad]
+  | otherwise = [[(x,Var y)]]
+unificadoresTerminos (Var x) t =
+  [[(x,t)] | x `notElem` varEnTerm t]
+unificadoresTerminos t (Var y) =
+  [[(y,t)] | y `notElem` varEnTerm t]
+unificadoresTerminos (Ter f ts) (Ter g rs) = 
+  [u | f ==g, u <- unificaTermLista ts rs]
 \end{code}
 
 \begin{Def}
@@ -195,7 +198,7 @@ unificaTermLista [] []         = [identidad]
 unificaTermLista [] (r:rs)     = []
 unificaTermLista (t:ts) []     = []
 unificaTermLista (t:ts) (r:rs) = 
-    [ composicion u1 u2 | u1 <- unificacionTerminos t r,
+    [ composicion u1 u2 | u1 <- unificadoresTerminos t r,
      u2 <- unificaTermLista (susTerms u1 ts) (susTerms u1 rs) ]   
 \end{code}
 
