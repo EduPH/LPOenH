@@ -159,14 +159,13 @@ ghci> quickCheck composicionConmutativa
 \end{sesion}
 
 \begin{description}
-\item Nota: Las comprobaciones con QuickCheck emplean código del
-  módulo \texttt{Generadores}.
+\item Nota: Las comprobaciones con QuickCheck emplean código del módulo
+  \texttt{Generadores}.
 \end{description}
 
-
 \begin{Def}
- Una unificación de las variables $x_1$ y $x_2$ es una sustitución $S$
- tal que $S(x_1) = S(x_2)=t$. 
+  Una unificación de las variables $x_1$ y $x_2$ es una sustitución $S$ tal que
+  $S(x_1) = S(x_2)t$.
 \end{Def}
 
 \begin{code}
