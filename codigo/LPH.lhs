@@ -561,10 +561,7 @@ formulaAbierta = not . null . variablesLibres
 Como acostumbramos, ponemos algunos ejemplos
 
 \begin{sesion}
-ghci> formulaAbierta formula_2
-False
-ghci> formulaAbierta formula_3
-True
-ghci> formulaAbierta formula_4
-False
+formulaAbierta formula_2  ==  False
+formulaAbierta formula_3  ==  True
+formulaAbierta formula_4  ==  False
 \end{sesion}
