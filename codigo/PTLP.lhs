@@ -215,7 +215,7 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 
 \begin{Def}
   Las fórmulas \texttt{F} y \texttt{G} son equisatisfacibles si se cumple
-  $(\texttt{F} \text{ satisfacible } \Leftrightarrow \texttt{G} \text{satisfacible}$
+  $(\texttt{ F} \text{ satisfacible } \Leftrightarrow \texttt{G} \text{ satisfacible })$
 \end{Def}
 
 Por ello, definimos la función \texttt{(elimImpEquiv f)}, para obtener
