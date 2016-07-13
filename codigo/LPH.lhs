@@ -555,7 +555,7 @@ La función \texttt{formulaAbierta} determina si una fórmula dada es abierta.
 \index{\texttt{formulaAbierta}}
 \begin{code}
 formulaAbierta :: Form -> Bool
-formulaAbierta = not. null . variablesLibres
+formulaAbierta = not . null . variablesLibres
 \end{code}
 
 Como acostumbramos, ponemos algunos ejemplos
