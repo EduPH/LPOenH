@@ -89,28 +89,31 @@ susTerms :: Sust -> [Termino] -> [Termino]
 susTerms = map . susTerm
 \end{code}
 
-Finalmente, esta construcción nos sirve para generalizar a
-cualquier fórmula. Con este fin definimos \texttt{(sustitucionForm xs f)},
-donde \texttt{xs} representa la lista de pares que definen las sustituciones,
-y \texttt{f} la fórmula.
+Finalmente, esta construcción nos sirve para generalizar a cualquier
+fórmula. Con este fin definimos \texttt{(sustitucionForm s f)}, donde
+\texttt{s} representa la susticución y \texttt{f} la fórmula.
 
 \index{\texttt{sustitucionForm}}
 \begin{code}
 sustitucionForm :: Sust -> Form -> Form
-sustitucionForm xs (Atom a ts)  = Atom a (susTerms xs ts)
-sustitucionForm xs (Neg f) = Neg (sustitucionForm xs f)
-sustitucionForm xs (Impl f1 f2)  = 
-    Impl (sustitucionForm xs f1) (sustitucionForm xs f2)
-sustitucionForm xs (Equiv f1 f2) =
-    Equiv (sustitucionForm xs f1) (sustitucionForm xs f2)
-sustitucionForm xs (Conj fs)     = Conj (sustitucionForms xs fs)
-sustitucionForm xs (Disy fs)     = Disy (sustitucionForms xs fs)
-sustitucionForm xs (PTodo v f)   = PTodo v (sustitucionForm xs' f)
-    where
-      xs' = [ x | x <- xs, fst x /= v]
-sustitucionForm xs (Ex v f)      = Ex v (sustitucionForm xs' f)
-    where
-      xs' = [ x | x <- xs, fst x /= v]
+sustitucionForm s (Atom r ts) =
+  Atom r (susTerms s ts)
+sustitucionForm s (Neg f) =
+  Neg (sustitucionForm s f)
+sustitucionForm s (Impl f1 f2) = 
+  Impl (sustitucionForm s f1) (sustitucionForm s f2)
+sustitucionForm s (Equiv f1 f2) =
+  Equiv (sustitucionForm s f1) (sustitucionForm s f2)
+sustitucionForm s (Conj fs) =
+  Conj (sustitucionForms s fs)
+sustitucionForm s (Disy fs) =
+  Disy (sustitucionForms s fs)
+sustitucionForm s (PTodo v f) =
+  PTodo v (sustitucionForm s' f)
+  where s' = [x | x <- s, fst x /= v]
+sustitucionForm s (Ex v f) =
+  Ex v (sustitucionForm s' f)
+  where s' = [x | x <- s, fst x /= v]
 \end{code}
 
 Se puede generalizar a una lista de fórmulas mediante la funcion
