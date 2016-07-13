@@ -1,18 +1,14 @@
 \section{Sustitución}
 
-\begin{Def}
-Una sustitución es una aplicación $S: Variable \rightarrow Termino $.
-\end{Def}
-
 \begin{code}
 module PTLP where
 import LPH
+import Debug.Trace
 \end{code}
 
-Hemos importado la librería \texttt{Debug.Trace} porque emplearemos
-la función \texttt{trace}. Esta función tiene como argumentos
-una cadena de caracteres, una función, y un valor sobre el que se aplica
-la función. Por ejemplo
+Hemos importado la librería \texttt{Debug.Trace} porque emplearemos la función
+\texttt{trace}. Esta función tiene como argumentos una cadena de caracteres,
+una función, y un valor sobre el que se aplica la función. Por ejemplo
 
 \begin{sesion}
 ghci> trace ("aplicando even a x = " ++ show 3) (even 3)
@@ -21,8 +17,12 @@ False
 \end{sesion}
 
 \begin{Def}
-  Una variable $x$ es ligada en una fórmula cuando tiene una aparición
+  Una variable $x$ está ligada en una fórmula cuando tiene una aparición
   de la forma $\forall x$ o $\exists x$.
+\end{Def}
+
+\begin{Def}
+  Una sustitución es una aplicación $S: Variable \rightarrow Termino$.
 \end{Def}
 
 En la lógica de primer orden, aquellas variables que están ligadas,
@@ -34,7 +34,7 @@ type Sust = [(Variable, Termino)]
 \end{code}
 
 Este nuevo tipo de dato es una asociación de la variable con el término
-mediante 2-uplas. Denotamos el elemento identidad de la sustitución como 
+mediante pares. Denotamos el elemento identidad de la sustitución como 
 \texttt{identidad}
 
 \index{\texttt{identidad}}
@@ -65,23 +65,24 @@ recorrido :: Sust -> [Termino]
 recorrido = map snd
 \end{code}
 
-Posteriormente, se define una función que haga una sustitución de una
+Posteriormente, se define una función que hace la sustitución de una
 variable concreta. La denotamos \texttt{(sustituyeVar sust var)}
 \begin{code}
 sustituyeVar :: Sust -> Variable -> Termino
 sustituyeVar [] y                      = Var y
-sustituyeVar ((x,x'):xs) y | x==y      = x'
+sustituyeVar ((x,x'):xs) y | x == y    = x'
                            | otherwise = sustituyeVar xs y
 \end{code}
 
 Ahora aplicando una recursión entre funciones, podemos hacer sustituciones
 basándonos en los términos, mediante las funciones \texttt{(susTerm xs t)} y
-\texttt{(susTerms sust ts)}
+\texttt{(susTerms sust ts)}.
+
 \index{\texttt{susTerm}}
 \index{\texttt{susTerms}}
 \begin{code}
 susTerm :: Sust -> Termino -> Termino
-susTerm xs (Var y) = sustituyeVar xs y
+susTerm xs (Var y)    = sustituyeVar xs y
 susTerm xs (Ter n ts) = Ter n (susTerms xs ts)
 
 susTerms :: Sust -> [Termino] -> [Termino]
