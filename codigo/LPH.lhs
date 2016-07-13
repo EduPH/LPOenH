@@ -532,7 +532,7 @@ variablesLibres (Equiv f1 f2) =
   variablesLibres f1 `union` variablesLibres f2
 variablesLibres (Conj fs) = 
   nub (concatMap variablesLibres fs)
-      variablesLibres (Disy fs) = 
+variablesLibres (Disy fs) = 
   nub (concatMap variablesLibres fs)
 variablesLibres (PTodo x f) =
   delete x (variablesLibres f)
