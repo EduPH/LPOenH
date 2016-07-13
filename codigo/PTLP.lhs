@@ -147,8 +147,6 @@ composicionConmutativa s1 s2 =
   composicion s1 s2 == composicion s2 s1
 \end{code} 
  
-\section{Unificación}
-
 Y comprobando con QuickCheck, no lo es
 
 \begin{sesion}
@@ -162,6 +160,8 @@ ghci> quickCheck composicionConmutativa
 \item Nota: Las comprobaciones con QuickCheck emplean código del módulo
   \texttt{Generadores}.
 \end{description}
+
+\section{Unificación}
 
 \begin{Def}
   Un unificador de dos términos $t_1$ y $t_2$ es una sustitución $S$ tal que
