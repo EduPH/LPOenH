@@ -139,7 +139,14 @@ composicion s1 s2 =
     [x | x <- s1, fst x `notElem` dominio s2]
 \end{code}
 
-\comentario{Añadir ejemplos de composición}
+Por ejemplo
+
+\begin{sesion}
+ghci> composicion [(x,tx)] [(y,ty)]
+[(x,x)]
+ghci> composicion [(x,tx)] [(x,ty)]
+[(x,y)]
+\end{sesion}
 
 \begin{code}
 composicionConmutativa :: Sust -> Sust -> Bool
@@ -154,6 +161,17 @@ ghci> quickCheck composicionConmutativa
 *** Failed! Falsifiable (after 3 tests and 1 shrink): 
 [(i3,n)]
 [(c19,i)]
+\end{sesion}
+
+Un contraejemplo más claro es
+
+\begin{sesion}
+ghci> composicion [(x,tx)] [(y,ty)]
+[(x,x)]
+ghci> composicion  [(y,ty)] [(x,tx)]
+[(y,y)]
+ghci> composicion  [(y,ty)] [(x,tx)] == composicion [(x,tx)] [(y,ty)]
+False
 \end{sesion}
 
 \begin{description}
