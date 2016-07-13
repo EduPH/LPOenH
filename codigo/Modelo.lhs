@@ -1,5 +1,13 @@
 \section{Representación de modelos}
 
+El contenido de esta sección se encuentra en el módulo \texttt{Modelo}.
+
+\begin{code}
+module Modelo where
+import Dominio
+import PFH
+\end{code}
+
 Trabajaremos con modelos a través de un dominio de entidades; en concreto,
 aquellas del módulo \texttt{Dominio}. Cada entidad de dicho módulo representa
 un sujeto. Cada sujeto cumplirá distintos predicados.
@@ -17,12 +25,6 @@ definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
   Un modelo de una fórmula $F$ es una interpretación en la que el valor de
   $F$ es verdadero.
 \end{Def}
-
-\begin{code}
-module Modelo where
-import Dominio
-import PFH
-\end{code}
 
 A continuación damos un ejemplo de predicados lógicos para la clasificación
 botánica. La cual no es completa, pero da una idea de la potencia de Haskell
