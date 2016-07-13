@@ -137,10 +137,12 @@ composicion s1 s2 =
     [x | x <- s1, fst x `notElem` dominio s2]
 \end{code}
 
+\comentario{Añadir ejemplos de composición}
+
 \begin{code}
 composicionConmutativa :: Sust -> Sust -> Bool
-composicionConmutativa xs ys = 
-    composicion xs ys == composicion ys xs
+composicionConmutativa s1 s2 = 
+  composicion s1 s2 == composicion s2 s1
 \end{code} 
  
 \section{Unificación}
