@@ -6,10 +6,7 @@ Una sustitución es una aplicación $S: Variable \rightarrow Termino $.
 
 \begin{code}
 module PTLP where
-import Data.List
 import LPH
-import PFH
-import Test.QuickCheck
 \end{code}
 
 Hemos importado la librería \texttt{Debug.Trace} porque emplearemos
