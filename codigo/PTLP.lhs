@@ -178,29 +178,27 @@ unificadoresTerminos (Var x) t =
 unificadoresTerminos t (Var y) =
   [[(y,t)] | y `notElem` varEnTerm t]
 unificadoresTerminos (Ter f ts) (Ter g rs) = 
-  [u | f ==g, u <- unificaTermLista ts rs]
+  [u | f == g, u <- unificaTermLista ts rs]
 \end{code}
 
-\begin{Def}
-  \texttt{UnificaTermLista} es una función que se aplica a dos listas
-  dadas, tal que
-  \begin{enumerate}
-  \item Si las dos listas son vacías, devuelve la \texttt{identidad}
-    de la sustitución.
-  \item La unificación de las listas $t_1,\dots,t_n$ y $r_1,\dots,r_n$
-    es el resultado de ejecutar la composición de unificaciones.
-  \end{enumerate}
-\end{Def}
+El valor de \texttt{(unificadoresLista ts rs)} es un unificador de las listas
+de términos \texttt{ts} y \texttt{rs}; es decir, una sustitución \texttt{s} tal
+que si \texttt{ts = [t1,...,tn]} y \texttt{rs = [r1,...,rn]} entonces
+\texttt{s(t1) = s(r1)}, \dots, \texttt{s(tn) = s(rn)}.
 
 \begin{code}
-unificaTermLista :: [Termino] -> [Termino] -> [Sust]
-unificaTermLista [] []         = [identidad]
-unificaTermLista [] (r:rs)     = []
-unificaTermLista (t:ts) []     = []
-unificaTermLista (t:ts) (r:rs) = 
-    [ composicion u1 u2 | u1 <- unificadoresTerminos t r,
-     u2 <- unificaTermLista (susTerms u1 ts) (susTerms u1 rs) ]   
+unificadoresLista :: [Termino] -> [Termino] -> [Sust]
+unificadoresLista [] [] = [identidad]
+unificadoresLista [] _  = []
+unificadoresLista _ []  = []
+unificadoresLista (t:ts) (r:rs) = 
+    [composicion u1 u2
+    | u1 <- unificadoresTerminos t r
+    , u2 <- unificadoresLista (susTerms u1 ts) (susTerms u1 rs) ]   
 \end{code}
 
+\comentario{Añadir ejemplos de unificadoresLista}
+
 \section{Skolem}
+
 Para una unificación eficiente 
