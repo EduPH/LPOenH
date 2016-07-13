@@ -3,7 +3,9 @@
 \begin{code}
 module PTLP where
 import LPH
-import Debug.Trace
+import Test.QuickCheck -- Para ejemplos
+import Generadores     -- Para ejemplos
+import Debug.Trace     -- Para ejemplos
 \end{code}
 
 Hemos importado la librería \texttt{Debug.Trace} porque emplearemos la función
