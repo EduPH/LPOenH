@@ -443,14 +443,14 @@ True
 
 \begin{description}
 \item[Nota :] Haskell es perezoso, así que podemos utilizar un universo
-  infinito. Haskell no hace cálculos innecesarios, es decir, para cuando
+  infinito. Haskell no hace cálculos innecesarios; es decir, para cuando
   encuentra un elemento que cumple la propiedad.
 \end{description}
 
 \subsection{Generadores}
 
-Para poder emplear el sistema de comprobación \texttt{QuickCheck}, necesitamos
-poder generar elementos aleatorios de los tipos de datos creados hasta ahora.
+Para poder emplear el sistema de comprobación QuickCheck, necesitamos poder
+generar elementos aleatorios de los tipos de datos creados hasta ahora.
 
 \entrada{Generadores}
 
@@ -464,7 +464,7 @@ que aparecen en un término o en una lista de ellos.
 \begin{code}
 varEnTerm :: Termino -> [Variable]
 varEnTerm (Var v)    = [v]
-varEnTerm (Ter str ts) = varEnTerms ts
+varEnTerm (Ter _ ts) = varEnTerms ts
 
 varEnTerms :: [Termino] -> [Variable]
 varEnTerms = nub . concatMap varEnTerm
