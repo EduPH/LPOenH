@@ -446,7 +446,8 @@ como la búsqueda de modelos.
 \end{Def}
 
 \begin{Def}
-  Se dice que una hoja es cerrada si contiene una fórmula y su negación. 
+  Se dice que una hoja es cerrada si contiene una fórmula y su negación.
+  Se representa $\perp$
 \end{Def}
 
 \begin{Def}
