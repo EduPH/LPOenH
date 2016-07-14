@@ -438,7 +438,8 @@ Notar que $a$ es una constante nueva.
 
 Mediante estas equivalencias se procede a lo que se denomina método
 de los tableros semánticos. Uno de los objetivos del método
-de los tableros es determinar si una fórmula es inconsistente.
+de los tableros es determinar si una fórmula es inconsistente, así
+como la búsqueda de modelos.
 
 \begin{Def}
   Un literal es un átomo o la negación de un átomo.
