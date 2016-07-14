@@ -341,15 +341,16 @@ Notar que $t$ es un término básico.
 
 Notar que $a$ es una constante nueva.
 
-Finalmente, toca definir la fórmula \texttt{(skf)} y
-\texttt{(skfs)} para la conversión de fórmulas a su
+Finalmente, definamos una cadena de funciones, para finalizar
+con \texttt{(skolem f)} que transforma \texttt{f} a su
 forma de Skolem.
 
+\index{\texttt{skol}}
 \begin{code}
-skolem :: Int -> [Variable] -> Termino
-skolem k vs = Ter ("sk" ++ (show k)) [ (Var x) | x <- vs]
+skol :: Int -> [Variable] -> Termino
+skol k vs = Ter ("sk" ++ (show k)) [ (Var x) | x <- vs]
 \end{code}
-
+\index{\texttt{skf}}
 \begin{code}
 skf :: Form -> [Variable] -> Bool -> Int -> (Form,Int)
 skf (Atom n ts) vs pol k = ((Atom n ts),k)
@@ -361,9 +362,9 @@ skf (PTodo x f) vs True k = ((PTodo x f'),j)
     where (f',j) = skf f vs' True k
           vs' = insert x vs
 skf (PTodo x f) vs False k = skf (sustitucionForm b f) vs False (k+1)
-    where b = [(x,(skolem k vs))]
+    where b = [(x,(skol k vs))]
 skf (Ex x f) vs True k = skf (sustitucionForm b f) vs True (k+1)
-    where b = [(x,(skolem k vs))]
+    where b = [(x,(skol k vs))]
 skf (Ex x f) vs False k = ((Ex x f'),j)
     where (f',j) = skf f vs' False k
           vs' = insert x vs
@@ -371,6 +372,8 @@ skf(Neg f) vs pol k = ((Neg f'),j)
     where (f',j) = skf f vs (not pol) k
 \end{code}
 
+  
+\index{\texttt{skfs}}
 \begin{code}
 skfs :: [Form] -> [Variable] -> Bool -> Int -> ([Form],Int)
 skfs [] _ _ k = ([],k)
@@ -379,13 +382,26 @@ skfs (f:fs) vs pol k = ((f':fs'),j)
       (f',j1) = skf f vs pol k
       (fs',j) = skfs fs vs pol j1
 \end{code}
-
+    
+\index{\texttt{sk}}
 \begin{code}
 sk :: Form -> Form
 sk f = fst (skf f [] True 0)
 \end{code}
 
+\index{\texttt{skolem}}
+\begin{code}
+skolem :: Form -> Form
+skolem  = sk .elimImpEquiv 
+\end{code}
+
+Por ejemplo
+
 \begin{sesion}
-ghci> sk(elimImpEquiv formula_2)
+ghci> sk formula_2
 ∀x ∀y (¬R[x,y]⋁[(R[x,sk0[x,y]]⋀[R[sk0[x,y],y]])])
+ghci> skolem formula_3
+(¬R[x,y]⋁[(R[x,sk0]⋀[R[sk0,y]])])
+ghci> skolem formula_4
+R[cero,sk0]
 \end{sesion}
