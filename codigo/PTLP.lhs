@@ -260,3 +260,64 @@ elimImpEquiv (Conj fs) = Conj (map (elimImpEquiv) fs)
 elimImpEquiv (PTodo x f) = PTodo x (elimImpEquiv f)
 elimImpEquiv (Ex x f) = Ex x (elimImpEquiv f)
 \end{code}
+Esta idea de obtener fórmulas equivalentes, nos hace introducir
+las fórmulas alfa, beta, gamma y delta. No son más que equivalencias
+ordenadas, por orden teórico en el que se pueden acometer, para
+una simplicación eficiente de una fórmula a otra cuyas únicas
+conectivas lógicas sean disyunciones y conjunciones.
+
+
+
+\begin{center}
+  Fórmulas alfa \\
+  
+   \begin{tabular}{ | l | c | }
+     \hline
+      $\neg (F_1 \rightarrow F_2)$ & $F_1 \wedge F_2$ \\ \hline
+      $\neg(F_1 \vee $ & $F_1 \wedge \neg F_2$ \\ \hline
+     $F_1 \leftrightarrow F_2$ &
+     $(F_1 \rightarrow F_2)\wedge (F_2 \rightarrow F_1)$ \\
+     \hline
+     
+   \end{tabular}
+\end{center}
+
+\begin{center}
+  Fórmulas beta \\
+  
+  \begin{tabular}{ | l | c | }
+    \hline
+    $F_1 \rightarrow F_2$ & $\neg F_1 \vee F_2$ \\ \hline
+    $\neg (F_1 \wedge F_2) $ & $\neg F_1 \vee \neg F_2$ \\ \hline
+    $\neg (F_1 \leftrightarrow F_2) $ &
+    $ \neg (F_1 \rightarrow F_2 ) \vee (\neg F_2 \rightarrow F_1)$ \\
+    \hline
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  Fórmulas gamma \\
+
+  \begin{tabular}{ | l | c | }
+    \hline
+    $\forall x F$ & $F [ x / t ]$ \\ \hline
+    $\neg \exists x F$ & $\neg F [x / t ]$ \\
+    \hline
+  \end{tabular}
+\end{center}
+
+Notar que $t$ es un término básico.
+
+\begin{center}
+  
+  Fórmulas delta \\ 
+
+  \begin{tabular}{ | l | c |}
+    \hline
+    $\exists x F$ & $F[x / a]$ \\ \hline
+    $\neg \forall F$ & $\neg F [x / a]$ \\
+    \hline
+  \end{tabular}
+\end{center}
+
+Notar que $a$ es una constante nueva.
