@@ -458,7 +458,7 @@ como la búsqueda de modelos.
   Un tablero completo es un tablero tal que todas sus hojas son abiertas o
   cerradas.
 \end{Def}
-
+Ejemplo de tablero completo
 \begin{center}
   \begin{tikzpicture}[sibling distance=10em,
   every node/.style = {shape=rectangle, rounded corners,
