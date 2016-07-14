@@ -151,7 +151,7 @@ B
 
 \begin{Def}
   Una interpretación de una estructura del lenguaje es un par
-  $(\mathcal{I} , A)$ formado por por una estructura de la estructura
+  $(\mathcal{I} , A)$ formado por una estructura de la estructura
   del lenguaje, y una asignación $A$.
 \end{Def}
 
