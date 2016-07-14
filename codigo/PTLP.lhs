@@ -451,7 +451,7 @@ como la búsqueda de modelos.
 \end{Def}
 
 \begin{Def}
-  Se dice que una hoja es abierta si es un conjunto d eliterales y no contiene
+  Se dice que una hoja es abierta si es un conjunto de literales y no contiene
   un literal y su negación.
 \end{Def}
 
