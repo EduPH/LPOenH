@@ -497,9 +497,9 @@ Un ejemplo de tablero cerrado es
     child { node {$P$ \\ $\neg P \wedge \neg Q$} 
       child { node {$P$ \\ $\neg P$ \\ $\neg Q$}
         child { node {$\perp$}}}}
-      child { node  {$Q$ \\ $\neg P \vee \neg Q$}
-       child {node {$\neg Q$}
-         child {node {$Q$ \\ $\neg P$ \\ $\neg Q$}
+    child { node  {$Q$ \\ $\neg P \vee \neg Q$}
+      child {node {$\neg Q$}
+        child {node {$Q$ \\ $\neg P$ \\ $\neg Q$}
            child {node {$\perp$}}}}}};
   \end{tikzpicture}
 \end{center}
