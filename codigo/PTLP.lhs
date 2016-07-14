@@ -350,6 +350,17 @@ forma de Skolem.
 skol :: Int -> [Variable] -> Termino
 skol k vs = Ter ("sk" ++ (show k)) [ (Var x) | x <- vs]
 \end{code}
+
+Definimos la función \texttt{(skf f vs pol k)}, donde
+\begin{enumerate}
+\item \texttt{(f)} es la fórmula que queremos convertir.
+\item \texttt{(vs)} es la lista de los cuantificadores (son necesarios
+  en la recursión).
+\item \texttt{(pol)} es la polaridad, es de tipo \texttt{Bool}.
+\item \texttt{(k)} es de tipo \texttt{Int} y sirve como idetificador
+  de la forma de Skolem.
+\end{enumerate}
+
 \index{\texttt{skf}}
 \begin{code}
 skf :: Form -> [Variable] -> Bool -> Int -> (Form,Int)
@@ -389,10 +400,14 @@ sk :: Form -> Form
 sk f = fst (skf f [] True 0)
 \end{code}
 
+La función \texttt{(skolem f)} devuelve la forma de Skolem de
+la fórmula \texttt{f}, teniendo en cuenta que es necesario
+que no presente equivalencias ni implicaciones.
+
 \index{\texttt{skolem}}
 \begin{code}
 skolem :: Form -> Form
-skolem  = sk .elimImpEquiv 
+skolem  = sk . elimImpEquiv 
 \end{code}
 
 Por ejemplo
