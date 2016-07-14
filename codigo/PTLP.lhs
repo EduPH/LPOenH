@@ -431,7 +431,34 @@ Notar que $t$ es un término básico.
 
 Notar que $a$ es una constante nueva.
 
+\begin{description}
+\item Nota: en las tablas, cada elemento de una columna es equivalente
+  a su análogo en la otra columna.
+\end{description}
+
 Mediante estas equivalencias se procede a lo que se denomina método
 de los tableros semánticos. Uno de los objetivos del método
 de los tableros es determinar si una fórmula es inconsistente.
+
+\begin{Def}
+  Un literal es un átomo o la negación de un átomo.
+\end{Def}
+
+\begin{Def}
+  Se dice que una hoja es cerrada si contiene una fórmula y su negación. 
+\end{Def}
+
+\begin{Def}
+  Se dice que una hoja es abierta si es un conjunto d eliterales y no contiene
+  un literal y su negación.
+\end{Def}
+
+\begin{Def}
+  Un tablero completo es un tablero tal que todas sus hojas son abiertas o
+  cerradas.
+\end{Def}
+
+\begin{Def}
+  Un tablero es cerrado si todas sus hojas son cerradas.
+\end{Def}
 
