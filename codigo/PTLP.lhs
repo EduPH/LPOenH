@@ -465,8 +465,8 @@ Ejemplo de tablero completo
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
     top color=white}]]
-  \node {$\neg (( P \rightarrow Q \wedge Q \rightarrow R) \rightarrow (P \rightarrow R))$}
-  child { node {$P \rightarrow Q \wedge Q \rightarrow R$ \\
+  \node {$\neg (( (P \rightarrow Q) \wedge (Q \rightarrow R)) \rightarrow (P \rightarrow R))$}
+  child { node {$(P \rightarrow Q) \wedge (Q \rightarrow R)$ \\
     $\neg (P \rightarrow R)$}
   child { node {$P\rightarrow Q$ \\
       $Q\rightarrow R$}
@@ -502,4 +502,25 @@ Un ejemplo de tablero cerrado es
          child {node {$Q$ \\ $\neg P$ \\ $\neg Q$}
            child {node {$\perp$}}}}}};
   \end{tikzpicture}
+\end{center}
+
+Un ejemplo de tablero completo es
+
+\begin{center}
+  \begin{tikzpicture}[sibling distance=10em,
+  every node/.style = {shape=rectangle, rounded corners,
+    draw, align=center,
+    top color=white}]]
+  \node {$(P \rightarrow Q) \wedge (Q\rightarrow R) \wedge \neg R$}
+  child {node {$P\rightarrow Q$ \\ $P \rightarrow Q$ \\ $\neg R$}
+    child { node {$\neg P$}
+      child { node {$\neg Q$}}
+      child { node {$R$}
+        child { node {$\perp$}}}}
+    child { node {$Q$}
+      child { node {$\neg Q$}
+        child { node {$\perp$}}}
+      child { node {$R$}
+        child { node {$\perp$}}}}}
+\end{tikzpicture}
 \end{center}
