@@ -379,3 +379,13 @@ skfs (f:fs) vs pol k = ((f':fs'),j)
       (f',j1) = skf f vs pol k
       (fs',j) = skfs fs vs pol j1
 \end{code}
+
+\begin{code}
+sk :: Form -> Form
+sk f = fst (skf f [] True 0)
+\end{code}
+
+\begin{sesion}
+ghci> sk(elimImpEquiv formula_2)
+∀x ∀y (¬R[x,y]⋁[(R[x,sk0[x,y]]⋀[R[sk0[x,y],y]])])
+\end{sesion}
