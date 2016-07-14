@@ -251,6 +251,7 @@ fórmulas equivalentes sin equivalencias ni implicaciones.
 
 \begin{code}
 elimImpEquiv :: Form -> Form
+elimImpEquiv (Atom f xs) = Atom f xs
 elimImpEquiv (Equiv f1 f2) = Conj [ elimImpEquiv (Impl f1 f2),
                                     elimImpEquiv (Impl f2 f1)]
 elimImpEquiv (Impl f1 f2) = Disy [ Neg f1, f2]
@@ -260,6 +261,23 @@ elimImpEquiv (Conj fs) = Conj (map (elimImpEquiv) fs)
 elimImpEquiv (PTodo x f) = PTodo x (elimImpEquiv f)
 elimImpEquiv (Ex x f) = Ex x (elimImpEquiv f)
 \end{code}
+
+Empleamos las fórmulas 2,3 y 4 ya definidas anteriormenta como ejemplo:
+\begin{sesion}
+ghci> formula_2
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
+ghci> elimImpEquiv formula_2
+∀x ∀y (¬R[x,y]⋁[∃z (R[x,z]⋀[R[z,y]])])
+ghci> formula_3
+(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
+ghci> elimImpEquiv formula_3
+(¬R[x,y]⋁[∃z (R[x,z]⋀[R[z,y]])])
+ghci> formula_4
+∃x R[cero,x]
+ghci> elimImpEquiv formula_4
+∃x R[cero,x]
+\end{sesion}
+
 Esta idea de obtener fórmulas equivalentes, nos hace introducir
 las fórmulas alfa, beta, gamma y delta. No son más que equivalencias
 ordenadas, por orden teórico en el que se pueden acometer, para
