@@ -459,7 +459,27 @@ como la búsqueda de modelos.
   cerradas.
 \end{Def}
 
+\begin{center}
+  \begin{tikzpicture}[sibling distance=10em,
+  every node/.style = {shape=rectangle, rounded corners,
+    draw, align=center,
+    top color=white}]]
+  \node {$\neg (( P \rightarrow Q \wedge Q \rightarrow R) \rightarrow (P \rightarrow R))$}
+  child { node {$P \rightarrow Q \wedge Q \rightarrow R$ \\
+    $\neg (P \rightarrow R)$}
+  child { node {$P\rightarrow Q$ \\
+      $Q\rightarrow R$}
+    child { node {$P$ \\ $\neg R$} 
+      child { node {$\neg P$}
+        child { node {$\neg Q$}}
+        child { node {$R$}}}}
+      child { node  {$Q$}
+       child {node {$\neg Q$}}
+       child {node {$R$}}}}};
+  \end{tikzpicture}
+\end{center}
 \begin{Def}
   Un tablero es cerrado si todas sus hojas son cerradas.
 \end{Def}
+
 
