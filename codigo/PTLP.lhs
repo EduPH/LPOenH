@@ -483,3 +483,22 @@ Ejemplo de tablero completo
 \end{Def}
 
 
+Un ejemplo de tablero cerrado es
+
+\begin{center}
+  \begin{tikzpicture}[sibling distance=10em,
+  every node/.style = {shape=rectangle, rounded corners,
+    draw, align=center,
+    top color=white}]]
+  \node {$(P\vee Q) \wedge (\neg P \wedge \neg Q)$}
+  child { node {$P \vee Q$ \\
+      $\neg P \wedge \neg Q$}
+    child { node {$P$ \\ $\neg P \wedge \neg Q$} 
+      child { node {$P$ \\ $\neg P$ \\ $\neg Q$}
+        child { node {$\perp$}}}}
+      child { node  {$Q$ \\ $\neg P \vee \neg Q$}
+       child {node {$\neg Q$}
+         child {node {$Q$ \\ $\neg P$ \\ $\neg Q$}
+           child {node {$\perp$}}}}}};
+  \end{tikzpicture}
+\end{center}
