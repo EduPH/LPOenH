@@ -521,6 +521,6 @@ Un ejemplo de tablero completo es
       child { node {$\neg Q$}
         child { node {$\perp$}}}
       child { node {$R$}
-        child { node {$\perp$}}}}}
+        child { node {$\perp$}}}}};
 \end{tikzpicture}
 \end{center}
