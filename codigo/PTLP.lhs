@@ -3,6 +3,7 @@
 \begin{code}
 module PTLP where
 import LPH
+import Data.List
 import Test.QuickCheck -- Para ejemplos
 import Generadores     -- Para ejemplos
 import Debug.Trace     -- Para ejemplos
@@ -339,3 +340,42 @@ Notar que $t$ es un término básico.
 \end{center}
 
 Notar que $a$ es una constante nueva.
+
+Finalmente, toca definir la fórmula \texttt{(skf)} y
+\texttt{(skfs)} para la conversión de fórmulas a su
+forma de Skolem.
+
+\begin{code}
+skolem :: Int -> [Variable] -> Termino
+skolem k vs = Ter ("sk" ++ (show k)) [ (Var x) | x <- vs]
+\end{code}
+
+\begin{code}
+skf :: Form -> [Variable] -> Bool -> Int -> (Form,Int)
+skf (Atom n ts) vs pol k = ((Atom n ts),k)
+skf (Conj fs) vs pol k = ((Conj fs'),j)
+    where (fs',j) = skfs fs vs pol k
+skf (Disy fs) vs pol k = ((Disy fs'), j)
+    where (fs',j) = skfs fs vs pol k
+skf (PTodo x f) vs True k = ((PTodo x f'),j)
+    where (f',j) = skf f vs' True k
+          vs' = insert x vs
+skf (PTodo x f) vs False k = skf (sustitucionForm b f) vs False (k+1)
+    where b = [(x,(skolem k vs))]
+skf (Ex x f) vs True k = skf (sustitucionForm b f) vs True (k+1)
+    where b = [(x,(skolem k vs))]
+skf (Ex x f) vs False k = ((Ex x f'),j)
+    where (f',j) = skf f vs' False k
+          vs' = insert x vs
+skf(Neg f) vs pol k = ((Neg f'),j)
+    where (f',j) = skf f vs (not pol) k
+\end{code}
+
+\begin{code}
+skfs :: [Form] -> [Variable] -> Bool -> Int -> ([Form],Int)
+skfs [] _ _ k = ([],k)
+skfs (f:fs) vs pol k = ((f':fs'),j)
+    where
+      (f',j1) = skf f vs pol k
+      (fs',j) = skfs fs vs pol j1
+\end{code}
