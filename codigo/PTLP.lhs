@@ -101,6 +101,8 @@ fórmula. Con este fin definimos \texttt{(sustitucionForm s f)}, donde
 sustitucionForm :: Sust -> Form -> Form
 sustitucionForm s (Atom r ts) =
   Atom r (susTerms s ts)
+sustitucionForm s (Ig t1 t2) =
+  Ig (susTerm s t1) (susTerm s t2)
 sustitucionForm s (Neg f) =
   Neg (sustitucionForm s f)
 sustitucionForm s (Impl f1 f2) = 
@@ -140,7 +142,7 @@ composicion s1 s2 =
     [x | x <- s1, fst x `notElem` dominio s2]
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 
 \begin{sesion}
 ghci> composicion [(x,tx)] [(y,ty)]
@@ -213,7 +215,7 @@ unificadoresListas _ []  = []
 unificadoresListas (t:ts) (r:rs) = 
     [composicion u1 u2
     | u1 <- unificadoresTerminos t r
-    , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs) ]   
+    , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs)]   
 \end{code}
 
 Por ejemplo
@@ -244,23 +246,34 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 
 \begin{Def}
   Las fórmulas \texttt{F} y \texttt{G} son equisatisfacibles si se cumple
-  $(\texttt{ F} \text{ satisfacible } \Leftrightarrow \texttt{G} \text{ satisfacible })$
+  $(\texttt{F} \text{ satisfacible } \Leftrightarrow 
+    \texttt{G} \text{ satisfacible })$
 \end{Def}
 
-Por ello, definimos la función \texttt{(elimImpEquiv f)}, para obtener
-fórmulas equivalentes sin equivalencias ni implicaciones. 
+Definimos la función \texttt{(elimImpEquiv f)}, para obtener fórmulas
+equivalentes sin equivalencias ni implicaciones.
 
 \begin{code}
 elimImpEquiv :: Form -> Form
-elimImpEquiv (Atom f xs) = Atom f xs
-elimImpEquiv (Equiv f1 f2) = Conj [ elimImpEquiv (Impl f1 f2),
-                                    elimImpEquiv (Impl f2 f1)]
-elimImpEquiv (Impl f1 f2) = Disy [ Neg f1, f2]
-elimImpEquiv (Neg f) = Neg (elimImpEquiv f)
-elimImpEquiv (Disy fs) = Disy (map (elimImpEquiv) fs)
-elimImpEquiv (Conj fs) = Conj (map (elimImpEquiv) fs)
-elimImpEquiv (PTodo x f) = PTodo x (elimImpEquiv f)
-elimImpEquiv (Ex x f) = Ex x (elimImpEquiv f)
+elimImpEquiv (Atom f xs) =
+  Atom f xs
+elimImpEquiv (Ig t1 t2) =
+  Ig t1 t2
+elimImpEquiv (Equiv f1 f2) =
+  Conj [ elimImpEquiv (Impl f1 f2),
+         elimImpEquiv (Impl f2 f1)]
+elimImpEquiv (Impl f1 f2) =
+  Disy [ Neg f1, f2]
+elimImpEquiv (Neg f) =
+  Neg (elimImpEquiv f)
+elimImpEquiv (Disy fs) =
+  Disy (map elimImpEquiv fs)
+elimImpEquiv (Conj fs) =
+  Conj (map elimImpEquiv fs)
+elimImpEquiv (PTodo x f) =
+  PTodo x (elimImpEquiv f)
+elimImpEquiv (Ex x f) =
+  Ex x (elimImpEquiv f)
 \end{code}
 
 Empleamos las fórmulas 2,3 y 4 ya definidas anteriormenta como ejemplo:
@@ -279,70 +292,74 @@ ghci> elimImpEquiv formula_4
 ∃x R[cero,x]
 \end{sesion}
 
-
-
-Finalmente, definamos una cadena de funciones, para finalizar
-con \texttt{(skolem f)} que transforma \texttt{f} a su
-forma de Skolem.
+Finalmente, definamos una cadena de funciones, para finalizar con
+\texttt{(skolem f)} que transforma \texttt{f} a su forma de Skolem.
 
 \index{\texttt{skol}}
 \begin{code}
 skol :: Int -> [Variable] -> Termino
-skol k vs = Ter ("sk" ++ (show k)) [ (Var x) | x <- vs]
+skol k vs = Ter ("sk" ++ show k) [Var x | x <- vs]
 \end{code}
 
 Definimos la función \texttt{(skf f vs pol k)}, donde
 \begin{enumerate}
-\item \texttt{(f)} es la fórmula que queremos convertir.
-\item \texttt{(vs)} es la lista de los cuantificadores (son necesarios
+\item \texttt{f} es la fórmula que queremos convertir.
+\item \texttt{vs} es la lista de los cuantificadores (son necesarios
   en la recursión).
-\item \texttt{(pol)} es la polaridad, es de tipo \texttt{Bool}.
-\item \texttt{(k)} es de tipo \texttt{Int} y sirve como idetificador
+\item \texttt{pol} es la polaridad, es de tipo \texttt{Bool}.
+\item \texttt{k} es de tipo \texttt{Int} y sirve como idetificador
   de la forma de Skolem.
 \end{enumerate}
 
 \index{\texttt{skf}}
 \begin{code}
 skf :: Form -> [Variable] -> Bool -> Int -> (Form,Int)
-skf (Atom n ts) vs pol k = ((Atom n ts),k)
-skf (Conj fs) vs pol k = ((Conj fs'),j)
-    where (fs',j) = skfs fs vs pol k
-skf (Disy fs) vs pol k = ((Disy fs'), j)
-    where (fs',j) = skfs fs vs pol k
-skf (PTodo x f) vs True k = ((PTodo x f'),j)
-    where (f',j) = skf f vs' True k
-          vs' = insert x vs
-skf (PTodo x f) vs False k = skf (sustitucionForm b f) vs False (k+1)
-    where b = [(x,(skol k vs))]
-skf (Ex x f) vs True k = skf (sustitucionForm b f) vs True (k+1)
-    where b = [(x,(skol k vs))]
-skf (Ex x f) vs False k = ((Ex x f'),j)
-    where (f',j) = skf f vs' False k
-          vs' = insert x vs
-skf(Neg f) vs pol k = ((Neg f'),j)
-    where (f',j) = skf f vs (not pol) k
+skf (Atom n ts) _ _ k =
+  (Atom n ts,k)
+skf (Conj fs) vs pol k =
+  (Conj fs',j)
+  where (fs',j) = skfs fs vs pol k
+skf (Disy fs) vs pol k =
+  (Disy fs', j)
+  where (fs',j) = skfs fs vs pol k
+skf (PTodo x f) vs True k =
+  (PTodo x f',j)
+  where vs'    = insert x vs
+        (f',j) = skf f vs' True k
+skf (PTodo x f) vs False k =
+  skf (sustitucionForm b f) vs False (k+1)
+  where b = [(x,skol k vs)]
+skf (Ex x f) vs True k =
+  skf (sustitucionForm b f) vs True (k+1)
+  where b = [(x,skol k vs)]
+skf (Ex x f) vs False k =
+  (Ex x f',j)
+  where vs' = insert x vs
+        (f',j) = skf f vs' False k
+skf (Neg f) vs pol k =
+  (Neg f',j)
+  where (f',j) = skf f vs (not pol) k
 \end{code}
 
-  
+donde la skolemización de una lista está definida por  
 \index{\texttt{skfs}}
 \begin{code}
 skfs :: [Form] -> [Variable] -> Bool -> Int -> ([Form],Int)
-skfs [] _ _ k = ([],k)
-skfs (f:fs) vs pol k = ((f':fs'),j)
-    where
-      (f',j1) = skf f vs pol k
-      (fs',j) = skfs fs vs pol j1
+skfs [] _ _ k        = ([],k)
+skfs (f:fs) vs pol k = (f':fs',j)
+  where (f',j1) = skf  f  vs pol k
+        (fs',j) = skfs fs vs pol j1
 \end{code}
-    
-\index{\texttt{sk}}
+
+La skolemizacoón de una fórmula sin equivalencias ni implicaciones se define
+por \index{\texttt{sk}}
 \begin{code}
 sk :: Form -> Form
 sk f = fst (skf f [] True 0)
 \end{code}
 
-La función \texttt{(skolem f)} devuelve la forma de Skolem de
-la fórmula \texttt{f}, teniendo en cuenta que es necesario
-que no presente equivalencias ni implicaciones.
+La función \texttt{(skolem f)} devuelve la forma de Skolem de la fórmula
+\texttt{f}.
 
 \index{\texttt{skolem}}
 \begin{code}
@@ -350,7 +367,7 @@ skolem :: Form -> Form
 skolem  = sk . elimImpEquiv 
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 
 \begin{sesion}
 ghci> sk formula_2
@@ -364,82 +381,81 @@ R[cero,sk0]
 \section{Tableros semánticos}
 
 \begin{Def}
-  Una fórmula o conjunto de fórmulas es consistente si
-  tiene o tienen algún modelo. En caso contrario, se denomina
-  inconsistente.
+  Una fórmula o conjunto de fórmulas es consistente si tiene algún modelo. En
+  caso contrario, se denomina inconsistente.
 \end{Def}
 
-La idea de obtener fórmulas equivalentes, nos hace introducir
-las fórmulas alfa, beta, gamma y delta. No son más que equivalencias
-ordenadas, por orden teórico en el que se pueden acometer, para
-una simplicación eficiente de una fórmula a otra cuyas únicas
-conectivas lógicas sean disyunciones y conjunciones.
+La idea de obtener fórmulas equivalentes, nos hace introducir los tipos de
+fórmulas alfa, beta, gamma y delta. No son más que equivalencias ordenadas, por
+orden teórico en el que se pueden acometer, para una simplicación eficiente de
+una fórmula a otra cuyas únicas conectivas lógicas sean disyunciones y
+conjunciones.
 
+\begin{itemize}
+\item Fórmulas alfa
+ 
+   \vspace*{1ex}
 
+   $\begin{array}{|l|l| } \hline
+     \neg (F_1 \rightarrow F_2) & F_1 \wedge F_2               \\ \hline
+     \neg(F_1 \vee F_2)         & F_1 \wedge \neg F_2          \\ \hline
+     F_1 \leftrightarrow F_2    & (F_1 \rightarrow F_2) \wedge 
+                                  (F_2 \rightarrow F_1)        \\ \hline
+   \end{array}$
 
-\begin{center}
-  Fórmulas alfa \\
+\vspace*{2ex}
   
-   \begin{tabular}{ | l | c | }
-     \hline
-      $\neg (F_1 \rightarrow F_2)$ & $F_1 \wedge F_2$ \\ \hline
-      $\neg(F_1 \vee $ & $F_1 \wedge \neg F_2$ \\ \hline
-     $F_1 \leftrightarrow F_2$ &
-     $(F_1 \rightarrow F_2)\wedge (F_2 \rightarrow F_1)$ \\
-     \hline
-     
-   \end{tabular}
-\end{center}
-
-\begin{center}
-  Fórmulas beta \\
+\item Fórmulas beta 
   
-  \begin{tabular}{ | l | c | }
-    \hline
-    $F_1 \rightarrow F_2$ & $\neg F_1 \vee F_2$ \\ \hline
-    $\neg (F_1 \wedge F_2) $ & $\neg F_1 \vee \neg F_2$ \\ \hline
-    $\neg (F_1 \leftrightarrow F_2) $ &
-    $ \neg (F_1 \rightarrow F_2 ) \vee (\neg F_2 \rightarrow F_1)$ \\
-    \hline
-  \end{tabular}
-\end{center}
+  \vspace*{1ex}
 
-\begin{center}
-  Fórmulas gamma \\
+  $\begin{array}{|l|l|} \hline
+    F_1 \rightarrow F_2             & \neg F_1 \vee F_2                \\ \hline
+    \neg (F_1 \wedge F_2)           & \neg F_1 \vee \neg F_2           \\ \hline
+    \neg (F_1 \leftrightarrow F_2)  & \neg (F_1 \rightarrow F_2 ) \vee 
+                                      (\neg F_2 \rightarrow F_1)       \\ \hline
+  \end{array}$
 
-  \begin{tabular}{ | l | c | }
-    \hline
-    $\forall x F$ & $F [ x / t ]$ \\ \hline
-    $\neg \exists x F$ & $\neg F [x / t ]$ \\
-    \hline
-  \end{tabular}
-\end{center}
-
-Notar que $t$ es un término básico.
-
-\begin{center}
+\vspace*{2ex}
   
-  Fórmulas delta \\ 
+\item Fórmulas gamma 
 
-  \begin{tabular}{ | l | c |}
-    \hline
-    $\exists x F$ & $F[x / a]$ \\ \hline
-    $\neg \forall F$ & $\neg F [x / a]$ \\
-    \hline
-  \end{tabular}
-\end{center}
+  \vspace*{1ex}
 
-Notar que $a$ es una constante nueva.
+  $\begin{array}{|l|c|} \hline
+    \forall x F      & F [x/t]       \\ \hline
+    \neg \exists x F & \neg F [x/t ] \\ \hline
+  \end{array}$
 
-\begin{description}
-\item Nota: en las tablas, cada elemento de una columna es equivalente
-  a su análogo en la otra columna.
-\end{description}
+  \vspace*{1ex}
 
-Mediante estas equivalencias se procede a lo que se denomina método
-de los tableros semánticos. Uno de los objetivos del método
-de los tableros es determinar si una fórmula es inconsistente, así
-como la búsqueda de modelos.
+  Notar que $t$ es un término básico.
+
+\vspace*{2ex}
+  
+\item Fórmulas delta 
+
+  \vspace*{1ex}
+
+  $\begin{array}{|l|l|} \hline
+    \exists x F    & F[x / a]       \\ \hline
+    \neg \forall F & \neg F [x / a] \\ \hline
+  \end{array}$
+
+  \vspace*{1ex}
+
+  Notar que $a$ es una constante nueva.
+
+\end{itemize}
+
+\begin{nota}
+  En las tablas, cada elemento de una columna es equivalente a su análogo en la
+  otra columna.
+\end{nota}
+
+Mediante estas equivalencias se procede a lo que se denomina método de los
+tableros semánticos. Uno de los objetivos del método de los tableros es
+determinar si una fórmula es inconsistente, así como la búsqueda de modelos.
 
 \begin{Def}
   Un literal es un átomo o la negación de un átomo.
@@ -447,7 +463,7 @@ como la búsqueda de modelos.
 
 \begin{Def}
   Se dice que una hoja es cerrada si contiene una fórmula y su negación.
-  Se representa $\perp$
+  Se representa $\bot$
 \end{Def}
 
 \begin{Def}
@@ -465,9 +481,9 @@ Ejemplo de tablero completo
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
     top color=white}]]
-  \node {$\neg (( (P \rightarrow Q) \wedge (Q \rightarrow R)) \rightarrow (P \rightarrow R))$}
+  \node {$\neg ((P \rightarrow Q) \wedge (Q \rightarrow R) \rightarrow (P \rightarrow R))$}
   child { node {$(P \rightarrow Q) \wedge (Q \rightarrow R)$ \\
-    $\neg (P \rightarrow R)$}
+                $\neg (P \rightarrow R)$}
   child { node {$P\rightarrow Q$ \\
       $Q\rightarrow R$}
     child { node {$P$ \\ $\neg R$} 
@@ -479,10 +495,13 @@ Ejemplo de tablero completo
        child {node {$R$}}}}};
   \end{tikzpicture}
 \end{center}
+
+\comentario{Es mejor numerar las fórmulas e indicar e indicar a la derecha el
+  número del padre de cada una (como en LMF)}.
+
 \begin{Def}
   Un tablero es cerrado si todas sus hojas son cerradas.
 \end{Def}
-
 
 Un ejemplo de tablero cerrado es
 
@@ -525,12 +544,11 @@ Un ejemplo de tablero completo es
 \end{tikzpicture}
 \end{center}
 
-Por lo tanto, en este último ejemplo un posible modelo es:
-$\neg Q$ cierto, mientras que $P$ y $R$ falsos. Lo representaremos como
-que se interpretaciones de la siguiente forma $I(Q) = 0$, $I(P) = 0$ e
-$I(R)=0$ es un modelo de $(P \rightarrow Q) \wedge (Q\rightarrow R) \wedge \neg R$.
+Por lo tanto, en este último ejemplo un posible modelo es: $\neg Q$ cierto,
+mientras que $P$ y $R$ falsos. Lo representaremos, como la interpretación $I$
+con $I(Q) = 0$, $I(P) = 0$ e $I(R)=0$.
 
 \begin{Teo}
-  Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$
-  tendrá ramas abiertas.
+  Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$ tendrá
+  ramas abiertas.
 \end{Teo}

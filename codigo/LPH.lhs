@@ -151,12 +151,12 @@ B
 
 \begin{Def}
   Una interpretación de una estructura del lenguaje es un par
-  $(\mathcal{I} , A)$ formado por una estructura de la estructura
-  del lenguaje, y una asignación $A$.
+  $(\mathcal{I}, A)$ formado por una estructura del lenguaje y una asignación
+  $A$.
 \end{Def}
 
-Definimos los tipos de datos relativos a los elementos de la
-estructura del lenguaje.
+Definimos los tipos de datos relativos a los elementos de la estructura del
+lenguaje.
 
 \begin{code}
 type Universo a = [a]
@@ -172,12 +172,12 @@ type Asignacion a = Variable -> a
 \end{Def}
 
 Una interpretación toma valores para las variables proposicionales, y se
-evalúan en una fórmula. Determinando si la fórmula es verdadera o falsa. Se
+evalúan en una fórmula, determinando si la fórmula es verdadera o falsa. Se
 definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
 
 \begin{Def}
-  Un modelo de una fórmula \texttt{F} es una interpretación en la que el valor de
-  \texttt{F} es verdadero.
+  Un modelo de una fórmula \texttt{F} es una interpretación en la que el valor
+  de \texttt{F} es verdadero.
 \end{Def}
 
 \begin{Def}
