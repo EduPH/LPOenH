@@ -1,0 +1,4 @@
+En este directorio se incluyen materiales que se usarán para la elaboración del
+trabajo.
+
+[[https://github.com/EduPH/LPOenH/blob/master/auxiliares/Bibliografia.org][Bibliografía]]: Enlaces a referencias bibliográficas.
