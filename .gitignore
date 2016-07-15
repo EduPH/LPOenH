@@ -4,6 +4,7 @@
 *.bib
 *.blg
 *.el
+*.gz
 *.idx
 *.ilg
 *.ind
@@ -16,4 +17,7 @@
 *_region_.tex
 *~
 /codigo/TAGS
-/codigo/auto/*
+/codigo/auto/
+comentarios/
+
+!/texto/LPO_en_Haskell.pdf
