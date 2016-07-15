@@ -524,3 +524,13 @@ Un ejemplo de tablero completo es
         child { node {$\perp$}}}}};
 \end{tikzpicture}
 \end{center}
+
+Por lo tanto, en este último ejemplo un posible modelo es:
+$\neg Q$ cierto, mientras que $P$ y $R$ falsos. Lo representaremos como
+que se interpretaciones de la siguiente forma $I(Q) = 0$, $I(P) = 0$ e
+$I(R)=0$ es un modelo de $(P \rightarrow Q) \wedge (Q\rightarrow R) \wedge \neg R$.
+
+\begin{Teo}
+  Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$
+  tendrá ramas abiertas.
+\end{Teo}
