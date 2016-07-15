@@ -12,7 +12,6 @@
 *.maf
 *.mtc*
 *.pdf
-*.png
 *.toc
 *_region_.tex
 *~
