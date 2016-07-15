@@ -4,6 +4,7 @@
 *.bib
 *.blg
 *.el
+*.gz
 *.idx
 *.ilg
 *.ind
@@ -15,5 +16,9 @@
 *.toc
 *_region_.tex
 *~
+/.gitignore
 /codigo/TAGS
-/codigo/auto/*
+comentarios/
+
+!/texto/MD_en_Haskell.pdf
+

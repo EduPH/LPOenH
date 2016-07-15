@@ -1,0 +1,14 @@
+* Sobre QuickCheck
++ [[https://es.wikipedia.org/wiki/QuickCheck][QuickCheck]] (Tutorial en la Wikipedia).
++ [[https://www.eecs.northwestern.edu/~robby/courses/395-495-2009-fall/quick.pdf][QuickCheck: a lightweight tool for random testing of Haskell programs]].
++ [[http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html][QuickCheck manual]].
++ [[http://bit.ly/1mwJMMj][QuickCheck: Type-directed Property Testing]]. ~ S. Weirich
++ [[http://bit.ly/1jSi9bI][A brief intro to QuickCheck]]. ~ @stuartgunter
++ [[http://bit.ly/1yUgxnO][An introduction to QuickCheck by example]]. ~ Matthew Might 
++ [[http://bit.ly/1cyNbYt][Using QuickCheck]].
+
++ [[https://hackage.haskell.org/package/QuickCheck-2.8.2][The QuickCheck package]]
+
++ Ejemplos de generadores usados en I1M [[http://bit.ly/29ok7oZ][pilas]], [[http://bit.ly/29okqk1][colas]], [[http://bit.ly/29ok8ta][colas de prioridad]],
+  [[http://bit.ly/29ptd1t][conjuntos]], [[http://bit.ly/29okEHM][tablas]], [[http://bit.ly/29okq3e][árboles binarios de búsqueda]], [[http://bit.ly/29okjVy][montículos]], [[http://bit.ly/29okv72][polinomios]],
+  [[http://bit.ly/29pt7GK][árboles binarios]], [[http://bit.ly/29ptIIO][relaciones binarias]] y [[http://bit.ly/29ok2BI][grafos]].
