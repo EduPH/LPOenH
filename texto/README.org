@@ -1,0 +1,10 @@
+Este directorio contiene el código LaTeX del proyecto. Su contenido es
+
++ [[https://github.com/EduPH/LPOenH/blob/master/texto/LPO_en_Haskell.tex][LPO_en_Haskell.tex]] :: Fichero principal del proyecto.
++ [[https://github.com/EduPH/LPOenH/blob/master/texto/Introduccion.tex][Introduccion.tex]] :: Introducción.
++ [[https://github.com/EduPH/LPOenH/blob/master/texto/Programacion_funcional_con_Haskell.tex][Programacion_funcional_con_Haskell.tex]] :: Introducción a la programación
+     funcional con Haskell.
++ [[https://github.com/EduPH/LPOenH/blob/master/texto/Logica_de_predicados_en_Haskell.tex][Logica_de_predicados_en_Haskell.tex]] :: Sintaxis y semántica de la lógica de predicados. 
++ [[https://github.com/EduPH/LPOenH/blob/master/texto/Prueba_de_teoremas_LP.tex][Prueba_de_teoremas_LP.tex]] :: Demostración de teoremas mediante tableros
+     semánticos. 
++ [[https://github.com/EduPH/LPOenH/blob/master/texto/TrabajoGitHub.tex][TrabajoGitHub.tex]] :: Guía para la elaboración del proyecto en GitHub.
