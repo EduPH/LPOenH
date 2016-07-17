@@ -477,11 +477,11 @@ determinar si una fórmula es inconsistente, así como la búsqueda de modelos.
 \end{Def}
 Ejemplo de tablero completo
 \begin{center}
-  \begin{tikzpicture}[sibling distance=10em,
+  \begin{tikzpicture}[sibling distance=15em,
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
     top color=white}]]
-  \node {$\neg ((P \rightarrow Q) \wedge (Q \rightarrow R) \rightarrow (P \rightarrow R))$}
+  \node {$\neg (((P \rightarrow Q) \wedge (Q \rightarrow R)) \rightarrow (P \rightarrow R))$}
   child { node {$(P \rightarrow Q) \wedge (Q \rightarrow R)$ \\
                 $\neg (P \rightarrow R)$}
   child { node {$P\rightarrow Q$ \\
@@ -505,28 +505,33 @@ Ejemplo de tablero completo
 
 Un ejemplo de tablero cerrado es
 
+
 \begin{center}
-  \begin{tikzpicture}[sibling distance=10em,
+\begin{tikzpicture}[sibling distance=15em,
   every node/.style = {shape=rectangle, rounded corners,
-    draw, align=center,
-    top color=white}]]
-  \node {$(P\vee Q) \wedge (\neg P \wedge \neg Q)$}
-  child { node {$P \vee Q$ \\
-      $\neg P \wedge \neg Q$}
-    child { node {$P$ \\ $\neg P \wedge \neg Q$} 
-      child { node {$P$ \\ $\neg P$ \\ $\neg Q$}
-        child { node {$\perp$}}}}
-    child { node  {$Q$ \\ $\neg P \vee \neg Q$}
-      child {node {$\neg Q$}
-        child {node {$Q$ \\ $\neg P$ \\ $\neg Q$}
-           child {node {$\perp$}}}}}};
-  \end{tikzpicture}
+    draw, align=center, top color=white}]]
+  \node {1. $ (P \rightarrow Q) \wedge (Q \rightarrow R)
+    \wedge ( \neg (P \rightarrow R)$  }
+  child { node {2. $P \rightarrow Q$, $Q \rightarrow R$,
+      $P$, $ \neg R$ }
+    child { node {3. $P \rightarrow Q$ , $\neg P$ ,
+        $P$, $\neg R$}
+      child { node {4. $ \neg P$ , $ \neg Q$ ,
+          $P$ , $ \neg R$}
+        child { node {5. $ \perp $}}}
+      child { node {6. $Q$ , $ \neg Q$ ,
+          $P$ , $ \neg R$}
+        child { node {7. $ \perp $}}}}
+    child { node {8. $P \rightarrow Q$ , $R$ ,
+        $P$ , $ \neg R$}
+      child { node {9. $ \perp $} }}}
+\end{tikzpicture}
 \end{center}
 
 Un ejemplo de tablero completo es
 
 \begin{center}
-  \begin{tikzpicture}[sibling distance=10em,
+  \begin{tikzpicture}[sibling distance=15em,
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
     top color=white}]]
@@ -537,7 +542,7 @@ Un ejemplo de tablero completo es
       child { node {$R$}
         child { node {$\perp$}}}}
     child { node {$Q$}
-      child { node {$\neg Q$}
+      child { node {7. $\neg Q$}
         child { node {$\perp$}}}
       child { node {$R$}
         child { node {$\perp$}}}}};
@@ -552,3 +557,4 @@ con $I(Q) = 0$, $I(P) = 0$ e $I(R)=0$.
   Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$ tendrá
   ramas abiertas.
 \end{Teo}
+
