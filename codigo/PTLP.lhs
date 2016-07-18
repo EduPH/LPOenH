@@ -503,9 +503,9 @@ Lo definimos en haskell
 \index{\texttt{literal}}
 \begin{code}
 literal :: Form -> Bool
-literal (Atom n ts)      = True
-literal (Neg (Atom n ts) = True
-literal _                = False
+literal (Atom n ts)       = True
+literal (Neg (Atom n ts)) = True
+literal _                 = False
 \end{code}
 
 \begin{Def}
