@@ -3,7 +3,8 @@ module Tableros where
 import PTLP
 import LPH
 \end{code}
-
+A lo largo de esta sección trabajaremos con fórmulas
+en su forma de Skolem.
 Definimos el tipo de dato \texttt{Nodo}
 
 \begin{code}
@@ -81,3 +82,8 @@ ghci> descomponer formula_3
 ghci> descomponer formula_4
 ([],∃x R[cero,x])
 \end{sesion}
+
+
+Definimos \texttt{(ramificacion nodo)} que ramifica un nodo.
+
+\intex{\texttt{ramificacion}}
