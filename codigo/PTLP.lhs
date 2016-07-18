@@ -499,6 +499,8 @@ determinar si una fórmula es inconsistente, así como la búsqueda de modelos.
 \end{Def}
 
 Lo definimos en haskell
+
+\index{\texttt{literal}}
 \begin{code}
 literal :: Form -> Bool
 literal (Atom n ts)      = True
