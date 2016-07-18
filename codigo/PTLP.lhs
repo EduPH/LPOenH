@@ -498,6 +498,14 @@ determinar si una fórmula es inconsistente, así como la búsqueda de modelos.
   Un literal es un átomo o la negación de un átomo.
 \end{Def}
 
+Lo definimos en haskell
+\begin{code}
+literal :: Form -> Bool
+literal (Atom n ts)      = True
+literal (Neg (Atom n ts) = True
+literal _                = False
+\end{code}
+
 \begin{Def}
   Se dice que una hoja es cerrada si contiene una fórmula y su negación.
   Se representa $\bot$
