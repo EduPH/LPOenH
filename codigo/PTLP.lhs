@@ -432,7 +432,7 @@ alfa _ = False
   \vspace*{2ex}
 Las definimos en Haskell
 
-\index{\texttt{Beta}}
+\index{\texttt{beta}}
 \begin{code}
 beta :: Form -> Bool
 beta (Disy _)       = True
