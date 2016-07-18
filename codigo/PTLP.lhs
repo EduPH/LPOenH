@@ -481,23 +481,19 @@ Ejemplo de tablero completo
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
     top color=white}]]
-  \node {$\neg (((P \rightarrow Q) \wedge (Q \rightarrow R)) \rightarrow (P \rightarrow R))$}
-  child { node {$(P \rightarrow Q) \wedge (Q \rightarrow R)$ \\
-                $\neg (P \rightarrow R)$}
-  child { node {$P\rightarrow Q$ \\
-      $Q\rightarrow R$}
-    child { node {$P$ \\ $\neg R$} 
-      child { node {$\neg P$}
-        child { node {$\neg Q$}}
-        child { node {$R$}}}}
-      child { node  {$Q$}
-       child {node {$\neg Q$}}
-       child {node {$R$}}}}};
+  \node {1. $\neg (p \vee q \rightarrow p \wedge q)$}
+  child { node {2. $P\vee q$ , $\neg (p \wedge q)$ (1)}
+    child { node {3. $p$ , $\neg (p\wedge q)$ (2)}
+      child { node {5. $p$, $\neg p$ (3)}
+        child { node {7. $\perp$ (5)}}}
+      child { node {6. $p$ , $\neg q$ (3)}}}
+    child { node {4.  $q$ , $\neg (p\wedge q)$ (2)}
+      child { node {8. $q$ , $\neg p$ (4)}}
+      child { node {9. $q$ , $\neg q$ (4)}
+        child { node {10. $\perp$ (9)}}}}}
+  ;
   \end{tikzpicture}
 \end{center}
-
-\comentario{Es mejor numerar las fórmulas e indicar e indicar a la derecha el
-  número del padre de cada una (como en LMF)}.
 
 \begin{Def}
   Un tablero es cerrado si todas sus hojas son cerradas.
@@ -510,48 +506,25 @@ Un ejemplo de tablero cerrado es
 \begin{tikzpicture}[sibling distance=15em,
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center, top color=white}]]
-  \node {1. $ (P \rightarrow Q) \wedge (Q \rightarrow R)
-    \wedge ( \neg (P \rightarrow R)$  }
-  child { node {2. $P \rightarrow Q$, $Q \rightarrow R$,
-      $P$, $ \neg R$ }
-    child { node {3. $P \rightarrow Q$ , $\neg P$ ,
-        $P$, $\neg R$}
-      child { node {4. $ \neg P$ , $ \neg Q$ ,
-          $P$ , $ \neg R$}
-        child { node {5. $ \perp $}}}
-      child { node {6. $Q$ , $ \neg Q$ ,
-          $P$ , $ \neg R$}
-        child { node {7. $ \perp $}}}}
-    child { node {8. $P \rightarrow Q$ , $R$ ,
-        $P$ , $ \neg R$}
-      child { node {9. $ \perp $} }}}
+  \node {1. $ (p \rightarrow q) \wedge (q \rightarrow r)
+    \wedge ( \neg (p \rightarrow r)$  }
+  child { node {2. $p \rightarrow q$, $q \rightarrow r$,
+      $P$, $ \neg r$ (1) }
+    child { node {3. $p \rightarrow q$ , $\neg p$ ,
+        $p$, $\neg r$ (2)}
+      child { node {5. $ \neg p$ , $ \neg q$ ,
+          $p$ , $ \neg r$ (3)}
+        child { node {7. $ \perp $ (5)}}}
+      child { node {6. $q$ , $ \neg q$ ,
+          $p$ , $ \neg r$ (3)}
+        child { node {8. $ \perp $ (6)}}}}
+    child { node {4. $P \rightarrow q$ , $r$ ,
+        $p$ , $ \neg r$ (2)}
+      child { node {9. $ \perp $ (4)} }}}
 \end{tikzpicture}
 \end{center}
 
-Un ejemplo de tablero completo es
-
-\begin{center}
-  \begin{tikzpicture}[sibling distance=15em,
-  every node/.style = {shape=rectangle, rounded corners,
-    draw, align=center,
-    top color=white}]]
-  \node {$(P \rightarrow Q) \wedge (Q\rightarrow R) \wedge \neg R$}
-  child {node {$P\rightarrow Q$ \\ $P \rightarrow Q$ \\ $\neg R$}
-    child { node {$\neg P$}
-      child { node {$\neg Q$}}
-      child { node {$R$}
-        child { node {$\perp$}}}}
-    child { node {$Q$}
-      child { node {7. $\neg Q$}
-        child { node {$\perp$}}}
-      child { node {$R$}
-        child { node {$\perp$}}}}};
-\end{tikzpicture}
-\end{center}
-
-Por lo tanto, en este último ejemplo un posible modelo es: $\neg Q$ cierto,
-mientras que $P$ y $R$ falsos. Lo representaremos, como la interpretación $I$
-con $I(Q) = 0$, $I(P) = 0$ e $I(R)=0$.
+.
 
 \begin{Teo}
   Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$ tendrá
