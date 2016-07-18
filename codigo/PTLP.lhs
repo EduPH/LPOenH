@@ -404,7 +404,20 @@ conjunciones.
    \end{array}$
 
 \vspace*{2ex}
-  
+Las definimos en Haskell
+
+\index{\texttt{alfa}}
+\begin{code}
+alfa :: Form -> Bool
+alfa (Conj _) = True
+alfa (Neg (Disy _)) = True
+alfa _ = False
+\end{code}
+
+\vspace*{2ex}
+
+
+
 \item Fórmulas beta 
   
   \vspace*{1ex}
@@ -414,7 +427,18 @@ conjunciones.
     \neg (F_1 \wedge F_2)           & \neg F_1 \vee \neg F_2           \\ \hline
     \neg (F_1 \leftrightarrow F_2)  & \neg (F_1 \rightarrow F_2 ) \vee 
                                       (\neg F_2 \rightarrow F_1)       \\ \hline
-  \end{array}$
+   \end{array}$
+   
+  \vspace*{2ex}
+Las definimos en Haskell
+
+\index{\texttt{Beta}}
+\begin{code}
+beta :: Form -> Bool
+beta (Disy _)       = True
+beta (Neg (Conj _)) = True
+beta _              = False
+\end{code}
 
 \vspace*{2ex}
   
@@ -427,10 +451,23 @@ conjunciones.
     \neg \exists x F & \neg F [x/t ] \\ \hline
   \end{array}$
 
-  \vspace*{1ex}
 
-  Notar que $t$ es un término básico.
 
+\vspace*{1ex}
+
+Notar que $t$ es un término básico.
+
+  \vspace*{2ex}
+  
+Las definimos en Haskell
+  
+  \index{\texttt{gamma}}
+\begin{code}
+gamma :: Form -> Bool
+gamma (PTodo _ _)    = True
+gamma (Neg (Ex _ _)) = True
+gamma _              = False
+\end{code}
 \vspace*{2ex}
   
 \item Fórmulas delta 
@@ -530,4 +567,10 @@ Un ejemplo de tablero cerrado es
   Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$ tendrá
   ramas abiertas.
 \end{Teo}
+
+Nuestro objetivo es definir en Haskell un método para el cálculo de
+tableros semánticos. El contenido relativo a tableros semánticos 
+se encuentra en el módulo \texttt{Tableros}.
+\entrada{Tableros}
+
 
