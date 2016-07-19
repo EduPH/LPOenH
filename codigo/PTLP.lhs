@@ -6,18 +6,9 @@ import LPH
 import Data.List
 import Test.QuickCheck -- Para ejemplos
 import Generadores     -- Para ejemplos
-import Debug.Trace     -- Para ejemplos
+
 \end{code}
 
-Hemos importado la librería \texttt{Debug.Trace} porque emplearemos la función
-\texttt{trace}. Esta función tiene como argumentos una cadena de caracteres,
-una función, y un valor sobre el que se aplica la función. Por ejemplo
-
-\begin{sesion}
-ghci> trace ("aplicando even a x = " ++ show 3) (even 3)
-aplicando even a x = 3
-False
-\end{sesion}
 
 \begin{Def}
   Una variable $x$ está ligada en una fórmula cuando tiene una aparición
