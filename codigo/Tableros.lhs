@@ -2,7 +2,7 @@
 module Tableros where
 import PTLP
 import LPH
-import Debug.Trace     -- Para ejemplos
+import Debug.Trace     
 \end{code}
 
 Hemos importado la librería \texttt{Debug.Trace} porque emplearemos la función
@@ -184,10 +184,20 @@ expandeTableroG _ [] = []
 expandeTableroG n (nodo:nodos) 
     | nodoExpandido nodo = trace (show nodo ++ "\n\n")
                            (nodo:(expandeTableroG n nodos))
-    | otherwise = if k == n then (show nodo ++ "\n\n") 
+    | otherwise = if k == n then trace (show nodo ++ "\n\n") 
                   (expandeTableroG k (nuevoNodo ++ nodos))
-                  else trace (show nodo ++"\n\n")
+                  else trace (show nodo ++"\n\n") 
                   (expandeTableroG (n-1) (nodos ++ nuevoNodo))
     where (k, nuevoNodo) = ramificacionP n nodo
 \end{code}
 
+Definimos la función \texttt{(compruebaNodo)} para comprobar
+si hay hoja cerrada.
+
+\index{\texttt{compruebaNodo}}
+\begin{code}
+compruebaNodo :: Nodo -> [Sust]
+compruebaNodo (Nd _ pos neg _) =
+    concat [ unificadoresTerminos p n | p <- pos,
+                                        n <- neg ]
+\end{code}
