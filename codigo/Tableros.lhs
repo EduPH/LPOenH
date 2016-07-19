@@ -158,16 +158,36 @@ nodoExpandido (Nd i pos neg []) = True
 nodoExpandido _                 = False
 \end{code}
 
-Definimos la función \texttt{(expandeTablero k tab)} que desarrolla 
-un tablero a una profundidad \texttt{k}.
+Definimos la función \texttt{(expandeTablero n tab)} que desarrolla 
+un tablero a una profundidad \texttt{n}.
 
+\index{\texttt{expandeTablero}}
 \begin{code}
 expandeTablero :: Int -> Tablero -> Tablero
 expandeTablero 0 tab = tab
 expandeTablero _ []  = []
-expandeTablero k (nodo:nodos) 
-    | nodoExpandido nodo = nodo:(expandeTablero k nodos)
-    | otherwise =  if k == k then expandeTablero k (nuevoNodo ++ nodos)
-                   else expandeTablero (k-1) (nodos ++ nuevoNodo)
-    where (k,nuevoNodo) = ramificacionP k nodo
+expandeTablero n (nodo:nodos) 
+    | nodoExpandido nodo = nodo:(expandeTablero n nodos)
+    | otherwise =  if k == n then expandeTablero n (nuevoNodo ++ nodos)
+                   else expandeTablero (n-1) (nodos ++ nuevoNodo)
+    where (k,nuevoNodo) = ramificacionP n nodo
 \end{code}
+
+Para una visualización más gráfica, definimos \texttt{(expandeTableroG)}
+empleando la función \texttt{(trace)}.
+
+\index{\texttt{expandeTableroG}}
+\begin{code}
+expandeTableroG :: Int -> Tablero -> Tablero
+expandeTableroG 0 tab = tab
+expandeTableroG _ [] = []
+expandeTableroG n (nodo:nodos) 
+    | nodoExpandido nodo = trace (show nodo ++ "\n\n")
+                           (nodo:(expandeTableroG n nodos))
+    | otherwise = if k == n then (show nodo ++ "\n\n") 
+                  (expandeTableroG k (nuevoNodo ++ nodos))
+                  else trace (show nodo ++"\n\n")
+                  (expandeTableroG (n-1) (nodos ++ nuevoNodo))
+    where (k, nuevoNodo) = ramificacionP n nodo
+\end{code}
+
