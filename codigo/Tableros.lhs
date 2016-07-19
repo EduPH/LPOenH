@@ -87,3 +87,75 @@ ghci> descomponer formula_4
 Definimos \texttt{(ramificacion nodo)} que ramifica un nodo.
 
 \intex{\texttt{ramificacion}}
+\begin{code}
+ramificacion :: Nodo -> Tablero
+ramificacion (Nd i pos neg []) = [Nd i pos neg []]
+ramificacion (Nd i pos neg (f:fs)) 
+    | atomo f = if elem (literalATer f) neg then []
+                else [Nd i ((literalATer f):pos) neg fs]
+    | negAtomo f = if elem (literalATer f) pos then []
+                   else [Nd i pos ((literalATer f):neg) fs]
+    | dobleNeg f = [Nd i pos neg ((componentes f) ++ fs)]
+    | alfa f  = [Nd i pos neg ((componentes f) ++ fs)]
+    | beta f  = [(Nd (i++[n]) pos neg (f':fs)) |
+                (f',n) <- zip (componentes f) [0..]]
+    | gamma f = [Nd i pos neg (f':(fs++[f]))]
+    where
+      (xs,g) = descomponer f
+      b      = [((Variable nombre j), 
+                 Var (Variable nombre i)) |
+                (Variable nombre j) <- xs]
+      f'     = sustitucionForm b g
+\end{code}
+
+Debido a que pueden darse la infinitud de un árbol por las fórmulas
+gamma, definimos otra función \texttt{(ramificacionP k nodo)} que ramifica
+un nodo teniendo en cuenta la profundidad.
+
+\index{\texttt{ramificacionP}}
+\begin{code}
+ramificacionP :: Int -> Nodo -> (Int,Tablero)
+ramificacionP k nodo@(Nd i pos neg []) = (k,[nodo])
+ramificacionP k (Nd i pos neg (f:fs))
+    | atomo    f = if elem (literalATer f) neg then (k,[])
+                   else (k,[Nd i ((literalATer f):pos) neg fs])
+    | negAtomo f = if elem (literalATer f) neg then (k,[]) 
+                   else (k,[Nd i pos ((literalATer f):neg) fs])
+    | dobleNeg f = (k,[Nd i pos neg ((componentes f) ++ fs)])
+    | alfa     f = (k,[Nd i pos neg ((componentes f) ++ fs)])
+    | beta     f = (k,[(Nd (i++[n]) pos neg (f':fs)) |
+                       (f',n) <- zip (componentes f) [0..] ])
+    | gamma    f = (k-1, [Nd i pos neg (f':(fs++[f]))])
+    where 
+      (xs,g) = descomponer f
+      b      = [((Variable nombre j), Var (Variable nombre i)) |
+                (Variable nombre j) <- xs]
+      f'     = sustitucionForm b g
+\end{code}
+
+\begin{Def}
+  Un nodo está completamente expandido si no se puede seguir ramificando
+\end{Def}
+
+Se define en Haskell
+
+\index{\texttt{nodoExpandido}}
+\begin{code}
+nodoExpandido :: Nodo -> Bool
+nodoExpandido (Nd i pos neg []) = True
+nodoExpandido _                 = False
+\end{code}
+
+Definimos la función \texttt{(expandeTablero k tab)} que desarrolla 
+un tablero a una profundidad \texttt{k}.
+
+\begin{code}
+expandeTablero :: Int -> Tablero -> Tablero
+expandeTablero 0 tab = tab
+expandeTablero _ []  = []
+expandeTablero k (nodo:nodos) 
+    | nodoExpandido nodo = nodo:(expandeTablero k nodos)
+    | otherwise =  if k == k then expandeTablero k (nuevoNodo ++ nodos)
+                   else expandeTablero (k-1) (nodos ++ nuevoNodo)
+    where (k,nuevoNodo) = ramificacionP k nodo
+\end{code}

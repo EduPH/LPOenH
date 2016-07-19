@@ -502,10 +502,13 @@ Lo definimos en haskell
 
 \index{\texttt{literal}}
 \begin{code}
-literal :: Form -> Bool
-literal (Atom n ts)       = True
-literal (Neg (Atom n ts)) = True
-literal _                 = False
+atomo, negAtomo, literal :: Form -> Bool
+atomo (Atom n ts)          = True
+atomo _                    = False
+negAtomo (Neg (Atom n ts)) = True
+negAtomo  _                = False
+literal f = atomo f || negAtomo f
+
 \end{code}
 
 \begin{Def}
