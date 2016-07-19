@@ -201,3 +201,84 @@ compruebaNodo (Nd _ pos neg _) =
     concat [ unificadoresTerminos p n | p <- pos,
                                         n <- neg ]
 \end{code}
+
+Definimos las funciones auxiliares \texttt{(sustNodo nd)} y
+\texttt{(sustTab tb)} que aplican sustituciones a nodos y
+tableros.
+
+\index{\texttt{sustNodo}}
+\index{\texttt{susTab}}
+\begin{code}
+sustNodo :: Sust -> Nodo -> Nodo
+sustNodo b (Nd i pos neg f) =
+    Nd i (susTerms b pos) (susTerms b neg) (sustitucionForms b f)
+
+susTab :: Sust -> Tablero -> Tablero
+susTab = map . sustNodo
+\end{code}
+
+Se define \texttt{(compruebaTab)} para determinar si
+un tablero es cerrado.
+
+\index{\texttt{compruebaTab}}
+\begin{code}
+compruebaTab :: Tablero -> [Sust]
+compruebaTab [] = [identidad]
+compruebaTab [nodo] = compruebaNodo nodo
+compruebaTab (nodo:nodos) = 
+    concat [compruebaTab (susTab s nodos) | s <- compruebaNodo nodo ]
+\end{code}
+
+Dada una fórmula es necesario crear un tablero inicial
+para posteriormente desarrollarlo. Lo hacemos mediante 
+la función \texttt{(tableroInicial f)}.
+
+\index{\texttt{tableroInicial)}
+\begin{code}
+tableroInicial :: Form -> Tablero
+tableroInicial f = [Nd [] [] [] [f]]
+\end{code}
+
+La función \texttt{(refuta k f)} intenta refutar la fórmula 
+\texttt{f} con un tablero de profundidad \texttt{k}.
+
+\index{\texttt{refuta}}
+\begin{code}
+refuta :: Int -> Form -> Bool
+refuta k f = compruebaTab tab /= []
+    where
+      tab = expandeTablero k (tableroInicial f)
+   -- tab = expandeTableroG k  (tableroInicial f)
+\end{code}
+
+\begin{description}
+\item [Nota :] Se puede emplear tambien \texttt{expandeTableroG}, por ello
+  se deja comentado para su posible uso.
+\end{description}
+
+Finalmente, podemos determinar si una fórmula es un teorema y si es
+satisfacible mediante las funciones \texttt{(esTeorema f)} y
+\texttt{(satisfacible f)}.
+
+\index{\texttt{esTeorema}}
+\index{\texttt{satisfacible}}
+\begin{code}
+esTeorema, satisfacible :: Int -> Form -> Bool
+esTeorema n = (refuta n) . skolem . Neg
+satisfacible n = not . (refuta n) . skolem
+\end{code}
+
+Por ejemplo tomando \texttt{tautologia1} y la ya usada anteriormente
+\texttt{formula2}
+
+\begin{code}
+tautologia1 :: Form
+tautologia1 = Disy [Atom "P" [tx], Neg (Atom "P" [tx])]
+\end{code}
+
+\begin{sesion}
+ghci> esTeorema 1 tautologia1
+True
+ghci> esTeorema 20 formula_2
+False
+\end{sesion}
