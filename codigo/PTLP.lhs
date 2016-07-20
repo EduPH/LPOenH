@@ -584,7 +584,7 @@ Un ejemplo de tablero cerrado es
         child { node {8. $ \perp $ (6)}}}}
     child { node {4. $p \rightarrow q$ , $r$ ,
         $p$ , $ \neg r$ (2)}
-      child { node {9. $ \perp $ (4)} }}}
+      child { node {9. $ \perp $ (4)} }}};
 \end{tikzpicture}
 \end{center}
 
