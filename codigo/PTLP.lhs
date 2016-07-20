@@ -571,7 +571,7 @@ Un ejemplo de tablero cerrado es
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center, top color=white}]]
   \node {1. $ (p \rightarrow q) \wedge (q \rightarrow r)
-    \wedge ( \neg (p \rightarrow r)$  }
+    \wedge  \neg (p \rightarrow r)$  }
   child { node {2. $p \rightarrow q$, $q \rightarrow r$,
       $p$, $ \neg r$ (1) }
     child { node {3. $p \rightarrow q$ , $\neg p$ ,
