@@ -523,7 +523,8 @@ Ejemplo de tablero completo
   \begin{tikzpicture}[sibling distance=15em,
   every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
-    top color=white}]]
+    top color=white}
+]]
   \node {1. $\neg (p \vee q \rightarrow p \wedge q)$}
   child { node {2. $P\vee q$ , $\neg (p \wedge q)$ (1)}
     child { node {3. $p$ , $\neg (p\wedge q)$ (2)}
