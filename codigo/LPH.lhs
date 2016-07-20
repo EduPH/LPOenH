@@ -384,9 +384,9 @@ formula_3 = Impl (Atom "R" [tx,ty])
 Quedando
 \begin{sesion}
 ghci> formula_2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> formula_3
-(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
+(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 \end{sesion}
 
 La interpretación de los símbolos de funciones es

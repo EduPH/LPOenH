@@ -270,13 +270,13 @@ elimImpEquiv (Ex x f) =
 Empleamos las fórmulas 2,3 y 4 ya definidas anteriormenta como ejemplo:
 \begin{sesion}
 ghci> formula_2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> elimImpEquiv formula_2
-∀x ∀y (¬R[x,y]⋁[∃z (R[x,z]⋀[R[z,y]])])
+∀x ∀y (¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
 ghci> formula_3
-(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]]))
+(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> elimImpEquiv formula_3
-(¬R[x,y]⋁[∃z (R[x,z]⋀[R[z,y]])])
+(¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
 ghci> formula_4
 ∃x R[cero,x]
 ghci> elimImpEquiv formula_4
@@ -342,7 +342,7 @@ skfs (f:fs) vs pol k = (f':fs',j)
         (fs',j) = skfs fs vs pol j1
 \end{code}
 
-La skolemizacoón de una fórmula sin equivalencias ni implicaciones se define
+La skolemización de una fórmula sin equivalencias ni implicaciones se define
 por \index{\texttt{sk}}
 \begin{code}
 sk :: Form -> Form
@@ -361,10 +361,10 @@ skolem  = sk . elimImpEquiv
 Por ejemplo,
 
 \begin{sesion}
-ghci> sk formula_2
-∀x ∀y (¬R[x,y]⋁[(R[x,sk0[x,y]]⋀[R[sk0[x,y],y]])])
+ghci> skolem formula_2
+∀x ∀y (¬R[x,y]⋁(R[x,sk0[x,y]]⋀R[sk0[x,y],y]))
 ghci> skolem formula_3
-(¬R[x,y]⋁[(R[x,sk0]⋀[R[sk0,y]])])
+(¬R[x,y]⋁(R[x,sk0]⋀R[sk0,y]))
 ghci> skolem formula_4
 R[cero,sk0]
 \end{sesion}
@@ -556,7 +556,7 @@ tab1 = Neg (Impl (Disy [p,q]) (Conj [p,q]))
 
 \begin{sesion}
 ghci> tab1
-¬((p⋁[q])⟹(p⋀[q]))
+¬((p⋁q)⟹(p⋀q))
 \end{sesion}
 
 \begin{Def}
@@ -596,7 +596,7 @@ tab2 = Conj [Impl p q, Impl q r, Neg (Impl p r)]
 
 \begin{sesion}
 ghci> tab2
-((p⟹q)⋀[(q⟹r),¬(p⟹r)])
+((p⟹q)⋀((q⟹r)⋀¬(p⟹r)))
 \end{sesion}
 
 \begin{Teo}
