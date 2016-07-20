@@ -516,7 +516,9 @@ literal f = atomo f || negAtomo f
   Un tablero completo es un tablero tal que todas sus hojas son abiertas o
   cerradas.
 \end{Def}
+
 Ejemplo de tablero completo
+
 \begin{center}
   \begin{tikzpicture}[sibling distance=15em,
   every node/.style = {shape=rectangle, rounded corners,
@@ -536,6 +538,27 @@ Ejemplo de tablero completo
   \end{tikzpicture}
 \end{center}
 
+La fórmula del tablero se representa en Haskell
+Se definen los átomos.
+
+\begin{code}
+p = Atom "p" []
+q = Atom "q" []
+r = Atom "r" []
+\end{code}
+
+Para que la fórmula quede
+
+\begin{code}
+
+tab1 = Neg (Impl (Disy [p,q]) (Conj [p,q]))
+\end{code}
+
+\begin{sesion}
+ghci> tab1
+¬((p⋁[q])⟹(p⋀[q]))
+\end{sesion}
+
 \begin{Def}
   Un tablero es cerrado si todas sus hojas son cerradas.
 \end{Def}
@@ -550,7 +573,7 @@ Un ejemplo de tablero cerrado es
   \node {1. $ (p \rightarrow q) \wedge (q \rightarrow r)
     \wedge ( \neg (p \rightarrow r)$  }
   child { node {2. $p \rightarrow q$, $q \rightarrow r$,
-      $P$, $ \neg r$ (1) }
+      $p$, $ \neg r$ (1) }
     child { node {3. $p \rightarrow q$ , $\neg p$ ,
         $p$, $\neg r$ (2)}
       child { node {5. $ \neg p$ , $ \neg q$ ,
@@ -559,13 +582,22 @@ Un ejemplo de tablero cerrado es
       child { node {6. $q$ , $ \neg q$ ,
           $p$ , $ \neg r$ (3)}
         child { node {8. $ \perp $ (6)}}}}
-    child { node {4. $P \rightarrow q$ , $r$ ,
+    child { node {4. $p \rightarrow q$ , $r$ ,
         $p$ , $ \neg r$ (2)}
       child { node {9. $ \perp $ (4)} }}}
 \end{tikzpicture}
 \end{center}
 
-.
+La fórmula del tablero se representa en Haskell
+
+\begin{code}
+tab2 = Conj [Impl p q, Impl q r, Neg (Impl p r)]
+\end{code}
+
+\begin{sesion}
+ghci> tab2
+((p⟹q)⋀[(q⟹r),¬(p⟹r)])
+\end{sesion}
 
 \begin{Teo}
   Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$ tendrá

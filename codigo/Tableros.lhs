@@ -62,6 +62,15 @@ componentes (PTodo x f) = [f]
 componentes (Neg (Ex x f)) = [Neg f]
 \end{code}
 
+Por ejemplo
+
+\begin{sesion}
+ghci> componentes (skolem (tab1))
+[¬¬(p⋀[q]),¬(p⋁[q])]
+ghci> componentes (skolem (tab2))
+[(¬p⋁[q]),(¬q⋁[r]),¬(¬p⋁[r])]
+\end{sesion}
+
 Definimos la función \texttt{(varLigada f)} que devuelve la
 variable ligada de la fórmula \texttt{f}
 
@@ -238,6 +247,12 @@ la función \texttt{(tableroInicial f)}.
 tableroInicial :: Form -> Tablero
 tableroInicial f = [Nd [] [] [] [f]]
 \end{code}
+Por ejemplo
+
+\begin{sesion}
+ghci> tableroInicial tab1
+[Nd [] [] [] [¬((p⋁[q])⟹(p⋀[q]))]]
+\end{sesion}
 
 La función \texttt{(refuta k f)} intenta refutar la fórmula 
 \texttt{f} con un tablero de profundidad \texttt{k}.
@@ -280,5 +295,13 @@ tautologia1 = Disy [Atom "P" [tx], Neg (Atom "P" [tx])]
 ghci> esTeorema 1 tautologia1
 True
 ghci> esTeorema 20 formula_2
+False
+ghci> esTeorema  20 tab1
+False
+ghci> satisfacible  1 tab1
+True
+ghci> esTeorema 20 tab2
+False
+ghci> satisfacible 20 tab2
 False
 \end{sesion}
