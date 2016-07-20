@@ -107,7 +107,7 @@ ghci> descomponer formula_4
 
 Definimos \texttt{(ramificacion nodo)} que ramifica un nodo.
 
-\intex{\texttt{ramificacion}}
+\index{\texttt{ramificacion}}
 \begin{code}
 ramificacion :: Nodo -> Tablero
 ramificacion (Nd i pos neg []) = [Nd i pos neg []]
@@ -242,7 +242,7 @@ Dada una fórmula es necesario crear un tablero inicial
 para posteriormente desarrollarlo. Lo hacemos mediante 
 la función \texttt{(tableroInicial f)}.
 
-\index{\texttt{tableroInicial)}
+\index{\texttt{tableroInicial}}
 \begin{code}
 tableroInicial :: Form -> Tablero
 tableroInicial f = [Nd [] [] [] [f]]
