@@ -155,7 +155,7 @@ ramificacionP k (Nd i pos neg (f:fs))
 \end{code}
 
 \begin{Def}
-  Un nodo está completamente expandido si no se puede seguir ramificando
+  Un nodo está completamente \textbf{expandido} si no se puede seguir ramificando
 \end{Def}
 
 Se define en Haskell
