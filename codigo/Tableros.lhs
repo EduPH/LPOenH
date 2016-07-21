@@ -266,11 +266,17 @@ refuta k f = compruebaTab tab /= []
    -- tab = expandeTableroG k  (tableroInicial f)
 \end{code}
 
-\begin{description}
-\item [Nota :] Se puede emplear tambien \texttt{expandeTableroG}, por ello
+\begin{nota}
+  Se puede emplear tambien \texttt{expandeTableroG}, por ello
   se deja comentado para su posible uso.
-\end{description}
+\end{nota}
 
+\begin{Def}
+  Una fórmula $F$ es un \textbf{teorema} mediante tableros semánticos
+  si tiene una prueba mediante tableros; es decir, si $\neg F$ tiene un
+  tablero completo cerrado
+\end{Def}
+  
 Finalmente, podemos determinar si una fórmula es un teorema y si es
 satisfacible mediante las funciones \texttt{(esTeorema f)} y
 \texttt{(satisfacible f)}.
@@ -305,3 +311,14 @@ False
 ghci> satisfacible 20 tab2
 False
 \end{sesion}
+
+\begin{Teo}
+  El cálculo de tableros semánticos es adecuado y completo.
+\end{Teo}
+
+\begin{Def}
+  Una fórmula $F$ es \textbf{deducible} a partir del conjunto
+  de fórmulas $S$ si exite un tablero completo cerrado de la
+  conjunción de $S$ y $\neg F$. Se representa por
+  $S \vdash_{Tab} F$.
+\end{Def}

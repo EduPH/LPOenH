@@ -562,7 +562,7 @@ ghci> tab1
 \end{sesion}
 
 \begin{Def}
-  Un tablero es cerrado si todas sus hojas son cerradas.
+  Un tablero es \textbf{cerrado} si todas sus hojas son cerradas.
 \end{Def}
 
 Un ejemplo de tablero cerrado es
@@ -602,7 +602,7 @@ ghci> tab2
 \end{sesion}
 
 \begin{Teo}
-  Si una fórmula $F$ es consitente, entonces cualquier tablero de $F$ tendrá
+  Si una fórmula $F$ es consistente, entonces cualquier tablero de $F$ tendrá
   ramas abiertas.
 \end{Teo}
 
