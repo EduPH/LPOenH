@@ -168,10 +168,10 @@ ghci> composicion  [(y,ty)] [(x,tx)] == composicion [(x,tx)] [(y,ty)]
 False
 \end{sesion}
 
-\begin{description}
-\item Nota: Las comprobaciones con QuickCheck emplean código del módulo
+\begin{nota}
+  Las comprobaciones con QuickCheck emplean código del módulo
   \texttt{Generadores}.
-\end{description}
+\end{nota}
 
 \section{Unificación}
 
