@@ -310,11 +310,21 @@ ghci> elimImpEquiv formula_4
 Finalmente, definamos una cadena de funciones, para finalizar con
 \texttt{(skolem f)} que transforma \texttt{f} a su forma de Skolem.
 
+Se define la función \texttt{(skol k vs)} que convierte una lista
+de variables a un término.
+
 \index{\texttt{skol}}
 \begin{code}
 skol :: Int -> [Variable] -> Termino
 skol k vs = Ter ("sk" ++ show k) [Var x | x <- vs]
 \end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+ghci> skol 1 [x]
+sk1[x]
+\end{sesion}
 
 Definimos la función \texttt{(skf f vs pol k)}, donde
 \begin{enumerate}
