@@ -550,7 +550,7 @@ Ejemplo de tablero completo
     top color=white}
 ]]
   \node {1. $\neg (p \vee q \rightarrow p \wedge q)$}
-  child { node {2. $P\vee q$ , $\neg (p \wedge q)$ (1)}
+  child { node {2. $p\vee q$ , $\neg (p \wedge q)$ (1)}
     child { node {3. $p$ , $\neg (p\wedge q)$ (2)}
       child { node {5. $p$, $\neg p$ (3)}
         child { node {7. $\perp$ (5)}}}
