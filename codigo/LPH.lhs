@@ -1,6 +1,17 @@
 El contenido de esta sección se encuentra en el módulo \texttt{LPH}, en él se
 pretende dar representación a variables y fórmulas lógicas para la posterior
-evaluación de las mismas.
+evaluación de las mismas. Es decir, pretendemos representar los elementos
+lógicos básicos de representación de fórmulas, y decidir si una fórmula es
+verdadera o falsa según una interpretación.
+
+\begin{Def}
+  Una \textbf{interpretación} es una aplicación $I: VP \rightarrow Bool$, donde $VP$
+  representa el conjunto de las variables proposicionales.
+\end{Def}
+
+Una interpretación toma valores para las variables proposicionales, y se
+evalúan en una fórmula, determinando si la fórmula es verdadera o falsa. Se
+definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
 
 \begin{code}
 module LPH where
@@ -10,7 +21,8 @@ import Data.List
 import Test.QuickCheck
 \end{code}
 
-Se define un tipo de dato para las variables.
+Se define un tipo de dato para las variables. Una variable estará
+compuesta por un nombre e índice que las defina.
 
 \begin{code}
 type Nombre   = String
@@ -21,7 +33,8 @@ data Variable = Variable Nombre Indice
   deriving (Eq,Ord)
 \end{code}
 
-Y para su representación en pantalla
+Y para una visualización agradable en pantalla se define
+su representación.
 
 \begin{code}
 instance Show Variable where
@@ -33,27 +46,33 @@ instance Show Variable where
           showInts (i:is') = show i ++ "_" ++ showInts is'
 \end{code}
 
-Ejemplos de definición de variables
+Mostramos algunos ejemplos de definición de variables
+
 \begin{code}
 x,y,z :: Variable
 x = Variable "x" []
 y = Variable "y" []
 z = Variable "z" []
 \end{code}
-Empleando índices
+
+Y definimos también variables empleando índices
+
 \begin{code}
 a1,a2,a3 :: Variable
 a1 = Variable "a" [1]
 a2 = Variable "a" [2]
 a3 = Variable "a" [3]
 \end{code}
-De manera que  el resultado queda
+
+De manera que su visualización sería
+
 \begin{sesion}
 ghci> a1
 a1
 \end{sesion}
 
-A continuación se define un tipo de dato para las fórmulas
+A continuación se define un tipo de dato para las fórmulas lógicas
+de primer orden.
 
 \begin{code}
 data Formula = Atomo Nombre [Variable]
@@ -67,7 +86,9 @@ data Formula = Atomo Nombre [Variable]
              | Existe Variable Formula
      deriving (Eq,Ord)
 \end{code}
+   
 Y se emplea \texttt{show} para la visualización por pantalla.
+
 \begin{code}
 instance Show Formula where
     show (Atomo str [])       = str
@@ -83,7 +104,10 @@ instance Show Formula where
     show (ParaTodo v f)       = "∀" ++ show v ++ (' ': show f) 
     show (Existe v f)         = "∃" ++ show v ++ (' ': show f) 
 \end{code}
-Por ejemplo expresemos la propiedad \texttt{reflexiva} y la \texttt{simétrica}
+
+Como ejemplo podemos representar las propiedades \texttt{reflexiva}
+y  \texttt{simétrica}.
+
 \index{\texttt{reflexiva}}
 \index{\texttt{simetrica}}
 \begin{code}
@@ -93,14 +117,20 @@ simetrica = ParaTodo x (ParaTodo y ( Atomo "R" [x,y] `Implica`
                                      Atomo "R" [y,x]))
 \end{code}
 
+Quedando su representación por pantalla
+
 \begin{sesion}
 ghci> reflexiva
 ∀x R[x,x]
 ghci> simetrica
-∀x ∀y (R[x,y]==>R[y,x])
+∀x ∀y (R[x,y]⟹R[y,x])
 \end{sesion}
 
 \section{Evaluación de fórmulas}
+
+En esta sección se pretende interpretar fórmulas. Para ello se define
+una cadena de funciones para terminar con nuestro objetivo, la función
+\texttt{(valor)}.
 
 Implementamos $s(x|d)$,mediante la función \texttt{(sustituye s x d v)}.
 $s(x|d)$ viene dado por la fórmula
@@ -121,18 +151,23 @@ sustituye s x d v | x == v     = d
                   | otherwise = s v
 \end{code}
 
+Esta función es auxiliar para la evaluación y toma de valores de fórmulas
+que haremos posteriormente.
+
 \begin{Def}
-  Una asignación es una función $A: Variable \rightarrow Universo$
+  Una \textbf{asignación} es una función $A: Variable \rightarrow Universo$
   que hace corresponder a cada variable un elemento del universo.
 \end{Def}
 
-Definimos una asignación arbitraria para los ejemplos
+Necesitamos definir una asignación para los ejemplos. En nuestro
+caso, tomamos una asignación constante muy sencilla.
+
 \begin{code}
 asignacion :: a -> Entidades
 asignacion v = A
 \end{code}
 
-Ejemplos de la función \texttt{(sustituye s x d v)}
+Un par de ejemplos de la función \texttt{(sustituye s x d v)} son
 \begin{sesion}
 ghci> sustituye asignacion y B z
 A
@@ -141,7 +176,7 @@ B
 \end{sesion}
 
 \begin{Def}
-  Una estructura del lenguaje es un par $\mathcal{I} = (\mathcal{U},I)$
+  Una \textbf{estructura del lenguaje} es un par $\mathcal{I} = (\mathcal{U},I)$
   tal que
   \begin{enumerate}
   \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
@@ -150,13 +185,14 @@ B
 \end{Def}
 
 \begin{Def}
-  Una interpretación de una estructura del lenguaje es un par
+  Una \textbf{interpretación de una estructura del lenguaje} es un par
   $(\mathcal{I}, A)$ formado por una estructura del lenguaje y una asignación
   $A$.
 \end{Def}
 
 Definimos los tipos de datos relativos a los elementos de la estructura del
-lenguaje.
+lenguaje. Es decir, los tipos de dato \texttt{Univero}, \texttt{InterpretacionR}
+y \texttt{Asignacion}.
 
 \begin{code}
 type Universo a = [a]
@@ -167,36 +203,29 @@ type Asignacion a = Variable -> a
 \end{code}
 
 \begin{Def}
-  Una interpretación es una aplicación $I: VP \rightarrow Bool$, donde $VP$
-  representa el conjunto de las variables proposicionales.
-\end{Def}
-
-Una interpretación toma valores para las variables proposicionales, y se
-evalúan en una fórmula, determinando si la fórmula es verdadera o falsa. Se
-definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
-
-\begin{Def}
-  Un modelo de una fórmula \texttt{F} es una interpretación en la que el valor
+  Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación en la que el valor
   de \texttt{F} es verdadero.
 \end{Def}
 
 \begin{Def}
-  Una fórmula es válida si toda estructura es modelo de la fórmula.
+  Una fórmula es \textbf{válida} si toda estructura es modelo de la fórmula.
 \end{Def}
 
 \begin{Def}
-  Una fórmula es satisfacible si existe alguna interpretación para la que
+  Una fórmula es \textbf{satisfacible} si existe alguna interpretación para la que
   sea verdadera, es decir, algún modelo.
 \end{Def}
 
 \begin{Def}
-  Una fórmula es insatisfacible si no tiene ningún modelo.
+  Una fórmula es \textbf{insatisfacible} si no tiene ningún modelo.
 \end{Def}
 
 Definimos la función \texttt{(valor u i s form)} que calcula el valor de una
 fórmula en un universo \texttt{u}, con una interpretación \texttt{i} y la
-asignación \texttt{s}. Para ello vamos a definir previamente el valor de las
-interpretaciones para las distintas conectivas lógicas
+asignación \texttt{s}. Para ello vamos a introducir previamente el valor de las
+interpretaciones para las distintas conectivas lógicas según
+las interpretaciones de \texttt{P} y \texttt{Q}. Falso lo representamos mediante
+el 0, y Verdadero mediante el 1.
 
 \begin{center}
    \begin{tabular}{ | l | c | c | c | c | c | }
@@ -283,13 +312,17 @@ En la sección anterior todos los términos han sido variables. Ahora
 consideraremos funciones, entre ellas las constantes.
 
 \begin{Def}
-  Son términos en un lenguaje de primer orden:
+  Son \textbf{términos} en un lenguaje de primer orden:
   \begin{enumerate}
   \item Variables
   \item Constantes
   \item $f(t_1,\dots,t_n)$ si $t_i$ son términos $\forall i=1,\dots ,n$
   \end{enumerate}
 \end{Def}
+
+Definimos un tipo de dato para los términos que serán la base
+para la definición de fórmulas en lógica de primer orden,
+más versátiles que las de la sección anterior.
 
 \begin{code}
 data Termino = Var Variable | Ter Nombre [Termino]
@@ -315,7 +348,8 @@ c    = Ter "c" []
 cero = Ter "cero" []
 \end{code}
 
-Para mostrarlo por pantalla de manera comprensiva
+Para mostrarlo por pantalla de manera comprensiva, definimos
+su representación.
 
 \begin{code}
 instance Show Termino where
@@ -350,7 +384,9 @@ data Form = Atom Nombre [Termino]
           | Ex Variable Form
      deriving (Eq,Ord)
 \end{code}
-Y seguimos con la analogía y empleamos la función \texttt{show}
+   
+Y seguimos, análogamente a la sección enterior, definiendo
+la representación de fórmulas por pantalla.
 
 \begin{code}
 instance Show Form where
@@ -370,7 +406,7 @@ instance Show Form where
     show (Ex v f)      = "∃" ++ show v ++ (' ': show f) 
 \end{code}
 
-Ejemplo de fórmulas
+Algunos ejemplos de fórmulas son
 
 \begin{code}
 formula_2, formula_3 :: Form
@@ -381,7 +417,10 @@ formula_3 = Impl (Atom "R" [tx,ty])
             (Ex z (Conj [Atom "R" [tx,tz],Atom "R" [tz,ty]]))
 
 \end{code}
-Quedando
+
+Dichas funciones serán empleadas en futuros ejemplos. Su
+representación por pantalla queda:
+
 \begin{sesion}
 ghci> formula_2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
@@ -389,13 +428,15 @@ ghci> formula_3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 \end{sesion}
 
-La interpretación de los símbolos de funciones es
+Para la interpretación de los símbolos funcionales se define
+un nuevo tipo de dato
+
 \begin{code}
 type InterpretacionF a = String -> [a] -> a
 \end{code}
 
-Para poder hacer las interpretaciones necesitamos primero una función auxiliar
-para calcular el valor de los términos. Esta función es 
+Para poder hacer las interpretaciones a las fórmulas,se necesita
+primero interpretar el valor de los términos. Definimos
 \texttt{(valorT s f str)}
 
 \index{\texttt{valorT}}
@@ -405,8 +446,9 @@ valorT i a (Var v)    = a v
 valorT i a (Ter f ts) = i f (map (valorT i a) ts)
 \end{code}
 
-Una interpretación es un par formado por las interpretaciones de los símbolos
-de relación y la de los símbolos de función.
+Definimos el tipo de dato \texttt{Interpretación} como un par
+formado por las interpretaciones de los símbolos de relación y
+la de los símbolos funcionales.
 
 \begin{code}
 type Interpretacion a = (InterpretacionR a, InterpretacionF a)  
@@ -442,7 +484,7 @@ valorF u i a (Ex v g)  =
   or  [valorF u i (sustituye a v d) g | d <- u]
 \end{code}
 
-Veamos un ejemplo. Para ello tenemos que interpretar los elementos de una
+Para construir un ejemplo tenemos que interpretar los elementos de una
 fórmula, por ejemplo la \texttt{formula 4}.
 
 \begin{code}
@@ -476,7 +518,7 @@ interpretacionF1 "por"  [i,j] = i * j
 interpretacionF1 _ _          = 0
 \end{code}
 
-Empleamos la asignación
+Empleamos la siguiente asignación
 \begin{code}
 asignacion1 :: Variable -> Int
 asignacion1 _ = 0

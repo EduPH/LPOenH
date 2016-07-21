@@ -29,20 +29,26 @@ ghci> raizCuadrada 9
 ghci> raizCuadrada 8
 2
 \end{sesion}
+
 La definición es
+
 \index{\texttt{raizCuadrada}}
 \begin{code}
 raizCuadrada :: Int -> Int
 raizCuadrada x = last [y | y <- [1..x], y*y <= x]
 \end{code}
+
 Posteriormente, definimos funciones que determinen si un elemento \texttt{x}
 cumple una cierta propiedad. Este es el caso de la propiedad 'ser divisible
 por $n$', donde $n$ será un número cualquiera.
+
 \begin{sesion}
 ghci> 15 `divisiblePor` 5
 True
 \end{sesion}
+
 La definición es
+
 \index{\texttt{divisiblePor}}
 \begin{code}
 divisiblePor :: Int -> Int -> Bool
@@ -51,17 +57,20 @@ divisiblePor x n =  x `rem` n == 0
 
 Hasta ahora hemos trabajado con los tipos de datos \texttt{Int} y
 \texttt{Bool}; es decir, números y booleanos respectivamente. Pero también se
-puede trabajar por ejemplo con cadenas de caracteres, que son tipo
-\texttt{[Char]} o \texttt{String}. Por ejemplo, \texttt{(contieneLaLetra xs l)}
+puede trabajar con otro tipo de dato como son cadenas de caracteres, que son tipo
+\texttt{[Char]} o \texttt{String}. \texttt{(contieneLaLetra xs l)}
 identifica si una palabra contiene una cierta letra \texttt{l} dada. Por
 ejemplo,
+
 \begin{sesion}
 ghci>  "descartes" `contieneLaLetra` 'e'
 True
 ghci>  "topologia" `contieneLaLetra` 'm'
 False
 \end{sesion}
+
 Y su definición es
+
 \index{\texttt{contieneLaLetra}}
 \begin{code}
 contieneLaLetra :: String -> Char -> Bool 
@@ -73,8 +82,8 @@ contieneLaLetra (x:xs) l = x == l || contieneLaLetra xs l
 
 Las listas son una representación de un conjunto ordenado de elementos. Dichos
 elementos pueden ser de cualquier tipo, ya sean \texttt{Int}, \texttt{Bool},
-\texttt{Char}, \dots Siempre y cuando, todos los elementos de dicha lista
-compartan tipo. En Haskell, las listas se representan
+\texttt{Char}, \dots Siempre y cuando todos los elementos de dicha lista
+compartan tipo. En Haskell las listas se representan
 \begin{sesion}
 ghci> [1,2,3,4]
 [1,2,3,4]  
@@ -82,9 +91,10 @@ ghci> [1..4]
 [1,2,3,4]
 \end{sesion}
 
-Una lista por comprensión no es más que un conjunto representado por    
-comprensión:
+Una lista por comprensión es parecido a su expresión como conjunto:
+
 $$\{ x | x \in A, P(x) \} $$
+
 Se puede leer de manera intuitiva como: "tomar aquellos $x$ del conjunto $A$
 tales que cumplen una cierta propiedad $P$". En Haskell se representa
 $$[x | x \leftarrow \texttt{lista}, \texttt{ condiciones que debe cumplir} ]$$
@@ -98,17 +108,18 @@ ghci> [x | x <- ["descartes","pitagoras","gauss"], x `contieneLaLetra` 'e']
 \end{sesion}
 
 \begin{description}
-\item[Nota:] En los distintos ejemplos hemos visto que se pueden componer las
-  distintas funciones ya definidas.
+\item[Nota:] En los distintos ejemplos hemos visto que se pueden componer
+  funciones ya definidas.
 \end{description}
 
 \subsection{Funciones map y filter}
 
 Introducimos un par de funciones de mucha relevancia en el uso de listas en
-Haskell.
+Haskell. Son funciones que se denominan de orden superior.
 
 La función \texttt{(map f xs)} aplica una función \texttt{f} a cada uno de
 los elementos de la lista \texttt{xs}. Por ejemplo,
+
 \begin{sesion}
 ghci> map (`divisiblePor` 4) [8,12,3,9,16]
 [True,True,False,False,True]
@@ -117,9 +128,12 @@ ghci> map (`div` 4) [8,12,3,9,16]
 ghci> map (`div` 4) [x | x <- [8,12,3,9,16], x `divisiblePor` 4]
 [2,3,4]
 \end{sesion}
+
 Dicha función está predefinida en el paquete \texttt{Data.List}, nosotros
 daremos una definición denotándola con el nombre \texttt{(aplicafun f xs)}, y
-su definición es \index{\texttt{aplicafun}}
+su definición es
+
+\index{\texttt{aplicafun}}
 \begin{code}
 aplicafun :: (a -> b) -> [a] -> [b]
 aplicafun f []     = []
@@ -158,11 +172,13 @@ g :: Int -> Int
 g x | x /= 0    = 5
     | otherwise = 0
 \end{code}
+  
 \subsection{n-uplas}
+
 Una n-upla es un elemento del tipo $(a_1,\dots,a_n)$ y existen una serie de funciones
 para el empleo de las dos-uplas $(a_1,a_2)$. Dichas funciones están predefinidas bajo
-los nombres \texttt{fst} y \texttt{snd}, y las redefinimos como \texttt{primerElemento}
-y \texttt{segundoElemento} respectivamente.
+los nombres \texttt{fst} y \texttt{snd}, y las redefinimos como \texttt{(primerElemento)}
+y \texttt{(segundoElemento)} respectivamente.
 \index{\texttt{primerElemento}}
 \index{\texttt{segundoElemento}}
 \begin{code}
@@ -210,8 +226,8 @@ todos p = conjuncion . aplicafun p
 
 \begin{description}
 \item[Nota:] Hemos empleando composición de funciones para la definición de
-  \texttt{(algun)} y \texttt{(todos)}. Se representa mediante \texttt{.} y
-  además, se omite el argumento de entrada común a todas las funciones.
+  \texttt{(algun)} y \texttt{(todos)}. Se representa mediante \texttt{.},y
+  se omite el argumento de entrada común a todas las funciones.
 \end{description}
 
 En matemáticas, estas funciones representan los cuantificadores lógicos
@@ -331,7 +347,7 @@ True
 
 \subsubsection{Notación $\lambda$}
 
-Cuando hablamos de notación lambda simplemente nos referimos por ejemplo a
+Cuando hablamos de notación lambda simplemente nos referimos  a
 expresiones del tipo \texttt{$\backslash$x -> x+2}. La notación viene del
 \emph{$\lambda$ Calculus} y se escribiría \texttt{$\lambda$x. x+2}.  Los
 diseñadores de Haskell tomaron el símbolo $\backslash$ debido a su parecido con
@@ -344,6 +360,11 @@ divideEntre2 xs = map (\x -> x/2) xs
 Para una información más amplia recomiendo consultar (\cite{Serrano-14})
 
 \subsubsection{Representación de un dominio de entidades}
+
+\begin{Def}
+  Un \textbf{dominio de entidades} es un conjunto de individuos cuyas propiedades
+  son objeto de estudio para una clasificación
+\end{Def}
 
 Construimos un ejemplo de un dominio de entidades compuesto por las letras del
 abecedario, declarando el tipo de dato \texttt{Entidades} contenido en el módulo

@@ -11,17 +11,17 @@ import Generadores     -- Para ejemplos
 
 
 \begin{Def}
-  Una variable $x$ está ligada en una fórmula cuando tiene una aparición
+  Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una aparición
   de la forma $\forall x$ o $\exists x$.
 \end{Def}
 
 \begin{Def}
-  Una sustitución es una aplicación $S: Variable \rightarrow Termino$.
+  Una \textbf{sustitución} es una aplicación $S: Variable \rightarrow Termino$.
 \end{Def}
 
-En la lógica de primer orden, aquellas variables que están ligadas,
-a la hora de emplear el método de tableros, es necesario sustituirlas
-por términos. Para ello definimos un nuevo tipo de dato
+En la lógica de primer orden, a la hora de emplear el método de tableros, es necesario
+sustituir las variables ligadas por términos. Por lo tanto, requerimos
+de la definición de un nuevo tipo de dato para las sustituciones.
 
 \begin{code}
 type Sust = [(Variable, Termino)]
@@ -176,7 +176,7 @@ False
 \section{Unificación}
 
 \begin{Def}
-  Un unificador de dos términos $t_1$ y $t_2$ es una sustitución $S$ tal que
+  Un \textbf{unificador} de dos términos $t_1$ y $t_2$ es una sustitución $S$ tal que
   $S(t_1) = S(t_2)$.
 \end{Def}
 
@@ -221,7 +221,7 @@ ghci> unificadoresListas [tx] [tx]
 \section{Skolem}
 
 \begin{Def}
-  La fórmula \texttt{F} está en forma de Skolem si es de la forma
+  La fórmula \texttt{F} está en forma de \textbf{Skolem} si es de la forma
   $\forall x_1 \dots \forall x_n \texttt{G}$, donde $n\geq 0$ y \texttt{G}
   no tiene cuantificadores.
 \end{Def}
@@ -231,12 +231,12 @@ unificaciones. Además, necesitamos eliminar las equivalencias e implicaciones.
 Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 
 \begin{Def}
-  Las fórmulas \texttt{F} y \texttt{G} son equivalentes si para toda
+  Las fórmulas \texttt{F} y \texttt{G} son \textbf{equivalentes} si para toda
   interpretación valen lo mismo.
 \end{Def}
 
 \begin{Def}
-  Las fórmulas \texttt{F} y \texttt{G} son equisatisfacibles si se cumple
+  Las fórmulas \texttt{F} y \texttt{G} son \textbf{equisatisfacibles} si se cumple
   $(\texttt{F} \text{ satisfacible } \Leftrightarrow 
     \texttt{G} \text{ satisfacible })$
 \end{Def}
@@ -268,6 +268,7 @@ elimImpEquiv (Ex x f) =
 \end{code}
 
 Empleamos las fórmulas 2,3 y 4 ya definidas anteriormenta como ejemplo:
+
 \begin{sesion}
 ghci> formula_2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
@@ -372,14 +373,14 @@ R[cero,sk0]
 \section{Tableros semánticos}
 
 \begin{Def}
-  Una fórmula o conjunto de fórmulas es consistente si tiene algún modelo. En
+  Una fórmula o conjunto de fórmulas es \textbf{consistente} si tiene algún modelo. En
   caso contrario, se denomina inconsistente.
 \end{Def}
 
-La idea de obtener fórmulas equivalentes, nos hace introducir los tipos de
-fórmulas alfa, beta, gamma y delta. No son más que equivalencias ordenadas, por
-orden teórico en el que se pueden acometer, para una simplicación eficiente de
-una fórmula a otra cuyas únicas conectivas lógicas sean disyunciones y
+La idea de obtener fórmulas equivalentes nos hace introducir los tipos de
+fórmulas alfa, beta, gamma y delta. No son más que equivalencias ordenadas por
+orden teórico en el que se pueden acometer para una simplicación eficiente de
+una fórmula, a otra cuyas únicas conectivas lógicas sean disyunciones y
 conjunciones.
 
 \begin{itemize}
@@ -486,7 +487,7 @@ tableros semánticos. Uno de los objetivos del método de los tableros es
 determinar si una fórmula es inconsistente, así como la búsqueda de modelos.
 
 \begin{Def}
-  Un literal es un átomo o la negación de un átomo.
+  Un \textbf{literal} es un átomo o la negación de un átomo.
 \end{Def}
 
 Lo definimos en haskell
@@ -503,17 +504,17 @@ literal f = atomo f || negAtomo f
 \end{code}
 
 \begin{Def}
-  Se dice que una hoja es cerrada si contiene una fórmula y su negación.
+  Se dice que una hoja es \textbf{cerrada} si contiene una fórmula y su negación.
   Se representa $\bot$
 \end{Def}
 
 \begin{Def}
-  Se dice que una hoja es abierta si es un conjunto de literales y no contiene
+  Se dice que una hoja es \textbf{abierta} si es un conjunto de literales y no contiene
   un literal y su negación.
 \end{Def}
 
 \begin{Def}
-  Un tablero completo es un tablero tal que todas sus hojas son abiertas o
+  Un \textbf{tablero completo} es un tablero tal que todas sus hojas son abiertas o
   cerradas.
 \end{Def}
 

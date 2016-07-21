@@ -21,8 +21,8 @@ botánica. La cual no es completa, pero da una idea de la potencia de Haskell
 para este tipo de uso.
 
 Primero definimos los elementos que pretendemos clasificar, y que cumplirán los
-predicados. Para ello, definimos como función cada elemento a clasificar y le
-asociamos una entidad.
+predicados. Para ello, definimos como función cada elemento de un dominio de
+un dominio de entidades.
 
 \begin{code}
 adelfas, aloeVera, boletus, cedro, chlorella, girasol, guisante, helecho, 
@@ -59,7 +59,8 @@ trigo       = G
 \end{code}
 
 Una vez que ya tenemos todos los elementos a clasificar definidos, se procede
-a la interpretación de los predicados. 
+a la interpretación de los predicados. Es decir, una clasificación
+de aquellos elementos que cumplen un cierto predicado.
 
 \begin{code}
 acuatica, algasVerdes, angiosperma, asterida, briofita, cromista, 
@@ -87,7 +88,8 @@ triaperturada   = (`pertenece` [C,K,N,P,Q,R,S,T,U,X,Y])
 unicelular      = (`pertenece` [B,Z])
 \end{code}
 
-Por ejemplo, podríamos comprobar si el \texttt{scenedesmus} es gimnosperma
+Por ejemplo, podríamos comprobar si el \texttt{scenedesmus} es
+\texttt{gimnosperma}
 
 \begin{sesion}
 ghci> gimnosperma scenedesmus
@@ -95,7 +97,7 @@ False
 \end{sesion}
 
 Esto nos puede facilitar establecer una jerarquía en la clasificación,     
-por ejemplo \texttt{(espermatófitas)}; es decir, plantas con semillas.
+por ejemplo \texttt{(espermatofitas)}; es decir, plantas con semillas.
 
 \begin{code}
 espermatofitas :: Entidades -> Bool
