@@ -219,7 +219,27 @@ ghci> unificadoresListas [tx] [tx]
 \end{sesion}
 
 \section{Skolem}
+\subsection{Forma rectificada}
+\begin{Def}
+  Una fórmula $F$ está en forma \textbf{rectificada} si ninguna variable
+  aparece libre y ligada y cada cuantificador se refiere a una variable
+  diferente
+\end{Def}
 
+\subsection{Forma normal prenexa}
+\begin{Def}
+  Una fórmula $F$ está en forma normal prenexa si es de la forma
+  $\{C_ix_i\}_{\forall i}G$
+  donde $C_i\in \{\forall ,\exists \}$ y $G$ no tiene cuantificadores.
+\end{Def}
+
+\subsection{Forma normal prenexa conjuntiva}
+\begin{Def}
+  Una fórmula $F$ está en forma \textbf{normal prenexa conjuntiva}
+  si está en forma normal prenexa con $G$ en forma normal conjuntiva.
+\end{Def}
+
+\subsection{Forma de Skolem}
 \begin{Def}
   La fórmula \texttt{F} está en forma de \textbf{Skolem} si es de la forma
   $\forall x_1 \dots \forall x_n \texttt{G}$, donde $n\geq 0$ y \texttt{G}
