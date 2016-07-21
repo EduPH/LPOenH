@@ -290,7 +290,7 @@ elimImpEquiv (Ex x f) =
   Ex x (elimImpEquiv f)
 \end{code}
 
-Empleamos las fórmulas 2,3 y 4 ya definidas anteriormenta como ejemplo:
+Empleamos las fórmulas 2,3 y 4 ya definidas anteriormente como ejemplo:
 
 \begin{sesion}
 ghci> formula_2
