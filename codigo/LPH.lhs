@@ -531,11 +531,11 @@ ghci> valorF [0..] (interpretacionR1,interpretacionF1) asignacion1 formula_4
 True
 \end{sesion}
 
-\begin{description}
-\item[Nota :] Haskell es perezoso, así que podemos utilizar un universo
+\begin{nota}
+  Haskell es perezoso, así que podemos utilizar un universo
   infinito. Haskell no hace cálculos innecesarios; es decir, para cuando
   encuentra un elemento que cumple la propiedad.
-\end{description}
+\end{nota}
 
 \subsection{Generadores}
 
@@ -560,12 +560,15 @@ varEnTerms :: [Termino] -> [Variable]
 varEnTerms = nub . concatMap varEnTerm
 \end{code}
 
-\begin{description}
-\item[Nota 1:] La función \texttt{nub xs} elimina elementos repetidos en una
+\begin{nota}
+  La función \texttt{nub xs} elimina elementos repetidos en una
   lista \texttt{xs}. Se encuentra en el paquete \texttt{Data.List}.
-\item[Nota 2:] Se emplea un tipo de recursión cruzada entre funciones. Las
+\end{nota}
+
+\begin{nota}
+  Se emplea un tipo de recursión cruzada entre funciones. Las
   funciones se llaman la una a la otra.
-\end{description}
+\end{nota}
 
 Por ejemplo,
 \begin{sesion}

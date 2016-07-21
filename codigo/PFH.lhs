@@ -107,10 +107,10 @@ ghci> [x | x <- ["descartes","pitagoras","gauss"], x `contieneLaLetra` 'e']
 ["descartes"]
 \end{sesion}
 
-\begin{description}
-\item[Nota:] En los distintos ejemplos hemos visto que se pueden componer
+\begin{nota}
+  En los distintos ejemplos hemos visto que se pueden componer
   funciones ya definidas.
-\end{description}
+\end{nota}
 
 \subsection{Funciones map y filter}
 
@@ -224,11 +224,11 @@ algun p = disyuncion . aplicafun p
 todos p = conjuncion . aplicafun p
 \end{code}
 
-\begin{description}
-\item[Nota:] Hemos empleando composición de funciones para la definición de
+\begin{nota}
+  Hemos empleando composición de funciones para la definición de
   \texttt{(algun)} y \texttt{(todos)}. Se representa mediante \texttt{.},y
   se omite el argumento de entrada común a todas las funciones.
-\end{description}
+\end{nota}
 
 En matemáticas, estas funciones representan los cuantificadores lógicos
 $\exists$ y $\forall$, y determinan si alguno de los elementos de una lista
@@ -296,9 +296,9 @@ Un esquema informal del funcionamiento de \texttt{plegadoPorlaDerecha} es
 $$ \texttt{plegadoPorlaDerecha} \ (\otimes) \ z \ [x_1,x_2,\dots , x_n] := 
    x_1 \otimes (x_2 \otimes (\cdots (x_n \otimes z) \cdots )) $$
 
-\begin{description}
-\item[Nota:] $\otimes$ representa una operación cualquiera.
-\end{description}
+\begin{nota}
+  $\otimes$ representa una operación cualquiera.
+\end{nota}
 
 Por lo tanto, podemos dar otras definiciones para las funciones
 \texttt{(conjuncion xs)} y \texttt{(disyuncion xs)}
