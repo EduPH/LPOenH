@@ -30,3 +30,34 @@ import PTLP
   \end{equation*}
   $$H_{i+1}(L) = H_i(L)\cup \{f(t_1,\dots,t_n):f\in \mathcal{F}_n \text{ y } t_i\in H_i (L)\}$$
 \end{Prop}
+
+Para ello, primero necesitamos caracterizar las constantes. Definimos
+la función \texttt{(esConstante c)}.
+
+\index{\texttt{esConstante}}
+\begin{code}
+esConstante :: Termino -> Bool
+esConstante (Ter _ []) = True
+esConstante _ = False
+\end{code}
+
+Un par de ejemplos
+
+\begin{sesion}
+ghci> esConstante a
+True
+ghci> esConstante tx
+False
+\end{sesion}
+
+Definimos una lista con constantes, pues necesitaremos poder
+generar constantes.
+
+\begin{code}
+constantes :: [Termino]
+constantes = [Ter s [] | s <- ["a","b","c","d","e","f","g",
+                               "h","i","j","k","l","m","n",
+                               "o","p","q","r","s","t","u",
+                               "v","w","x","y","z"] ]
+\end{code}
+
