@@ -2,6 +2,7 @@ El contenido de este capítulo se encuentra en el módulo
 \texttt{Herbrand}.
 \begin{code}
 module Herbrand where
+import Data.List
 import LPH
 import PTLP
 \end{code}
@@ -50,14 +51,60 @@ ghci> esConstante tx
 False
 \end{sesion}
 
-Definimos una lista con constantes, pues necesitaremos poder
-generar constantes.
+
+Definimos \texttt{(constForm f)} que devuelve las constantes
+de \texttt{f}.
 
 \begin{code}
-constantes :: [Termino]
-constantes = [Ter s [] | s <- ["a","b","c","d","e","f","g",
-                               "h","i","j","k","l","m","n",
-                               "o","p","q","r","s","t","u",
-                               "v","w","x","y","z"] ]
+constForm :: Form -> [Termino]
+constForm (Atom _ ts)   = nub [ t | t <- ts, esConstante t]
+constForm (Neg f)       = constForm f
+constForm (Impl f1 f2)  = constForm f1 `union` constForm f2
+constForm (Equiv f1 f2) = constForm f1 `union` constForm f2
+constForm (Conj fs)     = nub (concatMap constForm fs)
+constForm (Disy fs)     = nub (concatMap constForm fs)
+constForm (PTodo x f)   = constForm f
+constForm (Ex x f)        = constForm f
 \end{code}
 
+Definimos \texttt{(funForm f)} para obtener todos los símbolos
+funcionales que aparezcan en la fórmula  \texttt{f}.
+
+\begin{code}
+
+\end{code}
+
+Así podemos ya obtener el universo de Herbrand de una fórmula
+\texttt{f} definiendo \texttt{(univHerbrand f)}
+
+\begin{code}
+univHerbrand :: (Eq a, Num a) => a -> Form -> [Termino]
+univHerbrand 0 f = constForm form ++ map (Var) (varEnForm form)
+    where
+      form = skolem f
+\end{code}
+
+Por ejemplo
+
+\begin{sesion}
+ghci> univHerbrand 0 formula_2
+[x,y]
+ghci> univHerbrand 0 formula_3
+[sk0,x,y]
+ghci> univHerbrand 0 formula_4
+[cero,sk0]
+ghci> univHerbrand 0 formula_5
+[sk0,y,x]
+\end{sesion}
+
+\begin{Prop}
+  $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de
+  función.
+\end{Prop}
+
+\section{Base de Herbrand}
+
+\begin{Def}
+  La \textbf{base de Herbrand} de un lenguaje $L$ es el
+  conjunto de átomos básicos de $L$.
+\end{Def}
