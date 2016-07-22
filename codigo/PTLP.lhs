@@ -401,6 +401,8 @@ ghci> skolem formula_3
 (¬R[x,y]⋁(R[x,sk0]⋀R[sk0,y]))
 ghci> skolem formula_4
 R[cero,sk0]
+ghci> skolem formula_5
+(¬P[sk0]⋁∀y Q[x,y])
 \end{sesion}
 
 \section{Tableros semánticos}
