@@ -1,4 +1,3 @@
-\section{Sustitución}
 
 \begin{code}
 module PTLP where
@@ -9,6 +8,7 @@ import Generadores     -- Para ejemplos
 
 \end{code}
 
+\section{Sustitución}
 
 \begin{Def}
   Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una aparición
@@ -230,7 +230,7 @@ ghci> unificadoresListas [tx] [tx]
 \subsection{Forma normal prenexa}
 
 \begin{Def}
-  Una fórmula $F$ está en forma normal prenexa si es de la forma
+  Una fórmula $F$ está en forma \textbf{normal prenexa} si es de la forma
   $\{C_ix_i\}_{\forall i}G$
   donde $C_i\in \{\forall ,\exists \}$ y $G$ no tiene cuantificadores.
 \end{Def}
@@ -332,7 +332,7 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
 \item \texttt{vs} es la lista de los cuantificadores (son necesarios
   en la recursión).
 \item \texttt{pol} es la polaridad, es de tipo \texttt{Bool}.
-\item \texttt{k} es de tipo \texttt{Int} y sirve como idetificador
+\item \texttt{k} es de tipo \texttt{Int} y sirve como identificador
   de la forma de Skolem.
 \end{enumerate}
 

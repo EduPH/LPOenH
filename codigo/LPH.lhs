@@ -488,8 +488,9 @@ Para construir un ejemplo tenemos que interpretar los elementos de una
 fórmula, por ejemplo la \texttt{formula 4}.
 
 \begin{code}
-formula_4 :: Form
+formula_4,formula_5 :: Form
 formula_4 = Ex x (Atom "R" [cero,tx])
+formula_5 =  Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
 \end{code}
 
 \begin{sesion}
