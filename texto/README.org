@@ -1,3 +1,4 @@
+
 Este directorio contiene el código LaTeX del proyecto. Su contenido es
 
 + [[https://github.com/EduPH/LPOenH/blob/master/texto/LPO_en_Haskell.tex][LPO_en_Haskell.tex]] :: Fichero principal del proyecto.
