@@ -269,7 +269,7 @@ Finalmente, necesitamos aplicar los símbolos de predicado al
 universo de Herbrand correspondiente.
 
 Definimos las funciones \texttt{(aplicaPred p ts)} y su generalización 
-\texttt{(apPred ps ts) para aplicar los simbolos de predicado.
+\texttt{(apPred ps ts)} para aplicar los simbolos de predicado.
 
 \index{\texttt{aplicaPred}}
 \begin{code}
