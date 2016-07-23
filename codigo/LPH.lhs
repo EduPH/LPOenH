@@ -325,7 +325,7 @@ para la definición de fórmulas en lógica de primer orden,
 más versátiles que las de la sección anterior.
 
 \begin{code}
-data Termino = Fun Nombre Termino | Var Variable | Ter Nombre [Termino]
+data Termino = Fun Nombre [Termino] | Var Variable | Ter Nombre [Termino]
      deriving (Eq,Ord)
 \end{code}
 
@@ -557,6 +557,7 @@ que aparecen en un término o en una lista de ellos.
 varEnTerm :: Termino -> [Variable]
 varEnTerm (Var v)    = [v]
 varEnTerm (Ter _ ts) = varEnTerms ts
+varEnTerm (Fun _ ts) = varEnTerms ts
 
 varEnTerms :: [Termino] -> [Variable]
 varEnTerms = nub . concatMap varEnTerm

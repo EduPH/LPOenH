@@ -64,16 +64,33 @@ constForm (Equiv f1 f2) = constForm f1 `union` constForm f2
 constForm (Conj fs)     = nub (concatMap constForm fs)
 constForm (Disy fs)     = nub (concatMap constForm fs)
 constForm (PTodo x f)   = constForm f
-constForm (Ex x f)        = constForm f
+constForm (Ex x f)      = constForm f
 \end{code}
 
-Definimos \texttt{(funForm f)} para obtener todos los símbolos
+Definimos \texttt{(esFuncion f)} y \texttt{(funForm f)} para obtener todos los símbolos
 funcionales que aparezcan en la fórmula  \texttt{f}.
 
 \begin{code}
-
+esFuncion :: Termino -> Bool
+esFuncion (Fun _ _) = True
+esFuncion _ = False
 \end{code}
 
+\begin{code}
+funForm :: Form -> [Termino]
+funForm (Atom _ ts)   = nub [ t | t <- ts, esFuncion t]
+funForm (Neg f)       = funForm f
+funForm (Impl f1 f2)  = funForm f1 `union` funForm f2
+funForm (Equiv f1 f2) = funForm f1 `union` funForm f2
+funForm (Conj fs)     = nub (concatMap funForm fs)
+funForm (Disy fs)     = nub (concatMap funForm fs)
+funForm (PTodo x f)   = funForm f
+funForm (Ex x f)      = funForm f
+\end{code}
+
+\begin{code}
+formula_6 = PTodo x (Atom "P" [Fun "f" [tx]])
+\end{code}
 Así podemos ya obtener el universo de Herbrand de una fórmula
 \texttt{f} definiendo \texttt{(univHerbrand f)}
 
