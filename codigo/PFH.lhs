@@ -1,5 +1,6 @@
 \begin{code}
 module PFH where 
+import Data.List
 \end{code}
 
 \section{Introducción a Haskell}
@@ -112,6 +113,17 @@ ghci> [x | x <- ["descartes","pitagoras","gauss"], x `contieneLaLetra` 'e']
   funciones ya definidas.
 \end{nota}
 
+Otro ejemplo que nos será importante es poder construir subconjuntos
+de una lista.
+
+\begin{code}
+subconjuntos :: [t] -> [[t]]
+subconjuntos [] = [[]]
+subconjuntos (x:xs) = zss++[x:ys | ys <- zss]
+    where zss = subconjuntos xs
+subconjuntosTam :: Int -> [a] -> [[a]]
+subconjuntosTam n xs = concat [permutations x | x <- subconjuntos xs, length x == n]
+\end{code}
 \subsection{Funciones map y filter}
 
 Introducimos un par de funciones de mucha relevancia en el uso de listas en

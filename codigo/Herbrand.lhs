@@ -3,6 +3,7 @@ El contenido de este capítulo se encuentra en el módulo
 \begin{code}
 module Herbrand where
 import Data.List
+import PFH
 import LPH
 import PTLP
 \end{code}
@@ -89,15 +90,6 @@ funForm (PTodo x f)   = funForm f
 funForm (Ex x f)      = funForm f
 \end{code}
 
-\begin{code}
-subconjuntos :: [t] -> [[t]]
-subconjuntos [] = [[]]
-subconjuntos (x:xs) = zss++[x:ys | ys <- zss]
-    where zss = subconjuntos xs
-subconjuntosTam :: Int -> [a] -> [[a]]
-subconjuntosTam n xs = [ x | x <- subconjuntos xs, length x == n]
-\end{code}
-
 \begin{Def}
   La \textbf{aridad} de una función $f(x_1,\dots,x_n$ es el número número de
   argumentos a los que se aplica.
@@ -165,14 +157,19 @@ ghci> univHerbrand 0 formula_5
 
 Definimos  fórmulas con  términos funcionales para el ejemplo
 \begin{code}
+formula_6,formula_7 :: Form
 formula_6 = PTodo x (Atom "P" [Ter "f" [tx]])
 formula_7 = PTodo x (Atom "P" [Ter "f" [tx,ty]])
 \end{code}
 
-quedando por ejemplo el nivel 5 como
+quedando por ejemplo 
 \begin{sesion}
 ghci> univHerbrand 5 formula_6
 [x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]],f[f[f[f[f[x]]]]]]
+ghci>  univHerbrand 2 formula_7
+[x,y,f[x,y],f[y,x],f[f[x,y],f[y,x]],f[f[y,x],f[x,y]],
+f[y,f[y,x]],f[f[y,x],y],f[y,f[x,y]],f[f[x,y],y],
+f[x,f[y,x]],f[f[y,x],x],f[x,f[x,y]],f[f[x,y],x]]
 \end{sesion}
 
 \section{Base de Herbrand}
