@@ -172,6 +172,18 @@ f[y,f[y,x]],f[f[y,x],y],f[y,f[x,y]],f[f[x,y],y],
 f[x,f[y,x]],f[f[y,x],x],f[x,f[x,y]],f[f[x,y],x]]
 \end{sesion}
 
+Hay que tener en cuenta que se dispara la cantidad de elementos
+del universo de Herbrand ante términos funcionales con aridad grande.
+\begin{sesion}
+ghci> length (univHerbrand 0 formula_7)
+2
+ghci> length (univHerbrand 1 formula_7)
+4
+ghci> length (univHerbrand 2 formula_7)
+14
+ghci> length (univHerbrand 3 formula_7)
+184
+\end{sesion}
 \section{Base de Herbrand}
 
 \begin{Def}
