@@ -325,7 +325,7 @@ para la definición de fórmulas en lógica de primer orden,
 más versátiles que las de la sección anterior.
 
 \begin{code}
-data Termino = Var Variable | Ter Nombre [Termino]
+data Termino = Fun Nombre Termino | Var Variable | Ter Nombre [Termino]
      deriving (Eq,Ord)
 \end{code}
 
@@ -353,7 +353,8 @@ su representación.
 
 \begin{code}
 instance Show Termino where
-    show (Var v)    = show v
+    show (Fun str t)  = str ++"(" ++ show t ++ ")"
+    show (Var v)      = show v
     show (Ter str []) = str
     show (Ter str ts) = str ++ show ts
 \end{code}
