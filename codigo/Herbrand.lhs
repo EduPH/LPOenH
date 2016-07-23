@@ -94,7 +94,7 @@ funForm (Ex x f)      = funForm f
 \end{code}
 
 \begin{Def}
-  La \textbf{aridad} de una función $f(x_1,\dots,x_n$ es el número número de
+  La \textbf{aridad} de un operador $f(x_1,\dots,x_n)$ es el número número de
   argumentos a los que se aplica.
 \end{Def}
 
@@ -193,7 +193,7 @@ ghci> length (univHerbrand 3 formula_7)
 \section{Base de Herbrand}
 
 \begin{Def}
-  La \textbf{base de Herbrand} de un lenguaje $L$ es el
+  La \textbf{base de Herbrand} $\mathcal{BH}(L)$ de un lenguaje $L$ es el
   conjunto de átomos básicos de $L$.
 \end{Def}
 
@@ -292,3 +292,8 @@ Definimos la función \texttt{(baseHerbrand n f)}
 baseHerbrand :: (Eq a, Num a) => a -> Form -> [Form]
 baseHerbrand n f = apPred (predForm f) (univHerbrand n f)
 \end{code}
+
+\begin{Teo}
+  $\mathcal{BH}(L)$ es finita si y sólo si $L$ no tiene símbolos
+  de función.
+\end{Teo}
