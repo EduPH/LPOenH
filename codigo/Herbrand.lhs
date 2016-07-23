@@ -88,17 +88,34 @@ funForm (PTodo x f)   = funForm f
 funForm (Ex x f)      = funForm f
 \end{code}
 
-\begin{code}
-formula_6 = PTodo x (Atom "P" [Fun "f" [tx]])
-\end{code}
-Así podemos ya obtener el universo de Herbrand de una fórmula
-\texttt{f} definiendo \texttt{(univHerbrand f)}
+También necesitamos definir dos funciones auxiliares
+que apliquen los símbolos funcionales a las constantes del
+universo de Herbrand. Las funciones son \texttt{(aplicaFunAConst f c)} 
+que aplica el símbolo funcional \texttt{f} a la constante \texttt{c}, y
+\texttt{(aplicaFun fs cs)} que es una generalización a listas de la 
+anterior.
+constante 
 
+\index{\texttt{aplicaFunAConst}}
+\index{\texttt{aplicaFun}}
+\begin{code}
+aplicaFunAConst (Fun s _) c  = Fun s  [c]
+aplicaFun [] cs = []
+aplicaFun (f:fs) cs = map (aplicaFunAConst f) cs ++ aplicaFun fs cs
+\end{code}
+
+Así podemos ya obtener el universo de Herbrand de una fórmula
+\texttt{f} definiendo \texttt{(univHerbrand n f)}
+
+
+\index{\texttt{univHerbrand}}
 \begin{code}
 univHerbrand :: (Eq a, Num a) => a -> Form -> [Termino]
 univHerbrand 0 f = constForm form ++ map (Var) (varEnForm form)
     where
       form = skolem f
+univHerbrand 1 f = univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f)
+univHerbrand n f = univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f)
 \end{code}
 
 Por ejemplo
@@ -118,6 +135,23 @@ ghci> univHerbrand 0 formula_5
   $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de
   función.
 \end{Prop}
+
+Definimos una fórmula con un término funcional para el ejemplo
+\begin{code}
+formula_6 = PTodo x (Atom "P" [Fun "f" [tx]])
+\end{code}
+
+quedando por ejemplo el nivel 6 como
+\begin{sesion}
+ghci> univHerbrand 5 formula_6
+[x,f([x]),f([x]),f([f([x])]),f([x]),f([f([x])]),f([f([x])]),f([f([f([x])])]),
+f([x]),f([f([x])]),f([f([x])]),f([f([f([x])])]),f([f([x])]),f([f([f([x])])]),
+f([f([f([x])])]),f([f([f([f([x])])])]),f([x]),f([f([x])]),f([f([x])]),
+f([f([f([x])])]),f([f([x])]),f([f([f([x])])]),f([f([f([x])])]),
+f([f([f([f([x])])])]),f([f([x])]),f([f([f([x])])]),f([f([f([x])])]),
+f([f([f([f([x])])])]),f([f([f([x])])]),f([f([f([f([x])])])]),
+f([f([f([f([x])])])]),f([f([f([f([f([x])])])])])]
+\end{sesion}
 
 \section{Base de Herbrand}
 
