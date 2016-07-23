@@ -115,9 +115,15 @@ univHerbrand :: (Eq a, Num a) => a -> Form -> [Termino]
 univHerbrand 0 f = constForm form ++ map (Var) (varEnForm form)
     where
       form = skolem f
-univHerbrand 1 f = nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
-univHerbrand n f = nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f))
+univHerbrand 1 f = 
+    nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
+univHerbrand n f = 
+    nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f))
 \end{code}
+\begin{nota}
+  Hemos definido el universo de Herbrand para términos funcionales de
+  aridad 1.
+\end{nota}
 
 Por ejemplo
 
@@ -142,7 +148,7 @@ Definimos una fórmula con un término funcional para el ejemplo
 formula_6 = PTodo x (Atom "P" [Ter "f" [tx]])
 \end{code}
 
-quedando por ejemplo el nivel 6 como
+quedando por ejemplo el nivel 5 como
 \begin{sesion}
 ghci> univHerbrand 5 formula_6
 [x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]],f[f[f[f[f[x]]]]]]
