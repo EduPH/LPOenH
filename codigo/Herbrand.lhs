@@ -265,6 +265,30 @@ ghci> predForm formula_2
 [R[z,y]]
 \end{sesion}
 
-Finalmente, necesitamos aplicar los símbolos de relación al
+Finalmente, necesitamos aplicar los símbolos de predicado al
 universo de Herbrand correspondiente.
 
+Definimos las funciones \texttt{(aplicaPred p ts)} y su generalización 
+\texttt{(apPred ps ts) para aplicar los simbolos de predicado.
+
+\index{\texttt{aplicaPred}}
+\begin{code}
+aplicaPred :: Form -> [Termino] -> Form
+aplicaPred (Atom str _) ts = Atom str ts
+\end{code}
+
+\index{\texttt{apPred}}
+\begin{code}
+apPred :: [Form] -> [Termino] -> [Form]
+apPred [] ts = []
+apPred (p:ps) ts= map (aplicaPred p) (subconjuntosTam (aridadP p) ts) 
+                            ++ apPred ps ts
+\end{code}
+
+Definimos la función \texttt{(baseHerbrand n f)}
+
+\index{\texttt{baseHerbrand}}
+\begin{code}
+baseHerbrand :: (Eq a, Num a) => a -> Form -> [Form]
+baseHerbrand n f = apPred (predForm f) (univHerbrand n f)
+\end{code}
