@@ -297,3 +297,26 @@ baseHerbrand n f = apPred (predForm f) (univHerbrand n f)
   $\mathcal{BH}(L)$ es finita si y sólo si $L$ no tiene símbolos
   de función.
 \end{Teo}
+
+Algunos ejemplos
+
+\begin{sesion}
+ghci> baseHerbrand 0 formula_2
+[R[x,y],R[y,x]]
+ghci> baseHerbrand 0 formula_3
+[R[x,y],R[y,x],R[sk0,y],R[y,sk0],R[sk0,x],R[x,sk0]]
+ghci> baseHerbrand 0 formula_4
+[R[cero,sk0],R[sk0,cero]]
+ghci> baseHerbrand 0 formula_5
+[P[x],P[y],P[sk0],Q[y,x],Q[x,y],Q[sk0,x],Q[x,sk0],Q[sk0,y],Q[y,sk0]]
+ghci> baseHerbrand 0 formula_6
+[P[x]]
+ghci> baseHerbrand 1 formula_6
+[P[f[x]],P[x]]
+ghci> baseHerbrand 2 formula_6
+[P[f[f[x]]],P[f[x]],P[x]]
+ghci> univHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
+[a,b,c]
+ghci> baseHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
+[P[c],P[b],P[a]]
+\end{sesion}
