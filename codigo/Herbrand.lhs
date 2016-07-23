@@ -72,8 +72,8 @@ funcionales que aparezcan en la fórmula  \texttt{f}.
 
 \begin{code}
 esFuncion :: Termino -> Bool
-esFuncion (Ter _ [_]) = True
-esFuncion (Ter _ [])  = False
+esFuncion (Ter _ xs) | length xs >= 1 = True
+                     | otherwise = False
 esFuncion _ = False
 \end{code}
 
@@ -89,6 +89,27 @@ funForm (PTodo x f)   = funForm f
 funForm (Ex x f)      = funForm f
 \end{code}
 
+\begin{code}
+subconjuntos :: [t] -> [[t]]
+subconjuntos [] = [[]]
+subconjuntos (x:xs) = zss++[x:ys | ys <- zss]
+    where zss = subconjuntos xs
+subconjuntosTam :: Int -> [a] -> [[a]]
+subconjuntosTam n xs = [ x | x <- subconjuntos xs, length x == n]
+\end{code}
+
+\begin{Def}
+  La \textbf{aridad} de una función $f(x_1,\dots,x_n$ es el número número de
+  argumentos a los que se aplica.
+\end{Def}
+
+Definimos  \texttt{(aridad f)} de una función en Haskell.
+
+\begin{code}
+aridad :: Termino -> Int
+aridad (Ter _ ts) = length ts
+\end{code}
+
 También necesitamos definir dos funciones auxiliares
 que apliquen los símbolos funcionales a las constantes del
 universo de Herbrand. Las funciones son \texttt{(aplicaFunAConst f c)} 
@@ -100,9 +121,11 @@ constante
 \index{\texttt{aplicaFunAConst}}
 \index{\texttt{aplicaFun}}
 \begin{code}
-aplicaFunAConst (Ter s _) c  = Ter s  [c]
+aplicaFunAConst (Ter s _) ts  = Ter s  ts
 aplicaFun [] cs = []
-aplicaFun (f:fs) cs = map (aplicaFunAConst f) cs ++ aplicaFun fs cs
+aplicaFun (f:fs) cs = 
+    map (aplicaFunAConst f) (subconjuntosTam (aridad f) cs) 
+                            ++ aplicaFun fs cs
 \end{code}
 
 Así podemos ya obtener el universo de Herbrand de una fórmula
@@ -120,10 +143,7 @@ univHerbrand 1 f =
 univHerbrand n f = 
     nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f))
 \end{code}
-\begin{nota}
-  Hemos definido el universo de Herbrand para términos funcionales de
-  aridad 1.
-\end{nota}
+
 
 Por ejemplo
 
@@ -143,9 +163,10 @@ ghci> univHerbrand 0 formula_5
   función.
 \end{Prop}
 
-Definimos una fórmula con un término funcional para el ejemplo
+Definimos  fórmulas con  términos funcionales para el ejemplo
 \begin{code}
 formula_6 = PTodo x (Atom "P" [Ter "f" [tx]])
+formula_7 = PTodo x (Atom "P" [Ter "f" [tx,ty]])
 \end{code}
 
 quedando por ejemplo el nivel 5 como
