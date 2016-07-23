@@ -56,6 +56,7 @@ False
 Definimos \texttt{(constForm f)} que devuelve las constantes
 de \texttt{f}.
 
+\index{\texttt{constForm}}
 \begin{code}
 constForm :: Form -> [Termino]
 constForm (Atom _ ts)   = nub [ t | t <- ts, esConstante t]
@@ -71,6 +72,7 @@ constForm (Ex x f)      = constForm f
 Definimos \texttt{(esFuncion f)} y \texttt{(funForm f)} para obtener todos los símbolos
 funcionales que aparezcan en la fórmula  \texttt{f}.
 
+\index{\texttt{esFuncion}}
 \begin{code}
 esFuncion :: Termino -> Bool
 esFuncion (Ter _ xs) | length xs >= 1 = True
@@ -78,6 +80,7 @@ esFuncion (Ter _ xs) | length xs >= 1 = True
 esFuncion _ = False
 \end{code}
 
+\index{\texttt{funForm}}
 \begin{code}
 funForm :: Form -> [Termino]
 funForm (Atom _ ts)   = nub [ t | t <- ts, esFuncion t]
@@ -95,11 +98,12 @@ funForm (Ex x f)      = funForm f
   argumentos a los que se aplica.
 \end{Def}
 
-Definimos  \texttt{(aridad f)} de una función en Haskell.
+Definimos  \texttt{(aridadF f)} de una función en Haskell.
 
+\index{\texttt{aridadF}}
 \begin{code}
-aridad :: Termino -> Int
-aridad (Ter _ ts) = length ts
+aridadF :: Termino -> Int
+aridadF (Ter _ ts) = length ts
 \end{code}
 
 También necesitamos definir dos funciones auxiliares
@@ -116,7 +120,7 @@ constante
 aplicaFunAConst (Ter s _) ts  = Ter s  ts
 aplicaFun [] cs = []
 aplicaFun (f:fs) cs = 
-    map (aplicaFunAConst f) (subconjuntosTam (aridad f) cs) 
+    map (aplicaFunAConst f) (subconjuntosTam (aridadF f) cs) 
                             ++ aplicaFun fs cs
 \end{code}
 
@@ -126,7 +130,7 @@ Así podemos ya obtener el universo de Herbrand de una fórmula
 
 \index{\texttt{univHerbrand}}
 \begin{code}
-univHerbrand :: (Eq a, Num a) => a -> Form -> [Termino]
+univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
 univHerbrand 0 f = constForm form ++ map (Var) (varEnForm form)
     where
       form = skolem f
@@ -156,13 +160,15 @@ ghci> univHerbrand 0 formula_5
 \end{Prop}
 
 Definimos  fórmulas con  términos funcionales para el ejemplo
+
 \begin{code}
 formula_6,formula_7 :: Form
 formula_6 = PTodo x (Atom "P" [Ter "f" [tx]])
 formula_7 = PTodo x (Atom "P" [Ter "f" [tx,ty]])
 \end{code}
 
-quedando por ejemplo 
+quedando como ejemplo 
+
 \begin{sesion}
 ghci> univHerbrand 5 formula_6
 [x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]],f[f[f[f[f[x]]]]]]
@@ -190,3 +196,75 @@ ghci> length (univHerbrand 3 formula_7)
   La \textbf{base de Herbrand} de un lenguaje $L$ es el
   conjunto de átomos básicos de $L$.
 \end{Def}
+
+Con el objetivo de definir una función que obtenga la base
+de Herbrand; necesitamos poder calcular el conjunto de símbolos
+de predicado de una fórmula.
+
+Definimos \texttt{(aridadP p)} que determina la aridad del
+predicado \texttt{p}.
+\begin{code}
+aridadP :: Form -> Int
+aridadP (Atom str xs) = length xs
+\end{code}
+
+Definimos \texttt{(esPredicado f)} que determina si \texttt{f}
+es un predicado.
+
+\index{\texttt{esPredicado}}
+\begin{code}
+esPredicado :: Form -> Bool
+esPredicado (Atom str []) = False
+esPredicado (Atom str ts) = True
+esPredicado _ = False
+\end{code}
+
+Calculamos el conjunto de los predicados de una fórmula \texttt{f}
+definiendo la función \texttt{(predicadosForm f)}.
+
+\index{\texttt{predicadosForm}}
+\begin{code}
+predicadosForm :: Form -> [Form]
+predicadosForm p@(Atom str _) = if esPredicado p then [p] else []
+predicadosForm (Neg f)        = predicadosForm f
+predicadosForm (Impl f1 f2)   = 
+    predicadosForm f1 `union` predicadosForm f2
+predicadosForm (Equiv f1 f2)  = 
+    predicadosForm f1 `union` predicadosForm f2
+predicadosForm (Conj fs)      = nub (concatMap predicadosForm fs)
+predicadosForm (Disy fs)      = nub (concatMap predicadosForm fs)
+predicadosForm (PTodo x f)    = predicadosForm f
+predicadosForm (Ex x f)       = predicadosForm f
+\end{code}
+
+Esta función repite el mismo predicado si tiene distintos argumentos,
+como por ejemplo 
+
+\begin{sesion}
+ghci> predicadosForm formula_2
+[R[x,y],R[x,z],R[z,y]]
+\end{sesion}
+
+Por lo tanto, definimos \texttt{(predForm f)} que obtiene
+los símbolos de predicado sin repeticiones.
+
+\begin{code}
+predForm :: Form -> [Form]
+predForm = noRep . predicadosForm
+    where
+      noRep [] = []
+      noRep ((Atom st t):ps) = 
+          if null ([ Atom str ts  | (Atom str ts) <- ps, str== st] )
+          then (Atom st t):(noRep ps) else noRep ps
+\end{code}
+
+Así obtenemos
+
+\begin{sesion}
+ghci> predForm formula_2
+[R[z,y]]
+\end{sesion}
+
+Finalmente, necesitamos aplicar los símbolos de relación al
+universo de Herbrand correspondiente.
+
