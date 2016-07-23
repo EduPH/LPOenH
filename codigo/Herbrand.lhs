@@ -72,7 +72,8 @@ funcionales que aparezcan en la fórmula  \texttt{f}.
 
 \begin{code}
 esFuncion :: Termino -> Bool
-esFuncion (Fun _ _) = True
+esFuncion (Ter _ [_]) = True
+esFuncion (Ter _ [])  = False
 esFuncion _ = False
 \end{code}
 
@@ -99,7 +100,7 @@ constante
 \index{\texttt{aplicaFunAConst}}
 \index{\texttt{aplicaFun}}
 \begin{code}
-aplicaFunAConst (Fun s _) c  = Fun s  [c]
+aplicaFunAConst (Ter s _) c  = Ter s  [c]
 aplicaFun [] cs = []
 aplicaFun (f:fs) cs = map (aplicaFunAConst f) cs ++ aplicaFun fs cs
 \end{code}
@@ -114,8 +115,8 @@ univHerbrand :: (Eq a, Num a) => a -> Form -> [Termino]
 univHerbrand 0 f = constForm form ++ map (Var) (varEnForm form)
     where
       form = skolem f
-univHerbrand 1 f = univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f)
-univHerbrand n f = univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f)
+univHerbrand 1 f = nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
+univHerbrand n f = nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f))
 \end{code}
 
 Por ejemplo
@@ -138,19 +139,13 @@ ghci> univHerbrand 0 formula_5
 
 Definimos una fórmula con un término funcional para el ejemplo
 \begin{code}
-formula_6 = PTodo x (Atom "P" [Fun "f" [tx]])
+formula_6 = PTodo x (Atom "P" [Ter "f" [tx]])
 \end{code}
 
 quedando por ejemplo el nivel 6 como
 \begin{sesion}
 ghci> univHerbrand 5 formula_6
-[x,f([x]),f([x]),f([f([x])]),f([x]),f([f([x])]),f([f([x])]),f([f([f([x])])]),
-f([x]),f([f([x])]),f([f([x])]),f([f([f([x])])]),f([f([x])]),f([f([f([x])])]),
-f([f([f([x])])]),f([f([f([f([x])])])]),f([x]),f([f([x])]),f([f([x])]),
-f([f([f([x])])]),f([f([x])]),f([f([f([x])])]),f([f([f([x])])]),
-f([f([f([f([x])])])]),f([f([x])]),f([f([f([x])])]),f([f([f([x])])]),
-f([f([f([f([x])])])]),f([f([f([x])])]),f([f([f([f([x])])])]),
-f([f([f([f([x])])])]),f([f([f([f([f([x])])])])])]
+[x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]],f[f[f[f[f[x]]]]]]
 \end{sesion}
 
 \section{Base de Herbrand}
