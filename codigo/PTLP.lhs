@@ -46,6 +46,15 @@ hacerApropiada :: Sust -> Sust
 hacerApropiada xs = [x | x <- xs, Var (fst x) /= snd x]
 \end{code}
 
+Por ejemplo
+
+\begin{sesion}
+ghci> hacerApropiada [(x,tx)]
+[]
+ghci> hacerApropiada [(x,tx),(x,ty)]
+[(x,y)]
+\end{sesion}
+
 Como la sustitución es una aplicación, podemos distinguir \texttt{dominio} y
 \texttt{recorrido}.
 
@@ -59,6 +68,18 @@ recorrido :: Sust -> [Termino]
 recorrido = map snd
 \end{code}
 
+Por ejemplo
+
+\begin{sesion}
+ghci> dominio [(x,tx)]
+[x]
+ghci> dominio [(x,tx),(x,ty)]
+[x,x]
+ghci> recorrido [(x,tx)]
+[x]
+ghci> recorrido [(x,tx),(x,ty)]
+[x,y]
+\end{sesion}
 Posteriormente, se define una función que hace la sustitución de una
 variable concreta. La denotamos \texttt{(sustituyeVar sust var)}
 \begin{code}
@@ -82,6 +103,15 @@ susTerm s (Ter f ts) = Ter f (susTerms s ts)
 susTerms :: Sust -> [Termino] -> [Termino]
 susTerms = map . susTerm
 \end{code}
+
+Por ejemplo
+
+\begin{sesion}
+ghci> susTerm [(x,ty)]  tx
+y
+ghci> susTerms [(x,ty),(y,tx)] [tx,ty]
+[y,x]
+\end{sesion}
 
 Finalmente, esta construcción nos sirve para generalizar a cualquier
 fórmula. Con este fin definimos \texttt{(sustitucionForm s f)}, donde
@@ -111,6 +141,19 @@ sustitucionForm s (Ex v f) =
   Ex v (sustitucionForm s' f)
   where s' = [x | x <- s, fst x /= v]
 \end{code}
+
+Por ejemplo
+\begin{sesion}
+ghci> formula_3
+(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> sustitucionForm [(x,ty)] formula_3
+(R[y,y]⟹∃z (R[y,z]⋀R[z,y]))
+\end{sesion}
+
+\begin{comentario}
+  Revisar para formula 2
+\end{comentario}
+
 
 Se puede generalizar a una lista de fórmulas mediante la funcion
 \texttt{(sustitucionForms s fs)}. La hemos necesitado en la definición de la

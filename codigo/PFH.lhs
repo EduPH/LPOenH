@@ -121,8 +121,10 @@ subconjuntos :: [t] -> [[t]]
 subconjuntos [] = [[]]
 subconjuntos (x:xs) = zss++[x:ys | ys <- zss]
     where zss = subconjuntos xs
+
 subconjuntosTam :: Int -> [a] -> [[a]]
-subconjuntosTam n xs = concat [permutations x | x <- subconjuntos xs, length x == n]
+subconjuntosTam n xs = 
+    concat [permutations x | x <- subconjuntos xs, length x == n]
 \end{code}
 \subsection{Funciones map y filter}
 

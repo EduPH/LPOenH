@@ -21,8 +21,8 @@ botánica. La cual no es completa, pero da una idea de la potencia de Haskell
 para este tipo de uso.
 
 Primero definimos los elementos que pretendemos clasificar, y que cumplirán los
-predicados. Para ello, definimos como función cada elemento de un dominio de
-un dominio de entidades.
+predicados. Para ello, definimos como función cada elemento de un            
+dominio de entidades.
 
 \begin{code}
 adelfas, aloeVera, boletus, cedro, chlorella, girasol, guisante, helecho, 

@@ -180,7 +180,7 @@ B
   tal que
   \begin{enumerate}
   \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
-  \item $I$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
+  \item $\mathcal{I}$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
   \end{enumerate}
 \end{Def}
 
@@ -641,7 +641,7 @@ variablesLibres formula_4  ==  []
 \end{sesion}
 
 \begin{Def}
-  Una fórmula abierta es una fórmula con variables libres.
+  Una \textbf{fórmula abierta} es una fórmula con variables libres.
 \end{Def}
 
 La función \texttt{(formulaAbierta f)} determina si una fórmula dada es abierta.
