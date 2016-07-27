@@ -137,7 +137,8 @@ univHerbrand 0 f = constForm form ++ map (Var) (varEnForm form)
 univHerbrand 1 f = 
     nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
 univHerbrand n f = 
-    nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  (univHerbrand (n-1) f))
+    nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  
+        (univHerbrand (n-1) f))
 \end{code}
 
 
@@ -265,6 +266,16 @@ ghci> predForm formula_2
 [R[z,y]]
 \end{sesion}
 
+Podemos tambien obtener una lista de los 
+símbolos de predicado definiendo \texttt{(simbolosPred f)}
+
+\index{\texttt{simbolosPred}}
+\begin{code}
+simbolosPred :: Form -> [Nombre]
+simbolosPred f = [str | (Atom str _) <- ps]
+    where ps = predForm f
+\end{code}
+  
 Finalmente, necesitamos aplicar los símbolos de predicado al
 universo de Herbrand correspondiente.
 
@@ -382,6 +393,3 @@ ghci> baseHerbrand 4 formula_6
   Reflexionando sobre cómo formularlo de forma eficiente
 \end{comentario}
 
-\begin{code}
-
-\end{code}
