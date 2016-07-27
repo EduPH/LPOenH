@@ -378,4 +378,10 @@ ghci> baseHerbrand 4 formula_6
   de funciones.
 \end{nota}
 
+\begin{comentario}
+  Reflexionando sobre cómo formularlo de forma eficiente
+\end{comentario}
 
+\begin{code}
+
+\end{code}
