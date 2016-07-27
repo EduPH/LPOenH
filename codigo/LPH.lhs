@@ -456,11 +456,11 @@ type Interpretacion a = (InterpretacionR a, InterpretacionF a)
 
 Siguiendo la línea de la sección anterior, definimos una función que determine
 el valor de una fórmula.  Dicha función la denotamos por 
-\texttt{(val u i f s form)}, en la que \texttt{u} denota el universo, \texttt{i} es la
+\texttt{(valorF u i f s form)}, en la que \texttt{u} denota el universo, \texttt{i} es la
 interpretación de las propiedades o relaciones, \texttt{f} es la interpretación
 del término funcional, \texttt{s} la asignación, y \texttt{form} una fórmula.
 
-\index{\texttt{val}}
+\index{\texttt{valorF}}
 \begin{code}
 valorF :: Eq a => Universo a -> Interpretacion a -> Asignacion a 
                              -> Form -> Bool

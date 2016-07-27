@@ -309,14 +309,73 @@ ghci> baseHerbrand 0 formula_4
 [R[cero,sk0],R[sk0,cero]]
 ghci> baseHerbrand 0 formula_5
 [P[x],P[y],P[sk0],Q[y,x],Q[x,y],Q[sk0,x],Q[x,sk0],Q[sk0,y],Q[y,sk0]]
+ghci> univHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
+[a,b,c]
+ghci> baseHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
+[P[c],P[b],P[a]]
+\end{sesion}
+
+Podemos hacer un análisis de la fórmula 6, calculando
+sus constantes, símbolos funcionales y símbolos
+de predicado. Así como el universo de Herbrand y la base de
+Herbrand.
+
+\begin{sesion}
+ghci> formula_6
+∀x P[f[x]]
+ghci> constForm formula_6
+[]
+ghci> funForm formula_6
+[f[x]]
+ghci> predForm formula_6
+[P[f[x]]]
+ghci> univHerbrand 0 formula_6
+[x]
+ghci> univHerbrand 1 formula_6
+[x,f[x]]
+ghci> univHerbrand 2 formula_6
+[x,f[x],f[f[x]]]
+ghci> univHerbrand 3 formula_6
+[x,f[x],f[f[x]],f[f[f[x]]]]
+ghci> univHerbrand 4 formula_6
+[x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]]]
 ghci> baseHerbrand 0 formula_6
 [P[x]]
 ghci> baseHerbrand 1 formula_6
 [P[f[x]],P[x]]
 ghci> baseHerbrand 2 formula_6
 [P[f[f[x]]],P[f[x]],P[x]]
-ghci> univHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
-[a,b,c]
-ghci> baseHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
-[P[c],P[b],P[a]]
+ghci> baseHerbrand 3 formula_6
+[P[f[f[f[x]]]],P[f[f[x]]],P[f[x]],P[x]]
+ghci> baseHerbrand 4 formula_6
+[P[f[f[f[f[x]]]]],P[f[f[f[x]]]],P[f[f[x]]],P[f[x]],P[x]]
 \end{sesion}
+
+\section{Interpretaciones de Herbrand}
+
+\begin{Def}
+  Una  \textbf{interpretación de Herbrand} es una interpretación
+  $\mathcal{I} = (\mathcal{U},I)$ tal que
+  \begin{itemize}
+  \item $\mathcal{U}$ es el universo de Herbrand de $F$.
+  \item $I(c)=c$, para constante $c$ de $F$.
+  \item $I(f)=f$, para cada símbolo funcional de $F$.
+  \end{itemize}
+\end{Def}
+\section{Modelos de Herbrand}
+\begin{Def}
+  Un \textbf{modelo de Herbrand} de una fórmula $F$ o
+  un conjunto de fórmulas $S$ es una interpretación
+  que sea modelo de $F$ o de $S$.
+\end{Def}
+
+\begin{nota}
+  Los conjuntos de fórmulas pueden ser representados
+  mediante \textbf{cláusulas} que no son más que fórmulas
+  entre comas, donde las comas representan la
+  conjunción. Posteriormente definiremos las cláusulas
+  pero por ahora representamos conjuntos como conjunción
+  de funciones.
+\end{nota}
+
+
