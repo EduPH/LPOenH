@@ -394,28 +394,41 @@ Definimos \texttt{(valHerbrand f)} para determinar si existe
 algún subconjunto de la base de Herbrand que sea modelo de la 
 fórmula \texttt{f}.
 
+Para la recursión necesitamos la fórmula \texttt{(valorHerbrand f f)}
+pues hace recursión en una de las \texttt{f} para luego calcular la
+base de Herbrand de la otra.
+
 \index{\texttt{valorHerbrand}}
 \begin{code}
-valorHerbrand :: Form -> Form -> Bool
-valorHerbrand p@(Atom str ts) f = elem p (baseHerbrand 0 f)
-valorHerbrand (Neg g) f = not (valorHerbrand g f)
-valorHerbrand (Impl f1 f2) f = 
-    valorHerbrand f1 f <= valorHerbrand f2 f
-valorHerbrand (Equiv f1 f2) f =
-    valorHerbrand f1 f == valorHerbrand f2 f
-valorHerbrand (Conj fs) f =
-    all (valorHerbrand f) fs
-valorHerbrand (Disy fs) f =
-    any (valorHerbrand f) fs
-valorHerbrand (PTodo v g) f = undefined
-valorHerbrand (Ex v g)  f   = undefined
+valorHerbrand :: Form -> Form -> Int -> Bool
+valorHerbrand p@(Atom str ts) f n = elem p (baseHerbrand n f)
+valorHerbrand (Neg g) f n = not (valorHerbrand g f n)
+valorHerbrand (Impl f1 f2) f n = 
+    valorHerbrand f1 f n <= valorHerbrand f2 f n
+valorHerbrand (Equiv f1 f2) f n =
+    valorHerbrand f1 f n == valorHerbrand f2 f n
+valorHerbrand (Conj fs) f n =
+    all (==True) [valorHerbrand g f n | g <- fs]
+valorHerbrand (Disy fs) f n =
+    any (==True) [valorHerbrand g f n | g <- fs]
+valorHerbrand (PTodo v g) f n = valorHerbrand g f n
+valorHerbrand (Ex v g)  f n = valorHerbrand g f n
 \end{code}
+
+\begin{nota}
+  Se puede cambiar la \texttt{n} de la basde de Herbrand a la
+  que se calcula la existencia de modelo. Eso es interesante
+  para fórmulas con símbolos funcionales.
+\end{nota}
 
 \index{\texttt{valHerbrand}}
 \begin{code}
-valHerbrand :: Form -> Bool
-valHerbrand f = valorHerbrand f f
+valHerbrand :: Form -> Int -> Bool
+valHerbrand g n = valorHerbrand f f n
+    where f = skolem g
 \end{code}
+
+Añadimos un par de fórmulas para los ejemplos
 
 \begin{code}
 formula_8 = Impl (Atom "P" [tx]) (Atom "Q" [tx])
@@ -423,8 +436,25 @@ formula_9 = Conj [Atom "P" [tx], Neg (Atom "P" [tx])]
 \end{code}
 
 \begin{sesion}
-ghci> valHerbrand formula_8
+ghci> valHerbrand formula_8 0
 True
-ghci> valHerbrand formula_9
+ghci> valHerbrand formula_9 0
+False
+ghci> valHerbrand formula_6 0
+False
+ghci> valHerbrand formula_6 1
+True
+ghci> valHerbrand formula_2 0
+False
+ghci> valHerbrand formula_2 1
+True
+\end{sesion}
+
+La fórmula 9 es una contradicción, es decir, no tiene 
+ningún modelo. Podemos comprobarlo mediante tableros
+
+\begin{sesion}
+ghci> satisfacible 1 formula_9
 False
 \end{sesion}
+
