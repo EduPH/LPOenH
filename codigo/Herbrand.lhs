@@ -389,7 +389,42 @@ ghci> baseHerbrand 4 formula_6
   de funciones.
 \end{nota}
 
-\begin{comentario}
-  Reflexionando sobre cómo formularlo de forma eficiente
-\end{comentario}
 
+Definimos \texttt{(valHerbrand f)} para determinar si existe
+algún subconjunto de la base de Herbrand que sea modelo de la 
+fórmula \texttt{f}.
+
+\index{\texttt{valorHerbrand}}
+\begin{code}
+valorHerbrand :: Form -> Form -> Bool
+valorHerbrand p@(Atom str ts) f = elem p (baseHerbrand 0 f)
+valorHerbrand (Neg g) f = not (valorHerbrand g f)
+valorHerbrand (Impl f1 f2) f = 
+    valorHerbrand f1 f <= valorHerbrand f2 f
+valorHerbrand (Equiv f1 f2) f =
+    valorHerbrand f1 f == valorHerbrand f2 f
+valorHerbrand (Conj fs) f =
+    all (valorHerbrand f) fs
+valorHerbrand (Disy fs) f =
+    any (valorHerbrand f) fs
+valorHerbrand (PTodo v g) f = undefined
+valorHerbrand (Ex v g)  f   = undefined
+\end{code}
+
+\index{\texttt{valHerbrand}}
+\begin{code}
+valHerbrand :: Form -> Bool
+valHerbrand f = valorHerbrand f f
+\end{code}
+
+\begin{code}
+formula_8 = Impl (Atom "P" [tx]) (Atom "Q" [tx])
+formula_9 = Conj [Atom "P" [tx], Neg (Atom "P" [tx])]
+\end{code}
+
+\begin{sesion}
+ghci> valHerbrand formula_8
+True
+ghci> valHerbrand formula_9
+False
+\end{sesion}
