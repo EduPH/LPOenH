@@ -1,0 +1,26 @@
+|--------------------------------------------|
+| Capítulo 1: Introducción a Haskell         |
+|--------------------------------------------|
+| Capítulo 2: Resumen lógica proposicional   |
+|--------------------------------------------|
+| Capítulo 3: sintáxis y semántica de la LPO |
+|--------------------------------------------|
+| Capítulo 4: Deducción natural en LPO       |
+|--------------------------------------------|
+| capítulo 5: Tableros semánticos            |
+|--------------------------------------------|
+| Capítulo 6: Skolem                         |
+|--------------------------------------------|
+| Capítulo 7: Modelos de Herbrand            |
+|--------------------------------------------|
+| Capítulo 8: Resolución                     |
+|--------------------------------------------|
+| Anexo : GitHub                             |
+|--------------------------------------------|
+| Comentarios:                               |
+| 1. El capítulo 2 sería solo teórico        |
+| 2. Capítulos 3,5,6,7 serían adaptación     |
+| de lo ya escrito.                          |
+| 3. Capítulos 4 y 8 falta realizar código   |
+|--------------------------------------------|
+                                             
