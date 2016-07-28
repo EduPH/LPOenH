@@ -62,6 +62,10 @@ Una vez que ya tenemos todos los elementos a clasificar definidos, se procede
 a la interpretación de los predicados. Es decir, una clasificación
 de aquellos elementos que cumplen un cierto predicado.
 
+\begin{Def}
+  Un \textbf{predicado} es una oración narrativa que puede ser verdadera o falsa.
+\end{Def}
+
 \begin{code}
 acuatica, algasVerdes, angiosperma, asterida, briofita, cromista, 
   crucifera, dicotiledonea, gimnosperma, hongo, leguminosa, 

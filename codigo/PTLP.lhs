@@ -262,6 +262,18 @@ ghci> unificadoresListas [tx] [tx]
 \end{sesion}
 
 \section{Skolem}
+
+\begin{Def}
+  Una fórmula está en forma \textbf{normal conjuntiva} si es una conjunción de
+  disyunciones de literales.
+  $$(p_1\vee \dots \vee p_n)\wedge \dots \wedge (q_1\vee \dots \vee q_m)$$
+\end{Def}
+
+\begin{Def}
+  Una fórmula está en forma \textbf{normal disyuntiva} si es una disyunción de
+  conjunciones de literales.
+  $$(p_1 \wedge \dots \wedge p_n)\vee \dots \vee (q_1\wedge \dots \wedge q_m)$$
+\end{Def}
 \subsection{Forma rectificada}
 
 \begin{Def}

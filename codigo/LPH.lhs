@@ -71,6 +71,16 @@ ghci> a1
 a1
 \end{sesion}
 
+\begin{Def}
+  Se dice que \texttt{F} es una \textbf{fórmula} si satisface la siguiente definición
+  inductiva
+  \begin{enumerate}
+  \item Las variables proposicionales son fórmulas atómicas.
+  \item Si $F$ y $G$ son fórmulas, entonces $\neg F$, $(F \wedge G)$,
+    $(F \vee G)$, $(F \rightarrow G)$ y $(F \leftrightarrow G)$ son fórmulas.
+\end{enumerate}
+\end{Def}
+
 A continuación se define un tipo de dato para las fórmulas lógicas
 de primer orden.
 
