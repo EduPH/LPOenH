@@ -4,10 +4,8 @@ evaluación de las mismas. Es decir, pretendemos representar los elementos
 lógicos básicos de representación de fórmulas, y decidir si una fórmula es
 verdadera o falsa según una interpretación.
 
-\begin{Def}
-  Una \textbf{interpretación} es una aplicación $I: VP \rightarrow Bool$, donde $VP$
-  representa el conjunto de las variables proposicionales.
-\end{Def}
+
+
 
 Una interpretación toma valores para las variables proposicionales, y se
 evalúan en una fórmula, determinando si la fórmula es verdadera o falsa. Se
@@ -141,6 +139,11 @@ ghci> simetrica
 En esta sección se pretende interpretar fórmulas. Para ello se define
 una cadena de funciones para terminar con nuestro objetivo, la función
 \texttt{(valor)}.
+
+\begin{Def}
+  Una \textbf{interpretación} es una aplicación $I: VP \rightarrow Bool$, donde $VP$
+  representa el conjunto de las variables proposicionales.
+\end{Def}
 
 Implementamos $s(x|d)$,mediante la función \texttt{(sustituye s x d v)}.
 $s(x|d)$ viene dado por la fórmula

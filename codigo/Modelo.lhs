@@ -8,17 +8,19 @@ import Dominio
 import PFH
 \end{code}
 
-Trabajaremos con modelos a través de un dominio de entidades; en concreto,
-aquellas del módulo \texttt{Dominio}. Cada entidad de dicho módulo representa
-un sujeto. Cada sujeto cumplirá distintos predicados.
+La lógica de primer orden permite representar dar una representación
+al conocimiento. Nosotros trabajaremos con modelos a través de un
+dominio de entidades; en concreto,aquellas del módulo \texttt{Dominio}.
+Cada entidad de dicho módulo representa un sujeto. Cada sujeto cumplirá
+distintos predicados.
 
 Posteriormente, se definirá un modelo lógico. Aquí empleamos el término
 modelo como una representación de la realidad. En secciones posteriores
 estos modelos serán posibles interpretaciones para fórmulas.
   
-A continuación damos un ejemplo de predicados lógicos para la clasificación
-botánica. La cual no es completa, pero da una idea de la potencia de Haskell
-para este tipo de uso.
+Damos un ejemplo de predicados lógicos para la clasificación
+botánica. La cual no es completa, pero nos da una idea de la
+manera de una representación lógica.
 
 Primero definimos los elementos que pretendemos clasificar, y que cumplirán los
 predicados. Para ello, definimos como función cada elemento de un            
@@ -108,6 +110,6 @@ espermatofitas :: Entidades -> Bool
 espermatofitas x = angiosperma x || gimnosperma x
 \end{code}
 
-\section{Lógica de predicados en Haskell}
+\section{Lógica de primer orden en Haskell}
 
 \entrada{LPH}
