@@ -227,10 +227,9 @@ B
   proposicionales.
 \end{Def}
 
-A continuación, presentamos una tabla de valores de las
-distintas conectivas lógicas según las interpretaciones
-de \texttt{P} y \texttt{Q}. Falso lo representamos mediante el 0,
-y verdadero mediante el 1.
+A continuación, presentamos una tabla de valores de las distintas conectivas
+lógicas según las interpretaciones de \texttt{P} y \texttt{Q}. Falso lo
+representamos mediante el 0, y verdadero mediante el 1.
 
 \begin{center}
    \begin{tabular}{ | l | c | c | c | c | c | }
@@ -253,7 +252,8 @@ y verdadero mediante el 1.
   $A$.
 \end{Def}
 
-Definimos un tipo de dato para las interpretaciones
+Definimos un tipo de dato para las interpretaciones de los símbolos de
+relación.
 
 \begin{code}
 type InterpretacionR a = String -> [a] -> Bool
@@ -282,8 +282,8 @@ valor u i s (Existe v f)        = or  [valor u i (sustituye s v d) f
 \end{code}
 
 Empleando las entidades y los predicados definidos en los módulos
-\texttt{Dominio} y \texttt{Modelo}, establecemos un ejemplo del valor
-de una interpretación en una fórmula.
+\texttt{Dominio} y \texttt{Modelo}, establecemos un ejemplo del valor de una
+interpretación en una fórmula.
 
 Primero definimos la fórmula a interpretar
 \begin{code}
@@ -316,7 +316,7 @@ interpretacion2 "Q" [x] = terrestre x
 interpretacion2 _ _     = False
 \end{code}
 
-Tomamos como Universo todas las entidades menos la que denotamos \texttt{Inespecífico}
+Tomamos como universo todas las entidades menos la que denotamos \texttt{Inespecífico}
 \begin{sesion}
 ghci> valor (take 26 entidades) interpretacion1 asignacion formula1
 False
@@ -341,13 +341,13 @@ consideraremos cualquier término.
   \end{enumerate}
 \end{Def}
 
-Definimos un tipo de dato para los términos que serán la base
-para la definición de fórmulas en lógica de primer orden que no 
-esté compuesta sólo por variables.
+Definimos un tipo de dato para los términos que serán la base para la
+definición de fórmulas en lógica de primer orden que no esté compuesta sólo por
+variables.
 
 \begin{code}
-data Termino =  Var Variable | Ter Nombre [Termino]
-     deriving (Eq,Ord)
+data Termino = Var Variable | Ter Nombre [Termino]
+  deriving (Eq,Ord)
 \end{code}
 
 Algunos ejemplos de variables como términos
@@ -369,8 +369,7 @@ c    = Ter "c" []
 cero = Ter "cero" []
 \end{code}
 
-Para mostrarlo por pantalla de manera comprensiva, definimos
-su representación.
+Para mostrarlo por pantalla de manera comprensiva, definimos su representación.
 
 \begin{code}
 instance Show Termino where
@@ -379,15 +378,15 @@ instance Show Termino where
     show (Ter str ts) = str ++ show ts
 \end{code}
 
-Los términos funcionales serían representados de la forma
+Los términos funcionales son representados de la forma
 
 \begin{sesion}
 ghci> Ter "f" [tx,ty]
 f[x,y]
 \end{sesion}
 
-Caracterizamos las funciones mediante la función \texttt{(esVariable x)},
-que determina si un término es una variable
+Caracterizamos las funciones mediante la función \texttt{(esVariable x)}, que
+determina si un término es una variable
 
 \index{\texttt{esVariable}}
 \begin{code}
@@ -396,7 +395,7 @@ esVariable (Var _) = True
 esVariable _       = False
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 
 \begin{sesion}
 ghci> esVariable tx
@@ -422,15 +421,15 @@ data Form = Atom Nombre [Termino]
      deriving (Eq,Ord)
 \end{code}
    
-Y seguimos, análogamente a la sección enterior, definiendo
-la representación de fórmulas por pantalla.
+Y seguimos, análogamente a la sección enterior, definiendo la representación de
+fórmulas por pantalla.
 
 \begin{code}
 instance Show Form where
-    show (Atom a [])   = a
-    show (Atom f ts)   = f ++ show ts
+    show (Atom r [])   = r
+    show (Atom r ts)   = r ++ show ts
     show (Ig t1 t2)    = show t1 ++ "≡" ++ show t2
-    show (Neg form)    = '¬': show form
+    show (Neg f)       = '¬': show f
     show (Impl f1 f2)  = "(" ++ show f1 ++ "⟹" ++ show f2 ++ ")"
     show (Equiv f1 f2) = "(" ++ show f1 ++ "⟺" ++ show f2 ++ ")"
     show (Conj [])     = "true"
@@ -455,8 +454,8 @@ formula3 = Impl (Atom "R" [tx,ty])
 
 \end{code}
 
-Dichas funciones serán empleadas en futuros ejemplos. Su
-representación por pantalla queda:
+Dichas funciones serán empleadas en futuros ejemplos. Su representación por
+pantalla queda:
 
 \begin{sesion}
 ghci> formula2
@@ -465,16 +464,15 @@ ghci> formula3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 \end{sesion}
 
-Para la interpretación de los símbolos funcionales se define
-un nuevo tipo de dato
+Para la interpretación de los símbolos funcionales se define un nuevo tipo de
+dato
 
 \begin{code}
 type InterpretacionF a = String -> [a] -> a
 \end{code}
 
-Para poder hacer las interpretaciones a las fórmulas,se necesita
-primero interpretar el valor de los términos.
-
+Para poder hacer las interpretaciones a las fórmulas, se necesita primero
+interpretar el valor de los términos.
 
 \begin{Def}
   Dada una estructura $\mathcal{I}=(U,I)$ de $L$ y una asignación $A$ en
@@ -495,7 +493,7 @@ primero interpretar el valor de los términos.
   $\mathcal{I}_A$ se lee ``el valor de $t$ en $\mathcal{I}$ respecto de $A$''.
 \end{nota}
 
-Definimos \texttt{(valorT s f str)}
+Definimos \texttt{(valorT i a t)}
 
 \index{\texttt{valorT}}
 \begin{code}
@@ -504,25 +502,26 @@ valorT i a (Var v)    = a v
 valorT i a (Ter f ts) = i f (map (valorT i a) ts)
 \end{code}
 
-Definimos el tipo de dato \texttt{Interpretación} como un par
-formado por las interpretaciones de los símbolos de relación y
-la de los símbolos funcionales.
+Definimos el tipo de dato \texttt{Interpretación} como un par formado por las
+interpretaciones de los símbolos de relación y la de los símbolos funcionales.
 
 \begin{code}
 type Interpretacion a = (InterpretacionR a, InterpretacionF a)  
 \end{code}
-
 
 \begin{Def}
   Dada una estructura $\mathcal{I} = (U,I)$ de $L$ y una asignación
   $A$ sobre $\mathcal{I}$, se define la \textbf{función evaluación de fórmulas}
   $\mathcal{I}_A: Form(L) \rightarrow Bool$ por
   \begin{itemize*}
-  \item Si $F$ es $t_1=t_2$,  $\mathcal{I}_A(F) = H_=(\mathcal{I}_A(t_1),\mathcal{I}_A(t_2)$
-  \item Si $F$ es $P(t_1,\dots ,t_n$,  $\mathcal{I}_A(F) = H_{I(P)}(\mathcal{I}_A(t_1),
-    \dots ,\mathcal{I}_A(t_n))$
-  \item Si $F$ es $\neg G$, $\mathcal{I}_A(F) = H_{\neg}(\mathcal{I}_A(G))$
-  \item Si $F$ es $G*H$, $\mathcal{I}_A(F) = H_*(\mathcal{I}_A(G),\mathcal{I}_A(H))$
+  \item Si $F$ es $t_1=t_2$,  
+    $\mathcal{I}_A(F) = H_=(\mathcal{I}_A(t_1),\mathcal{I}_A(t_2)$
+  \item Si $F$ es $P(t_1,\dots ,t_n)$,  
+    $\mathcal{I}_A(F) = H_{I(P)}(\mathcal{I}_A(t_1), \dots ,\mathcal{I}_A(t_n))$
+  \item Si $F$ es $\neg G$, 
+    $\mathcal{I}_A(F) = H_{\neg}(\mathcal{I}_A(G))$
+  \item Si $F$ es $G*H$, 
+    $\mathcal{I}_A(F) = H_*(\mathcal{I}_A(G),\mathcal{I}_A(H))$
   \item Si $F$ es $\forall x G$,
     \begin{equation*}
       \mathcal{I}_A(F) = \left\{
@@ -535,18 +534,19 @@ type Interpretacion a = (InterpretacionR a, InterpretacionF a)
      \begin{equation*}
       \mathcal{I}_A(F) = \left\{
       \begin{array}{ll}
-        1, \text{ si existe algún } u \in U \text{ tal que } \mathcal{I}_{A [x / u ]} = 1 \\
+        1, \text{ si existe algún } u \in U \text{ tal que } 
+           \mathcal{I}_{A [x / u ]} = 1 \\
         0, \text{ en caso contario}.
       \end{array} \right.
     \end{equation*}
   \end{itemize*}
 \end{Def}
 
-
-Definimos una función que determine el valor de una fórmula.  Dicha función la denotamos por 
-\texttt{(valorF u i f s form)}, en la que \texttt{u} denota el universo, \texttt{i} es la
-interpretación de las propiedades o relaciones, \texttt{f} es la interpretación
-del término funcional, \texttt{s} la asignación, y \texttt{form} una fórmula.
+Definimos una función que determine el valor de una fórmula. Dicha función la
+denotamos por \texttt{(valorF u (iR,iF) a f)}, en la que \texttt{u} denota el
+universo, \texttt{iR} es la interpretación de los símbolos de relación,
+\texttt{iF} es la interpretación de los símbolos de función, \texttt{a} la
+asignación y \texttt{f} la fórmula.
 
 \index{\texttt{valorF}}
 \begin{code}
@@ -574,12 +574,12 @@ valorF u i a (Ex v g)  =
 
 Para construir un ejemplo tenemos que interpretar los elementos de una
 fórmula. Definimos las fórmulas 4 y 5, aunque emplearemos en el ejemplo
-sólo la \texttt{formula 4}. 
+sólo la \texttt{formula4}. 
 
 \begin{code}
-formula4,formula5 :: Form
+formula4, formula5 :: Form
 formula4 = Ex x (Atom "R" [cero,tx])
-formula5 =  Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
+formula5 = Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
 \end{code}
 
 Sus representaciones quedan
@@ -626,32 +626,28 @@ True
 \end{sesion}
 
 \begin{nota}
-  Haskell es perezoso, así que podemos utilizar un universo
-  infinito. Haskell no hace cálculos innecesarios; es decir, para cuando
-  encuentra un elemento que cumple la propiedad.
+  Haskell es perezoso, así que podemos utilizar un universo infinito. Haskell
+  no hace cálculos innecesarios; es decir, para cuando encuentra un elemento
+  que cumple la propiedad.
 \end{nota}
 
 Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
 
 \begin{Def}
-  Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación para la que
-  \texttt{F} es verdadera.
-\end{Def}
-
-\begin{Def}
-  Una fórmula $F$ es \textbf{válida} si toda interpretación es modelo de la fórmula.
-\end{Def}
-
-\begin{Def}
-  Una fórmula $F$ es \textbf{satisfacible} si existe alguna interpretación para la que
-  sea verdadera, es decir, algún modelo.
-\end{Def}
-
-\begin{Def}
-  Una fórmula es \textbf{insatisfacible} si no tiene ningún modelo.
+  \begin{itemize}
+  \item Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación para
+    la que \texttt{F} es verdadera.
+  \item Una fórmula $F$ es \textbf{válida} si toda interpretación es modelo de
+    la fórmula.
+  \item Una fórmula $F$ es \textbf{satisfacible} si existe alguna
+    interpretación para la que sea verdadera.
+  \item Una fórmula es \textbf{insatisfacible} si no tiene ningún modelo.
+  \end{itemize}
 \end{Def}
 
 \subsection{Generadores}
+
+\comentario{Peniente de revisión.}
 
 Para poder emplear el sistema de comprobación QuickCheck, necesitamos poder
 generar elementos aleatorios de los tipos de datos creados hasta ahora.
@@ -659,7 +655,6 @@ generar elementos aleatorios de los tipos de datos creados hasta ahora.
 \entrada{Generadores}
 
 \subsection{Otros conceptos de la lógica de primer orden}
-
 
 Las funciones \texttt{varEnTerm} y \texttt{varEnTerms} devuelven las variables
 que aparecen en un término o en una lista de ellos.
@@ -681,8 +676,8 @@ varEnTerms = nub . concatMap varEnTerm
 \end{nota}
 
 \begin{nota}
-  Se emplea un tipo de recursión cruzada entre funciones. Las
-  funciones se llaman la una a la otra.
+  Se emplea un tipo de recursión cruzada entre funciones. Las funciones se
+  llaman la una a la otra.
 \end{nota}
 
 Por ejemplo,
@@ -719,8 +714,8 @@ varEnForm formula4  ==  [x]
 \end{sesion}
 
 \begin{Def}
-  Una variable es \textbf{libre} en una fórmula si no tiene ninguna aparición ligada a
-  un cuantificador existencial o universal. ($\forall x, \exists x$)
+  Una variable es \textbf{libre} en una fórmula si no tiene ninguna aparición
+  ligada a un cuantificador existencial o universal. ($\forall x, \exists x$)
 \end{Def}
 
 La función \texttt{(variablesLibres f} devuelve las variables libres de la
@@ -749,8 +744,8 @@ variablesLibres (Ex x f) =
 \end{code}
 
 \begin{Def}
-  Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una aparición
-  de la forma $\forall x$ o $\exists x$.
+  Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una
+  aparición de la forma $\forall x$ o $\exists x$.
 \end{Def}
 
 Se proponen varios ejemplos
@@ -764,7 +759,8 @@ variablesLibres formula4  ==  []
   Una \textbf{fórmula abierta} es una fórmula con variables libres.
 \end{Def}
 
-La función \texttt{(formulaAbierta f)} determina si una fórmula dada es abierta.
+La función \texttt{(formulaAbierta f)} determina si una fórmula dada es
+abierta.
 
 \index{\texttt{formulaAbierta}}
 \begin{code}
