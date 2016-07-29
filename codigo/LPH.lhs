@@ -36,8 +36,8 @@ data Variable = Variable Nombre Indice
   deriving (Eq,Ord)
 \end{code}
 
-Para una visualización agradable en pantalla se define
-su representación en la clase \texttt{Show}.
+Para una visualización agradable en pantalla se define su representación en la
+clase \texttt{Show}.
 
 \begin{code}
 instance Show Variable where
@@ -52,7 +52,7 @@ instance Show Variable where
 Mostramos algunos ejemplos de definición de variables
 
 \begin{code}
-x,y,z :: Variable
+x, y, z :: Variable
 x = Variable "x" []
 y = Variable "y" []
 z = Variable "z" []
@@ -61,7 +61,7 @@ z = Variable "z" []
 Y definimos también variables empleando índices
 
 \begin{code}
-a1,a2,a3 :: Variable
+a1, a2, a3 :: Variable
 a1 = Variable "a" [1]
 a2 = Variable "a" [2]
 a3 = Variable "a" [3]
@@ -90,8 +90,7 @@ a2
   \end{enumerate}
 \end{Def}
 
-Se define un tipo de dato para las fórmulas lógicas
-de primer orden.
+Se define un tipo de dato para las fórmulas lógicas de primer orden.
 
 \begin{code}
 data Formula = Atomo Nombre [Variable]
@@ -110,8 +109,8 @@ Y se define una visualización en la clase \texttt{Show}
 
 \begin{code}
 instance Show Formula where
-    show (Atomo str [])       = str
-    show (Atomo str vs)       = str ++ show vs
+    show (Atomo r [])         = r
+    show (Atomo r vs)         = r ++ show vs
     show (Igual t1 t2)        = show t1 ++ "≡" ++ show t2
     show (Negacion formula)   = '¬' : show formula
     show (Implica f1 f2)      = "(" ++ show f1 ++ "⟹" ++ show f2 ++ ")"
@@ -124,8 +123,8 @@ instance Show Formula where
     show (Existe v f)         = "∃" ++ show v ++ (' ': show f) 
 \end{code}
 
-Como ejemplo podemos representar las propiedades \texttt{reflexiva}
-y  \texttt{simétrica}.
+Como ejemplo podemos representar las propiedades \texttt{reflexiva} y
+\texttt{simétrica}.
 
 \index{\texttt{reflexiva}}
 \index{\texttt{simetrica}}
@@ -150,9 +149,12 @@ ghci> simetrica
   tal que
   \begin{enumerate}
   \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
-  \item $\mathcal{I}$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
+  \item $\mathcal{I}$ es una función 
+    $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
   \end{enumerate}
 \end{Def}
+
+\comentario{Hay que corregir la definición de estructura del lenguaje.}
 
 Definimos el tipo de dato relativo al universo
 
@@ -161,8 +163,8 @@ type Universo a = [a]
 \end{code}
 
 \begin{Def}
-  Una \textbf{asignación} es una función $A: Variable \rightarrow Universo$
-  que hace corresponder a cada variable un elemento del universo.
+  Una \textbf{asignación} es una función que hace corresponder a cada variable
+  un elemento del universo.
 \end{Def}
 
 Se define un tipo de dato para las asignaciones
@@ -178,7 +180,6 @@ caso, tomamos una asignación constante muy sencilla.
 asignacion :: a -> Entidades
 asignacion v = A
 \end{code}
-
 
 \section{Evaluación de fórmulas}
 
@@ -284,12 +285,12 @@ de una interpretación en una fórmula.
 
 Primero definimos la fórmula a interpretar
 \begin{code}
-formula_1 :: Formula
-formula_1 = ParaTodo x (Disyuncion [Atomo "P" [x],Atomo "Q" [x]])
+formula1 :: Formula
+formula1 = ParaTodo x (Disyuncion [Atomo "P" [x],Atomo "Q" [x]])
 \end{code}
 
 \begin{sesion}
-ghci> formula_1
+ghci> formula1
 ∀x (P[x]⋁[Q[x]])
 \end{sesion}
 
@@ -315,9 +316,9 @@ interpretacion2 _ _     = False
 
 Tomamos como Universo todas las entidades menos la que denotamos \texttt{Inespecífico}
 \begin{sesion}
-ghci> valor (take 26 entidades) interpretacion1 asignacion formula_1
+ghci> valor (take 26 entidades) interpretacion1 asignacion formula1
 False
-ghci> valor (take 26 entidades) interpretacion2 asignacion formula_1
+ghci> valor (take 26 entidades) interpretacion2 asignacion formula1
 True
 \end{sesion}
 
@@ -443,11 +444,11 @@ instance Show Form where
 Algunos ejemplos de fórmulas son
 
 \begin{code}
-formula_2, formula_3 :: Form
-formula_2 = PTodo x (PTodo y (Impl (Atom "R" [tx,ty]) 
+formula2, formula3 :: Form
+formula2 = PTodo x (PTodo y (Impl (Atom "R" [tx,ty]) 
                              (Ex z (Conj [Atom "R" [tx,tz],
                                           Atom "R" [tz,ty]]))))
-formula_3 = Impl (Atom "R" [tx,ty])
+formula3 = Impl (Atom "R" [tx,ty])
             (Ex z (Conj [Atom "R" [tx,tz],Atom "R" [tz,ty]]))
 
 \end{code}
@@ -456,9 +457,9 @@ Dichas funciones serán empleadas en futuros ejemplos. Su
 representación por pantalla queda:
 
 \begin{sesion}
-ghci> formula_2
+ghci> formula2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> formula_3
+ghci> formula3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 \end{sesion}
 
@@ -574,16 +575,16 @@ fórmula. Definimos las fórmulas 4 y 5, aunque emplearemos en el ejemplo
 sólo la \texttt{formula 4}. 
 
 \begin{code}
-formula_4,formula_5 :: Form
-formula_4 = Ex x (Atom "R" [cero,tx])
-formula_5 =  Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
+formula4,formula5 :: Form
+formula4 = Ex x (Atom "R" [cero,tx])
+formula5 =  Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
 \end{code}
 
 Sus representaciones quedan
 \begin{sesion}
-ghci> formula_4
+ghci> formula4
 ∃x R[cero,x]
-ghci> formula_5
+ghci> formula5
 (∀x P[x]⟹∀y Q[x,y])
 \end{sesion}
 
@@ -618,7 +619,7 @@ asignacion1 _ = 0
 Quedando el ejemplo
 
 \begin{sesion}
-ghci> valorF [0..] (interpretacionR1,interpretacionF1) asignacion1 formula_4
+ghci> valorF [0..] (interpretacionR1,interpretacionF1) asignacion1 formula4
 True
 \end{sesion}
 
@@ -710,9 +711,9 @@ varEnForm (Ex x f)      = nub (x : varEnForm f)
 
 Por ejemplo
 \begin{sesion}
-varEnForm formula_2  ==  [x,y,z]
-varEnForm formula_3  ==  [x,y,z]
-varEnForm formula_4  ==  [x]
+varEnForm formula2  ==  [x,y,z]
+varEnForm formula3  ==  [x,y,z]
+varEnForm formula4  ==  [x]
 \end{sesion}
 
 \begin{Def}
@@ -752,9 +753,9 @@ variablesLibres (Ex x f) =
 
 Se proponen varios ejemplos
 \begin{sesion}
-variablesLibres formula_2  ==  []
-variablesLibres formula_3  ==  [x,y]
-variablesLibres formula_4  ==  []
+variablesLibres formula2  ==  []
+variablesLibres formula3  ==  [x,y]
+variablesLibres formula4  ==  []
 \end{sesion}
 
 \begin{Def}
@@ -772,7 +773,7 @@ formulaAbierta = not . null . variablesLibres
 Como acostumbramos, ponemos algunos ejemplos
 
 \begin{sesion}
-formulaAbierta formula_2  ==  False
-formulaAbierta formula_3  ==  True
-formulaAbierta formula_4  ==  False
+formulaAbierta formula2  ==  False
+formulaAbierta formula3  ==  True
+formulaAbierta formula4  ==  False
 \end{sesion}

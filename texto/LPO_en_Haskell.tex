@@ -20,6 +20,7 @@
 \usepackage{amsmath}               % AMS LaTeX
 \usepackage{amsthm} 
 \usepackage{latexsym}
+\usepackage[textwidth=4cm, shadow, spanish]{todonotes}
 
 % Fuentes
 \usepackage{mathpazo}              % Fuentes semejante a palatino
@@ -134,6 +135,7 @@ every picture/.append style={
 % \includexmp{licencia}
 
 \begin{document}
+
 \dominitoc
 
 \maketitle
@@ -157,6 +159,7 @@ every picture/.append style={
 \include{Resolucion}
 
 \part{Sistemas utilizados}
+
 \include{TrabajoGitHub}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -174,6 +177,13 @@ every picture/.append style={
 \addcontentsline{toc}{chapter}{Indice de definiciones}
 
 \printindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Pendientes                                                              %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\todototoc
+\listoftodos
 
 \end{document}
 

@@ -212,10 +212,7 @@ ghci> sustitucionForm [(x,ty)] formula_3
 (R[y,y]⟹∃z (R[y,z]⋀R[z,y]))
 \end{sesion}
 
-\begin{comentario}
-  Revisar para formula 2
-\end{comentario}
-
+\comentario{Revisar para formula 2}
 
 Se puede generalizar a una lista de fórmulas mediante la funcion
 \texttt{(sustitucionForms s fs)}. La hemos necesitado en la definición de la
