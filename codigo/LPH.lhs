@@ -211,8 +211,7 @@ sustituye s x d v | x == v    = d
                   | otherwise = s v
 \end{code}
 
-Esta función es auxiliar para la evaluación y toma de valores de fórmulas
-que haremos posteriormente.
+Esta función es auxiliar para la evaluación de fórmulas.
 
 Un par de ejemplos de la función \texttt{(sustituye s x d v)} son
 \begin{sesion}
@@ -223,8 +222,9 @@ B
 \end{sesion}
 
 \begin{Def}
-  Una \textbf{interpretación} es una aplicación $I: VP \rightarrow Bool$, donde $VP$
-  representa el conjunto de las variables proposicionales.
+  Una \textbf{interpretación proposicional} es una aplicación
+  $I: VP \rightarrow Bool$, donde $VP$ representa el conjunto de las variables
+  proposicionales.
 \end{Def}
 
 A continuación, presentamos una tabla de valores de las
