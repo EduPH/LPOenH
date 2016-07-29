@@ -10,14 +10,21 @@ import Generadores     -- Para ejemplos
 
 \section{Sustitución}
 
-\begin{Def}
-  Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una aparición
-  de la forma $\forall x$ o $\exists x$.
-\end{Def}
 
 \begin{Def}
   Una \textbf{sustitución} es una aplicación $S: Variable \rightarrow Termino$.
 \end{Def}
+
+\begin{nota}
+  $[x_1/t_1,x_2/t_2,\dots ,x_n/t_n]$ representa la sustitución
+  \begin{equation*}
+    S(x) = \left\{
+      \begin{array}{ll}
+        t_i, \text{ si } x \text{ es } x_i \\
+        x, \text{ si } x \notin \left\{x_1,\dots ,x_n \right\}
+        \end{array} \right
+  \end{equation*}
+\end{nota}
 
 En la lógica de primer orden, a la hora de emplear el método de tableros, es necesario
 sustituir las variables ligadas por términos. Por lo tanto, requerimos
@@ -82,12 +89,32 @@ ghci> recorrido [(x,tx),(x,ty)]
 \end{sesion}
 Posteriormente, se define una función que hace la sustitución de una
 variable concreta. La denotamos \texttt{(sustituyeVar sust var)}
+
 \begin{code}
 sustituyeVar :: Sust -> Variable -> Termino
 sustituyeVar [] y                      = Var y
 sustituyeVar ((x,x'):xs) y | x == y    = x'
                            | otherwise = sustituyeVar xs y
 \end{code}
+
+
+\begin{Def}
+  $t[x_1/t_1, \dots , x_n/t_n]$ es el término obtenido sustituyendo en $t$ las
+  apariciones de $x_i$ por $t_i$.
+\end{Def}
+\begin{Def}
+  La extensión de la sustitución a términos es la aplicación
+  $S: Term(L) \rightarrow Term(L)$ definida por
+  \begin{equation*}
+    tS = \legt\{
+    \begin{array}{lll}
+      c, \text{ si } t \text{ es una constante } c \\
+      S(x), \text{ si } t \text{ es una variable } x \\
+      f(t_1S,\dots, t_nS), \text{ si es } f(t_1,\dots ,t_n) 
+    \end{array} \right.
+  \end{equation*}
+\end{Def}
+  
 
 Ahora aplicando una recursión entre funciones, podemos hacer sustituciones
 basándonos en los términos, mediante las funciones \texttt{(susTerm xs t)} y
@@ -113,9 +140,42 @@ ghci> susTerms [(x,ty),(y,tx)] [tx,ty]
 [y,x]
 \end{sesion}
 
-Finalmente, esta construcción nos sirve para generalizar a cualquier
-fórmula. Con este fin definimos \texttt{(sustitucionForm s f)}, donde
-\texttt{s} representa la susticución y \texttt{f} la fórmula.
+\begin{Def}
+  $F[x_1/t_1,\dots , x_n/t_n]$ es la fórmula obtenida sustituyendo $F$ las apariciones
+  libres de $x_i$ por $t_i$.
+\end{Def}
+
+\begin{Def}
+  La extensión de $S$ a fórmulas es la aplicación $S: Form(L) \rightarrow Form(L)$
+  definida por
+  \begin{equation*}
+    
+    FS = \left\{
+      \begin{array}{llll}
+        P(t_1S,\dots,t_nS), \text{ si } F \text{ es la fórmula atómica } P(t_1,\dots , t_n) \\
+        t_1S = t_2S, \text{ si } F \text{ es la fórmula } t_1 = t_2 \\
+        \neg(GS), \text{ si } F \text{ es } \neg G \\
+        GS*HS, \text{ si } F  \text{ es } G*H \\
+        (Qx)(GS_x), \text{ si } F \text{ es } (Qx)G \text{ y }
+        Q\in \left\{\forall,\exists \right\}
+      \end{array} \right .
+    
+  \end{equation*}
+  Donde $S_x$ es la sustitución definida por
+  \begin{equation*}
+    
+    S_x(y) = \left\{
+      \begin{array}{ll}
+        x, \text{ si } y \text{ es } x \\
+        S(y), \text{ si } y \text{ es distinta de } x
+      \end{array}\right .
+    
+  \end{equation*}
+\end{Def}
+
+
+Definimos \texttt{(sustitucionForm s f)}, donde \texttt{s} representa
+la sustitución y \texttt{f} la fórmula.
 
 \index{\texttt{sustitucionForm}}
 \begin{code}
@@ -215,6 +275,12 @@ False
   Las comprobaciones con QuickCheck emplean código del módulo
   \texttt{Generadores}.
 \end{nota}
+
+\begin{Def}
+  Una sustitución se denomina \textbf{libre para una fórmula} cuando
+  todas las apariciones de variables introducidas por la sustitución
+  en esa fórmula resultan libres}
+\end{Def}
 
 \section{Unificación}
 

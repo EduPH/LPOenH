@@ -87,7 +87,7 @@ a2
   \item Las variables proposicionales son fórmulas atómicas.
   \item Si $F$ y $G$ son fórmulas, entonces $\neg F$, $(F \wedge G)$,
     $(F \vee G)$, $(F \rightarrow G)$ y $(F \leftrightarrow G)$ son fórmulas.
-\end{enumerate}
+  \end{enumerate}
 \end{Def}
 
 Se define un tipo de dato para las fórmulas lógicas
@@ -745,6 +745,11 @@ variablesLibres (PTodo x f) =
 variablesLibres (Ex x f) =
   delete x (variablesLibres f)
 \end{code}
+
+\begin{Def}
+  Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una aparición
+  de la forma $\forall x$ o $\exists x$.
+\end{Def}
 
 Se proponen varios ejemplos
 \begin{sesion}
