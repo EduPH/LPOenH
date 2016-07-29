@@ -206,7 +206,7 @@ En Haskell se expresa mediante guardas
 
 \index{\texttt{sustituye}}
 \begin{code}
-sustituye :: (Variable -> a) -> Variable -> a -> Variable -> a
+sustituye :: Asignacion a -> Variable -> a -> Asignacion a
 sustituye s x d v | x == v    = d 
                   | otherwise = s v
 \end{code}
