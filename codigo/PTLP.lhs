@@ -18,11 +18,13 @@ import Generadores     -- Para ejemplos
 \begin{nota}
   $[x_1/t_1,x_2/t_2,\dots ,x_n/t_n]$ representa la sustitución
   \begin{equation*}
-    S(x) = \left\{
+    S(x) =
+     \left\{
       \begin{array}{ll}
         t_i, \text{ si } x \text{ es } x_i \\
         x, \text{ si } x \notin \left\{x_1,\dots ,x_n \right\}
-        \end{array} \right
+      \end{array}
+     \right .
   \end{equation*}
 \end{nota}
 
@@ -106,7 +108,7 @@ sustituyeVar ((x,x'):xs) y | x == y    = x'
   La extensión de la sustitución a términos es la aplicación
   $S: Term(L) \rightarrow Term(L)$ definida por
   \begin{equation*}
-    tS = \legt\{
+    tS = \left\{
     \begin{array}{lll}
       c, \text{ si } t \text{ es una constante } c \\
       S(x), \text{ si } t \text{ es una variable } x \\
@@ -148,29 +150,29 @@ ghci> susTerms [(x,ty),(y,tx)] [tx,ty]
 \begin{Def}
   La extensión de $S$ a fórmulas es la aplicación $S: Form(L) \rightarrow Form(L)$
   definida por
-  \begin{equation*}
-    
-    FS = \left\{
-      \begin{array}{llll}
-        P(t_1S,\dots,t_nS), \text{ si } F \text{ es la fórmula atómica } P(t_1,\dots , t_n) \\
-        t_1S = t_2S, \text{ si } F \text{ es la fórmula } t_1 = t_2 \\
-        \neg(GS), \text{ si } F \text{ es } \neg G \\
-        GS*HS, \text{ si } F  \text{ es } G*H \\
-        (Qx)(GS_x), \text{ si } F \text{ es } (Qx)G \text{ y }
-        Q\in \left\{\forall,\exists \right\}
-      \end{array} \right .
-    
-  \end{equation*}
-  Donde $S_x$ es la sustitución definida por
-  \begin{equation*}
-    
-    S_x(y) = \left\{
-      \begin{array}{ll}
-        x, \text{ si } y \text{ es } x \\
-        S(y), \text{ si } y \text{ es distinta de } x
-      \end{array}\right .
-    
-  \end{equation*}
+  % \begin{equation*}
+  %   
+  %   FS = \left\{
+  %     \begin{array}{llll}
+  %       P(t_1S,\dots,t_nS), \text{ si } F \text{ es la fórmula atómica } P(t_1,\dots , t_n) \\
+  %       t_1S = t_2S, \text{ si } F \text{ es la fórmula } t_1 = t_2 \\
+  %       \neg(GS), \text{ si } F \text{ es } \neg G \\
+  %       GS*HS, \text{ si } F  \text{ es } G*H \\
+  %       (Qx)(GS_x), \text{ si } F \text{ es } (Qx)G \text{ y }
+  %       Q\in \left\{\forall,\exists \right\}
+  %     \end{array} \right .
+  %  
+  % \end{equation*}
+  % Donde $S_x$ es la sustitución definida por
+  % \begin{equation*}
+  %   
+  %   S_x(y) = \left\{
+  %     \begin{array}{ll}
+  %       x, \text{ si } y \text{ es } x \\
+  %       S(y), \text{ si } y \text{ es distinta de } x
+  %     \end{array}\right .
+  %   
+  % \end{equation*}
 \end{Def}
 
 
@@ -279,7 +281,7 @@ False
 \begin{Def}
   Una sustitución se denomina \textbf{libre para una fórmula} cuando
   todas las apariciones de variables introducidas por la sustitución
-  en esa fórmula resultan libres}
+  en esa fórmula resultan libres.
 \end{Def}
 
 \section{Unificación}

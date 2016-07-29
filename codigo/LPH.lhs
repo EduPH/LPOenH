@@ -528,7 +528,7 @@ type Interpretacion a = (InterpretacionR a, InterpretacionF a)
         0, \text{ en caso contario}.
       \end{array} \right.
     \end{equation*}
-  \item Si $F$ es $\exits x G$,
+  \item Si $F$ es $\exists x G$,
      \begin{equation*}
       \mathcal{I}_A(F) = \left\{
       \begin{array}{ll}
