@@ -1,14 +1,18 @@
-|------------+--------------------------------|
-| Capítulo 1 | Introducción a Haskell         |
-| Capítulo 2 | Resumen lógica proposicional   |
-| Capítulo 3 | Sintaxis y semántica de la LPO |
-| Capítulo 4 | Deducción natural en LPO       |
-| capítulo 5 | Tableros semánticos            |
-| Capítulo 6 | Skolem                         |
-| Capítulo 7 | Modelos de Herbrand            |
-| Capítulo 8 | Resolución                     |
-| Anexo 1    | GitHub                         |
-|------------+--------------------------------|
+|----------+--------------------------------+-------+--------------+----------|
+| Capítulo | Título                         |   LMF | Harrison     | Ben Ari  |
+|----------+--------------------------------+-------+--------------+----------|
+|        1 | Introducción a Haskell         |       |              |          |
+|        2 | Resumen lógica proposicional   |       |              |          |
+|        3 | Sintaxis y semántica de la LPO |     7 | 3.[1..4]     | 7.[1..4] |
+|        4 | Deducción natural en LPO       | 2 y 8 | 6            | 8        |
+|        5 | Tableros semánticos            | 3 y 9 | 3.10         | 7.[5,6]  |
+|        6 | Skolem                         |    10 | 3.[5,6]      | 9.[1,2]  |
+|        7 | Modelos de Herbrand            |    11 | 3.[7,8]      | 9.[3,4]  |
+|        8 | Resolución                     |    12 | 3.[9,11..14] | 10       |
+|  Anexo 1 | GitHub                         |       |              |          |
+|----------+--------------------------------+-------+--------------+----------|
+
+El código de Ben Ari está [[https://github.com/motib/mlcs/tree/master/fol][aquí]].
 
 Comentarios:                               
 
