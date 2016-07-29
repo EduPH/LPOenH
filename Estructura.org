@@ -1,28 +1,28 @@
 #+TITLE: Estructura del proyecto
 
-[[./texto/LPO_en_Haskell.tex][LPO_en_Haskell.tex]]
+* [[./texto/LPO_en_Haskell.tex][LPO_en_Haskell.tex]]
 
-* [[./texto/Introduccion.tex][Introduccion.tex]]
-* [[./texto/Programacion_funcional_con_Haskell.tex][Programacion_funcional_con_Haskell.tex]]
+** [[./texto/Introduccion.tex][Introduccion.tex]]
+** [[./texto/Programacion_funcional_con_Haskell.tex][Programacion_funcional_con_Haskell.tex]]
   + [[./codigo/PFH.lhs][PFH.lhs]]
     + [[./codigo/Dominio.lhs][Dominio.lhs]]
 
-* [[./texto/Sintaxis_semantica_LPO.tex][Sintaxis_semantica_LPO.tex]]
+** [[./texto/Sintaxis_semantica_LPO.tex][Sintaxis_semantica_LPO.tex]]
   + [[./codigo/Modelo.lhs][Modelo.lhs]]
     + [[./codigo/LPH.lhs][LPH.lhs]]: Lógica de primer orden en Haskell    
 
-* [[./texto/Deduccion_natural_LPO.tex][Deduccion_natural_LPO.tex]]
+** [[./texto/Deduccion_natural_LPO.tex][Deduccion_natural_LPO.tex]]
   + [[./codigo/DNH.lhs][DNH.lhs]]
 
-* [[./texto/Prueba_de_teoremas_LP.tex][Prueba_de_teoremas_LP.tex]]
+** [[./texto/Prueba_de_teoremas_LP.tex][Prueba_de_teoremas_LP.tex]]
   + [[./codigo/PTLP.lhs][PTLP.lhs]]
     + [[./codigo/Tableros.lhs][Tableros.lhs]]
 
-* [[./texto/Modelos_de_Herbrand.tex][Modelos_de_Herbrand.tex]]
+** [[./texto/Modelos_de_Herbrand.tex][Modelos_de_Herbrand.tex]]
   + [[./codigo/Herbrand.lhs][Herbrand.lhs]]
 
-* [[./texto/Resolucion.tex][Resolucion.tex]]
+** [[./texto/Resolucion.tex][Resolucion.tex]]
   + [[./codigo/RES.lhs][RES.lhs]]
 
-* [[./texto/TrabajoGitHub.tex][TrabajoGitHub.tex]]
+** [[./texto/TrabajoGitHub.tex][TrabajoGitHub.tex]]
   
