@@ -4,13 +4,6 @@ evaluación de las mismas. Es decir, pretendemos representar los elementos
 lógicos básicos de representación de fórmulas, y decidir si una fórmula es
 verdadera o falsa según una interpretación.
 
-
-
-
-Una interpretación toma valores para las variables proposicionales, y se
-evalúan en una fórmula, determinando si la fórmula es verdadera o falsa. Se
-definirá más adelante mediante las funciones \texttt{valor} y \texttt{val}.
-
 \begin{code}
 module LPH where
 import Dominio
@@ -134,16 +127,47 @@ ghci> simetrica
 ∀x ∀y (R[x,y]⟹R[y,x])
 \end{sesion}
 
-\section{Evaluación de fórmulas}
+\begin{Def}
+  Una \textbf{estructura del lenguaje} es un par $\mathcal{I} = (\mathcal{U},I)$
+  tal que
+  \begin{enumerate}
+  \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
+  \item $\mathcal{I}$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
+  \end{enumerate}
+\end{Def}
 
-En esta sección se pretende interpretar fórmulas. Para ello se define
-una cadena de funciones para terminar con nuestro objetivo, la función
-\texttt{(valor)}.
+Definimos el tipo de dato relativo al universo
+
+\begin{code}
+type Universo a = [a] 
+\end{code}
 
 \begin{Def}
-  Una \textbf{interpretación} es una aplicación $I: VP \rightarrow Bool$, donde $VP$
-  representa el conjunto de las variables proposicionales.
+  Una \textbf{asignación} es una función $A: Variable \rightarrow Universo$
+  que hace corresponder a cada variable un elemento del universo.
 \end{Def}
+
+Se define un tipo de dato para las asignaciones
+
+\begin{code}
+type Asignacion a = Variable -> a
+\end{code}
+
+Necesitamos definir una asignación para los ejemplos. En nuestro
+caso, tomamos una asignación constante muy sencilla.
+
+\begin{code}
+asignacion :: a -> Entidades
+asignacion v = A
+\end{code}
+
+
+\section{Evaluación de fórmulas}
+
+En esta sección se pretende interpretar fórmulas. Una interpretación toma
+valores para las variables proposicionales, y se evalúan en una fórmula,
+determinando si la fórmula es verdadera o falsa.
+Se definirá mediante las funciones \texttt{valor} y \texttt{val}.
 
 Implementamos $s(x|d)$,mediante la función \texttt{(sustituye s x d v)}.
 $s(x|d)$ viene dado por la fórmula
@@ -167,19 +191,6 @@ sustituye s x d v | x == v     = d
 Esta función es auxiliar para la evaluación y toma de valores de fórmulas
 que haremos posteriormente.
 
-\begin{Def}
-  Una \textbf{asignación} es una función $A: Variable \rightarrow Universo$
-  que hace corresponder a cada variable un elemento del universo.
-\end{Def}
-
-Necesitamos definir una asignación para los ejemplos. En nuestro
-caso, tomamos una asignación constante muy sencilla.
-
-\begin{code}
-asignacion :: a -> Entidades
-asignacion v = A
-\end{code}
-
 Un par de ejemplos de la función \texttt{(sustituye s x d v)} son
 \begin{sesion}
 ghci> sustituye asignacion y B z
@@ -189,56 +200,14 @@ B
 \end{sesion}
 
 \begin{Def}
-  Una \textbf{estructura del lenguaje} es un par $\mathcal{I} = (\mathcal{U},I)$
-  tal que
-  \begin{enumerate}
-  \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
-  \item $\mathcal{I}$ es una función $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
-  \end{enumerate}
+  Una \textbf{interpretación} es una aplicación $I: VP \rightarrow Bool$, donde $VP$
+  representa el conjunto de las variables proposicionales.
 \end{Def}
 
-\begin{Def}
-  Una \textbf{interpretación de una estructura del lenguaje} es un par
-  $(\mathcal{I}, A)$ formado por una estructura del lenguaje y una asignación
-  $A$.
-\end{Def}
-
-Definimos los tipos de datos relativos a los elementos de la estructura del
-lenguaje. Es decir, los tipos de dato \texttt{Univero}, \texttt{InterpretacionR}
-y \texttt{Asignacion}.
-
-\begin{code}
-type Universo a = [a]
-
-type InterpretacionR a = String -> [a] -> Bool   
-
-type Asignacion a = Variable -> a
-\end{code}
-
-\begin{Def}
-  Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación en la que el valor
-  de \texttt{F} es verdadero.
-\end{Def}
-
-\begin{Def}
-  Una fórmula es \textbf{válida} si toda estructura es modelo de la fórmula.
-\end{Def}
-
-\begin{Def}
-  Una fórmula es \textbf{satisfacible} si existe alguna interpretación para la que
-  sea verdadera, es decir, algún modelo.
-\end{Def}
-
-\begin{Def}
-  Una fórmula es \textbf{insatisfacible} si no tiene ningún modelo.
-\end{Def}
-
-Definimos la función \texttt{(valor u i s form)} que calcula el valor de una
-fórmula en un universo \texttt{u}, con una interpretación \texttt{i} y la
-asignación \texttt{s}. Para ello vamos a introducir previamente el valor de las
-interpretaciones para las distintas conectivas lógicas según
-las interpretaciones de \texttt{P} y \texttt{Q}. Falso lo representamos mediante
-el 0, y Verdadero mediante el 1.
+A continuación, presentamos una tabla de valores de las
+distintas conectivas lógicas según las interpretaciones
+de \texttt{P} y \texttt{Q}. Falso lo representamos mediante el 0,
+y verdadero mediante el 1.
 
 \begin{center}
    \begin{tabular}{ | l | c | c | c | c | c | }
@@ -254,6 +223,22 @@ el 0, y Verdadero mediante el 1.
      \hline
    \end{tabular}
 \end{center}
+
+\begin{Def}
+  Una \textbf{interpretación de una estructura del lenguaje} es un par
+  $(\mathcal{I}, A)$ formado por una estructura del lenguaje y una asignación
+  $A$.
+\end{Def}
+
+Definimos un tipo de dato para las interpretaciones
+
+\begin{code}
+type InterpretacionR a = String -> [a] -> Bool
+\end{code}
+
+Definimos la función \texttt{(valor u i s form)} que calcula el valor de una
+fórmula en un universo \texttt{u}, con una interpretación \texttt{i}, respecto de la
+asignación \texttt{s}.
 
 \index{\texttt{valor}}
 \begin{code}
@@ -449,8 +434,29 @@ type InterpretacionF a = String -> [a] -> a
 \end{code}
 
 Para poder hacer las interpretaciones a las fórmulas,se necesita
-primero interpretar el valor de los términos. Definimos
-\texttt{(valorT s f str)}
+primero interpretar el valor de los términos.
+
+
+\begin{Def}
+  Dada una estructura $\mathcal{I}=(U,I)$ de $L$ y una asignación $A$ en
+  $\mathcal{I}$, se define la \textbf{función de evaluación de términos}
+  $\mathcal{I}_A: Term(L) \rightarrow U$ por
+  \begin{equation*}
+    \mathcal{I}_A(t) = \left\{
+      \begin{array}{lll}
+        I(c), \text{ si } t \text{ es una constante } c \\
+        A(x), \text{ si } t \text{ es una variable } x \\
+        I(f)(\mathcal{I}_A(t_1),\dots ,\mathcal{I}_A(t_n)),
+        \text{ si } t \text{ es } f(t_1,\dots t_n)
+      \end{array} \right.
+  \end{equation*}
+\end{Def}
+
+\begin{nota}
+  $\mathcal{I}_A$ se lee ``el valor de $t$ en $\mathcal{I}$ respecto de $A$''.
+\end{nota}
+
+Definimos \texttt{(valorT s f str)}
 
 \index{\texttt{valorT}}
 \begin{code}
@@ -467,8 +473,38 @@ la de los símbolos funcionales.
 type Interpretacion a = (InterpretacionR a, InterpretacionF a)  
 \end{code}
 
-Siguiendo la línea de la sección anterior, definimos una función que determine
-el valor de una fórmula.  Dicha función la denotamos por 
+
+\begin{Def}
+  Dada una estructura $\mathcal{I} = (U,I)$ de $L$ y una asignación
+  $A$ sobre $\mathcal{I}$, se define la \textbf{función evaluación de fórmulas}
+  $\mathcal{I}_A: Form(L) \rightarrow Bool$ por
+  \begin{itemize*}
+  \item Si $F$ es $t_1=t_2$,  $\mathcal{I}_A(F) = H_=(\mathcal{I}_A(t_1),\mathcal{I}_A(t_2)$
+  \item Si $F$ es $P(t_1,\dots ,t_n$,  $\mathcal{I}_A(F) = H_{I(P)}(\mathcal{I}_A(t_1),
+    \dots ,\mathcal{I}_A(t_n))$
+  \item Si $F$ es $\neg G$, $\mathcal{I}_A(F) = H_{\neg}(\mathcal{I}_A(G))$
+  \item Si $F$ es $G*H$, $\mathcal{I}_A(F) = H_*(\mathcal{I}_A(G),\mathcal{I}_A(H))$
+  \item Si $F$ es $\forall x G$,
+    \begin{equation*}
+      \mathcal{I}_A(F) = \left\{
+      \begin{array}{ll} 
+        1, \text{ si para todo } u\in U \text{ se tiene } \mathcal{I}_{A [ x / u ]} = 1 \\
+        0, \text{ en caso contario}.
+      \end{array} \right.
+    \end{equation*}
+  \item Si $F$ es $\exits x G$,
+     \begin{equation*}
+      \mathcal{I}_A(F) = \left\{
+      \begin{array}{ll}
+        1, \text{ si existe algún } u\in U \text{ tal que } \mathcal{I}_{A [x / u ]} = 1 \\
+        0, \text{ en caso contario}.
+      \end{array} \right.
+    \end{equation*}
+  \end{itemize*}
+\end{Def}
+
+
+Definimos una función que determine el valor de una fórmula.  Dicha función la denotamos por 
 \texttt{(valorF u i f s form)}, en la que \texttt{u} denota el universo, \texttt{i} es la
 interpretación de las propiedades o relaciones, \texttt{f} es la interpretación
 del término funcional, \texttt{s} la asignación, y \texttt{form} una fórmula.
@@ -498,7 +534,7 @@ valorF u i a (Ex v g)  =
 \end{code}
 
 Para construir un ejemplo tenemos que interpretar los elementos de una
-fórmula, por ejemplo la \texttt{formula 4}.
+fórmula, por ejemplo las \texttt{formula 4}. 
 
 \begin{code}
 formula_4,formula_5 :: Form
@@ -509,9 +545,11 @@ formula_5 =  Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
 \begin{sesion}
 ghci> formula_4
 ∃x R[cero,x]
+ghci> formula_5
+(∀x P[x]⟹∀y Q[x,y])
 \end{sesion}
 
-En este caso tomamos como universo \texttt{u} los números naturales.
+En este caso tomamos como universo \texttt{U} los números naturales.
 Interpretamos \texttt{R} como la desigualdad $<$. Es decir, vamos a comprobar
 si es cierto que existe un número natural mayor que el 0. Por tanto, la
 interpretación de los símbolos de relación es
@@ -550,6 +588,26 @@ True
   infinito. Haskell no hace cálculos innecesarios; es decir, para cuando
   encuentra un elemento que cumple la propiedad.
 \end{nota}
+
+Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
+
+\begin{Def}
+  Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación para la que
+  \texttt{F} es verdadera.
+\end{Def}
+
+\begin{Def}
+  Una fórmula $F$ es \textbf{válida} si toda interpretación es modelo de la fórmula.
+\end{Def}
+
+\begin{Def}
+  Una fórmula $F$ es \textbf{satisfacible} si existe alguna interpretación para la que
+  sea verdadera, es decir, algún modelo.
+\end{Def}
+
+\begin{Def}
+  Una fórmula es \textbf{insatisfacible} si no tiene ningún modelo.
+\end{Def}
 
 \subsection{Generadores}
 
