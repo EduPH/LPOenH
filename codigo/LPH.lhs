@@ -1,8 +1,8 @@
 El contenido de esta sección se encuentra en el módulo \texttt{LPH}, en él se
-pretende dar representación a variables y fórmulas lógicas para la posterior
-evaluación de las mismas. Es decir, pretendemos representar los elementos
-lógicos básicos de representación de fórmulas, y decidir si una fórmula es
-verdadera o falsa según una interpretación.
+pretende asentar las bases de la lógica de primer orden y su implementación en
+Haskell, con el objetivo de construir los cimientos para las posteriores
+implementaciones de algoritmos de la lógica de primer orden en siguientes
+capítulos.. 
 
 \begin{code}
 module LPH where
@@ -11,21 +11,33 @@ import Modelo
 import Data.List
 import Test.QuickCheck
 \end{code}
+Los elementos básicos de las fórmulas en la lógica de primer orden, así como
+en la lógica proposicional son las variables.
 
-Se define un tipo de dato para las variables. Una variable estará
-compuesta por un nombre e índice que las defina.
+Definimos un tipo de dato para las variables. Una variable estará
+compuesta por:
+
+Un \texttt{nombre}, que será una lista de caracteres.
 
 \begin{code}
 type Nombre   = String
+\end{code}
 
+Un \texttt{índice}, lista de enteros.
+
+\begin{code}
 type Indice   = [Int]
+\end{code}
 
+Quedando el tipo de dato \texttt{Variable}
+
+\begin{code}
 data Variable = Variable Nombre Indice
   deriving (Eq,Ord)
 \end{code}
 
-Y para una visualización agradable en pantalla se define
-su representación.
+Para una visualización agradable en pantalla se define
+su representación en la clase \texttt{Show}.
 
 \begin{code}
 instance Show Variable where
@@ -58,8 +70,14 @@ a3 = Variable "a" [3]
 De manera que su visualización sería
 
 \begin{sesion}
+ghci> x
+x
+ghci> y
+y
 ghci> a1
 a1
+ghci> a2
+a2
 \end{sesion}
 
 \begin{Def}
@@ -72,7 +90,7 @@ a1
 \end{enumerate}
 \end{Def}
 
-A continuación se define un tipo de dato para las fórmulas lógicas
+Se define un tipo de dato para las fórmulas lógicas
 de primer orden.
 
 \begin{code}
@@ -88,7 +106,7 @@ data Formula = Atomo Nombre [Variable]
      deriving (Eq,Ord)
 \end{code}
    
-Y se emplea \texttt{show} para la visualización por pantalla.
+Y se define una visualización en la clase \texttt{Show}
 
 \begin{code}
 instance Show Formula where
@@ -166,8 +184,9 @@ asignacion v = A
 
 En esta sección se pretende interpretar fórmulas. Una interpretación toma
 valores para las variables proposicionales, y se evalúan en una fórmula,
-determinando si la fórmula es verdadera o falsa.
-Se definirá mediante las funciones \texttt{valor} y \texttt{val}.
+determinando si la fórmula es verdadera o falsa, bajo esa interpretación.
+
+Se definirá mediante la función \texttt{valor}.
 
 Implementamos $s(x|d)$,mediante la función \texttt{(sustituye s x d v)}.
 $s(x|d)$ viene dado por la fórmula
@@ -179,6 +198,7 @@ $s(x|d)$ viene dado por la fórmula
 \end{array} \right.
 \end{equation*}
 donde \texttt{s} es una aplicación que asigna un valor a una variable.
+
 En Haskell se expresa mediante guardas
 
 \index{\texttt{sustituye}}
@@ -283,7 +303,7 @@ interpretacion1 "Q" [x] = gimnosperma x
 interpretacion1 _ _     = False
 \end{code}
 
-Una segunda interpretación es si las plantas deben ser o no acuáticas o
+Una segunda interpretación es si las plantas deben ser o no, acuáticas o
 terrestres.
 
 \begin{code}
@@ -307,7 +327,7 @@ relaciones binarias, ternarias, \dots, n--arias.
 \section{Términos funcionales}
 
 En la sección anterior todos los términos han sido variables. Ahora
-consideraremos funciones, entre ellas las constantes.
+consideraremos cualquier término.
 
 \begin{Def}
   Son \textbf{términos} en un lenguaje de primer orden:
@@ -319,8 +339,8 @@ consideraremos funciones, entre ellas las constantes.
 \end{Def}
 
 Definimos un tipo de dato para los términos que serán la base
-para la definición de fórmulas en lógica de primer orden,
-más versátiles que las de la sección anterior.
+para la definición de fórmulas en lógica de primer orden que no 
+esté compuesta sólo por variables.
 
 \begin{code}
 data Termino =  Var Variable | Ter Nombre [Termino]
@@ -346,6 +366,7 @@ c    = Ter "c" []
 cero = Ter "cero" []
 \end{code}
 
+\end{code}
 Para mostrarlo por pantalla de manera comprensiva, definimos
 su representación.
 
@@ -356,8 +377,15 @@ instance Show Termino where
     show (Ter str ts) = str ++ show ts
 \end{code}
 
-Una función que puede resultar útil es \texttt{(esVariable x)}, que determina
-si un término es una variable
+Los términos funcionales serían representados de la forma
+
+\begin{sesion}
+ghci> Ter "f" [tx,ty]
+f[x,y]
+\end{sesion}
+
+Caracterizamos las funciones mediante la función \texttt{(esVariable x)},
+que determina si un término es una variable
 
 \index{\texttt{esVariable}}
 \begin{code}
@@ -366,9 +394,18 @@ esVariable (Var _) = True
 esVariable _       = False
 \end{code}
 
+Por ejemplo
+
+\begin{sesion}
+ghci> esVariable tx
+True
+ghci> esVariable (Ter "f" [tx,ty])
+False
+\end{sesion}
+
 Ahora, creamos el tipo de dato \texttt{Form} de manera análoga a como lo
 hicimos en la sección anterior considerando simplemente variables, pero en este
-caso considerando términos.
+caso considerando cualquier término.
 
 \begin{code}
 data Form = Atom Nombre [Termino]
@@ -488,7 +525,7 @@ type Interpretacion a = (InterpretacionR a, InterpretacionF a)
     \begin{equation*}
       \mathcal{I}_A(F) = \left\{
       \begin{array}{ll} 
-        1, \text{ si para todo } u\in U \text{ se tiene } \mathcal{I}_{A [ x / u ]} = 1 \\
+        1, \text{ si para todo } u \in U \text{ se tiene } \mathcal{I}_{A [ x / u ]} = 1 \\
         0, \text{ en caso contario}.
       \end{array} \right.
     \end{equation*}
@@ -496,7 +533,7 @@ type Interpretacion a = (InterpretacionR a, InterpretacionF a)
      \begin{equation*}
       \mathcal{I}_A(F) = \left\{
       \begin{array}{ll}
-        1, \text{ si existe algún } u\in U \text{ tal que } \mathcal{I}_{A [x / u ]} = 1 \\
+        1, \text{ si existe algún } u \in U \text{ tal que } \mathcal{I}_{A [x / u ]} = 1 \\
         0, \text{ en caso contario}.
       \end{array} \right.
     \end{equation*}
@@ -534,7 +571,8 @@ valorF u i a (Ex v g)  =
 \end{code}
 
 Para construir un ejemplo tenemos que interpretar los elementos de una
-fórmula, por ejemplo las \texttt{formula 4}. 
+fórmula. Definimos las fórmulas 4 y 5, aunque emplearemos en el ejemplo
+sólo la \texttt{formula 4}. 
 
 \begin{code}
 formula_4,formula_5 :: Form
@@ -542,6 +580,7 @@ formula_4 = Ex x (Atom "R" [cero,tx])
 formula_5 =  Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
 \end{code}
 
+Sus representaciones quedan
 \begin{sesion}
 ghci> formula_4
 ∃x R[cero,x]
@@ -561,6 +600,7 @@ interpretacionR1 _ _       = False
 \end{code}
 
 La interpretación de los símbolos de función es
+
 \begin{code}
 interpretacionF1 :: String -> [Int] -> Int
 interpretacionF1 "cero" []    = 0
@@ -616,9 +656,10 @@ generar elementos aleatorios de los tipos de datos creados hasta ahora.
 
 \entrada{Generadores}
 
-\subsection{Funciones útiles en el manejo de fórmulas}
+\subsection{Otros conceptos de la lógica de primer orden}
 
-La función \texttt{varEnTerm} y \texttt{varEnTerms} devuelve las variables
+
+Las funciones \texttt{varEnTerm} y \texttt{varEnTerms} devuelven las variables
 que aparecen en un término o en una lista de ellos.
 
 \index{\texttt{varEnTerm}}
@@ -643,6 +684,7 @@ varEnTerms = nub . concatMap varEnTerm
 \end{nota}
 
 Por ejemplo,
+
 \begin{sesion}
 ghci> varEnTerm tx
 [x]
@@ -675,7 +717,7 @@ varEnForm formula_4  ==  [x]
 \end{sesion}
 
 \begin{Def}
-  Una variable es libre en una fórmula si no tiene ninguna aparición ligada a
+  Una variable es \textbf{libre} en una fórmula si no tiene ninguna aparición ligada a
   un cuantificador existencial o universal. ($\forall x, \exists x$)
 \end{Def}
 
