@@ -2,8 +2,7 @@
 
 [[./texto/LPO_en_Haskell.tex][LPO_en_Haskell.tex]]
 
-* [[./texto/Introduccion.tex][Introduccion.tex
-]]
+* [[./texto/Introduccion.tex][Introduccion.tex]]
 * [[./texto/Programacion_funcional_con_Haskell.tex][Programacion_funcional_con_Haskell.tex]]
   + [[./codigo/PFH.lhs][PFH.lhs]]
     + [[./codigo/Dominio.lhs][Dominio.lhs]]
