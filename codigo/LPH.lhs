@@ -154,7 +154,7 @@ ghci> simetrica
   \end{enumerate}
 \end{Def}
 
-\comentario{Hay que corregir la definición de estructura del lenguaje.}
+\comentario{Corregir la definición de estructura del lenguaje.}
 
 Definimos el tipo de dato relativo al universo
 
@@ -189,7 +189,7 @@ determinando si la fórmula es verdadera o falsa, bajo esa interpretación.
 
 Se definirá mediante la función \texttt{valor}.
 
-Implementamos $s(x|d)$,mediante la función \texttt{(sustituye s x d v)}.
+Implementamos $s(x|d)$, mediante la función \texttt{(sustituye s x d v)}.
 $s(x|d)$ viene dado por la fórmula
 \begin{equation*}
 \text{sustituye (s(t),x,d,v)}= \left\{
@@ -200,12 +200,14 @@ $s(x|d)$ viene dado por la fórmula
 \end{equation*}
 donde \texttt{s} es una aplicación que asigna un valor a una variable.
 
+\comentario{Reformular la especificación de $s(x|d)$.}
+
 En Haskell se expresa mediante guardas
 
 \index{\texttt{sustituye}}
 \begin{code}
 sustituye :: (Variable -> a) -> Variable -> a -> Variable -> a
-sustituye s x d v | x == v     = d 
+sustituye s x d v | x == v    = d 
                   | otherwise = s v
 \end{code}
 
