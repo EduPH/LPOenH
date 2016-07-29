@@ -366,7 +366,6 @@ c    = Ter "c" []
 cero = Ter "cero" []
 \end{code}
 
-\end{code}
 Para mostrarlo por pantalla de manera comprensiva, definimos
 su representación.
 
