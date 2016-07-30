@@ -1,4 +1,3 @@
-
 \begin{code}
 module PTLP where
 import LPH
@@ -9,7 +8,6 @@ import Generadores     -- Para ejemplos
 \end{code}
 
 \section{Sustitución}
-
 
 \begin{Def}
   Una \textbf{sustitución} es una aplicación $S: Variable \rightarrow Termino$.
@@ -28,13 +26,16 @@ import Generadores     -- Para ejemplos
   \end{equation*}
 \end{nota}
 
-En la lógica de primer orden, a la hora de emplear el método de tableros, es necesario
-sustituir las variables ligadas por términos. Por lo tanto, requerimos
-de la definición de un nuevo tipo de dato para las sustituciones.
+En la lógica de primer orden, a la hora de emplear el método de tableros, es
+necesario sustituir las variables ligadas por términos. Por lo tanto,
+requerimos de la definición de un nuevo tipo de dato para las sustituciones.
 
 \begin{code}
 type Sust = [(Variable, Termino)]
 \end{code}
+
+\comentario{Sería interesante comparar la representación de sustituciones
+  mediante diccionarios con la librería Data.Map}
 
 Este nuevo tipo de dato es una asociación de la variable con el término
 mediante pares. Denotamos el elemento identidad de la sustitución como 
@@ -55,13 +56,13 @@ hacerApropiada :: Sust -> Sust
 hacerApropiada xs = [x | x <- xs, Var (fst x) /= snd x]
 \end{code}
 
-Por ejemplo
+\comentario{La definición de hacerApropiada se puede simplificar usando patrones.}
+
+Por ejemplo,
 
 \begin{sesion}
-ghci> hacerApropiada [(x,tx)]
-[]
-ghci> hacerApropiada [(x,tx),(x,ty)]
-[(x,y)]
+hacerApropiada [(x,tx)]         ==  []
+hacerApropiada [(x,tx),(x,ty)]  ==  [(x,y)]
 \end{sesion}
 
 Como la sustitución es una aplicación, podemos distinguir \texttt{dominio} y
@@ -77,20 +78,19 @@ recorrido :: Sust -> [Termino]
 recorrido = map snd
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 
 \begin{sesion}
-ghci> dominio [(x,tx)]
-[x]
-ghci> dominio [(x,tx),(x,ty)]
-[x,x]
-ghci> recorrido [(x,tx)]
-[x]
-ghci> recorrido [(x,tx),(x,ty)]
-[x,y]
+dominio [(x,tx)]           ==  [x]
+dominio [(x,tx),(x,ty)]    ==  [x,x]
+recorrido [(x,tx)]         ==  [x]
+recorrido [(x,tx),(x,ty)]  ==  [x,y]
 \end{sesion}
-Posteriormente, se define una función que hace la sustitución de una
-variable concreta. La denotamos \texttt{(sustituyeVar sust var)}
+
+\comentario{Modificar dominio y recorrido para eliminar repeticiones.}
+
+Posteriormente, se define una función que hace la sustitución de una variable
+concreta. La denotamos \texttt{(sustituyeVar sust var)}
 
 \begin{code}
 sustituyeVar :: Sust -> Variable -> Termino
@@ -99,24 +99,23 @@ sustituyeVar ((x,x'):xs) y | x == y    = x'
                            | otherwise = sustituyeVar xs y
 \end{code}
 
-
 \begin{Def}
   $t[x_1/t_1, \dots , x_n/t_n]$ es el término obtenido sustituyendo en $t$ las
   apariciones de $x_i$ por $t_i$.
 \end{Def}
+
 \begin{Def}
   La extensión de la sustitución a términos es la aplicación
   $S: Term(L) \rightarrow Term(L)$ definida por
   \begin{equation*}
-    tS = \left\{
-    \begin{array}{lll}
-      c, \text{ si } t \text{ es una constante } c \\
-      S(x), \text{ si } t \text{ es una variable } x \\
-      f(t_1S,\dots, t_nS), \text{ si es } f(t_1,\dots ,t_n) 
+    S(t) = \left\{
+    \begin{array}{ll}
+      c,                       & \text{si $t$ es una constante $c$} \\
+      S(x),                    & \text{si $t$ es una variable $x$} \\
+      f(S(t_1),\dots, S(t_n)), & \text{si $T$ es $f(t_1,\dots ,t_n)$} 
     \end{array} \right.
   \end{equation*}
 \end{Def}
-  
 
 Ahora aplicando una recursión entre funciones, podemos hacer sustituciones
 basándonos en los términos, mediante las funciones \texttt{(susTerm xs t)} y
@@ -133,51 +132,52 @@ susTerms :: Sust -> [Termino] -> [Termino]
 susTerms = map . susTerm
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 
 \begin{sesion}
-ghci> susTerm [(x,ty)]  tx
-y
-ghci> susTerms [(x,ty),(y,tx)] [tx,ty]
-[y,x]
+susTerm  [(x,ty)] tx              ==  y
+susTerms [(x,ty),(y,tx)] [tx,ty]  ==  [y,x]
 \end{sesion}
 
 \begin{Def}
-  $F[x_1/t_1,\dots , x_n/t_n]$ es la fórmula obtenida sustituyendo $F$ las apariciones
-  libres de $x_i$ por $t_i$.
+  $F[x_1/t_1,\dots , x_n/t_n]$ es la fórmula obtenida sustituyendo en $F$ las
+  apariciones libres de $x_i$ por $t_i$.
 \end{Def}
 
 \begin{Def}
   La extensión de $S$ a fórmulas es la aplicación $S: Form(L) \rightarrow Form(L)$
   definida por
-  % \begin{equation*}
-  %   
-  %   FS = \left\{
-  %     \begin{array}{llll}
-  %       P(t_1S,\dots,t_nS), \text{ si } F \text{ es la fórmula atómica } P(t_1,\dots , t_n) \\
-  %       t_1S = t_2S, \text{ si } F \text{ es la fórmula } t_1 = t_2 \\
-  %       \neg(GS), \text{ si } F \text{ es } \neg G \\
-  %       GS*HS, \text{ si } F  \text{ es } G*H \\
-  %       (Qx)(GS_x), \text{ si } F \text{ es } (Qx)G \text{ y }
-  %       Q\in \left\{\forall,\exists \right\}
-  %     \end{array} \right .
-  %  
-  % \end{equation*}
-  % Donde $S_x$ es la sustitución definida por
-  % \begin{equation*}
-  %   
-  %   S_x(y) = \left\{
-  %     \begin{array}{ll}
-  %       x, \text{ si } y \text{ es } x \\
-  %       S(y), \text{ si } y \text{ es distinta de } x
-  %     \end{array}\right .
-  %   
-  % \end{equation*}
+  \begin{equation*}
+    S(F) =
+     \left\{
+      \begin{array}{ll}
+        P(S(t_1),\dots,S(t_n)),
+         & \text{si $F$ es la fórmula atómica $P(t_1,\dots , t_n)$} \\
+        S(t_1) = S(t_2),
+         & \text{si $F$ es la fórmula $t_1 = t_2$} \\
+        \neg(S(G)),
+         & \text{si $F$ es $\neg G$} \\
+        S(G)*S(H),
+         & \text{si $F$ es $G*H$} \\
+        (Qx)(S_x(G)),
+         & \text{si $F$ es $(Qx)G$}
+      \end{array}
+     \right .
+  \end{equation*}
+  donde $S_x$ es la sustitución definida por
+  \begin{equation*}
+    S_x(y) =
+    \left\{
+      \begin{array}{ll}
+        x,    &\text{si $y$ es $x$} \\
+        S(y), &\text{si $y$ es distinta de $x$}
+      \end{array}
+    \right .
+  \end{equation*}
 \end{Def}
 
-
-Definimos \texttt{(sustitucionForm s f)}, donde \texttt{s} representa
-la sustitución y \texttt{f} la fórmula.
+Definimos \texttt{(sustitucionForm s f)}, donde \texttt{s} representa la
+sustitución y \texttt{f} la fórmula.
 
 \index{\texttt{sustitucionForm}}
 \begin{code}
@@ -204,11 +204,11 @@ sustitucionForm s (Ex v f) =
   where s' = [x | x <- s, fst x /= v]
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 \begin{sesion}
-ghci> formula_3
+ghci> formula3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> sustitucionForm [(x,ty)] formula_3
+ghci> sustitucionForm [(x,ty)] formula3
 (R[y,y]⟹∃z (R[y,z]⋀R[z,y]))
 \end{sesion}
 
@@ -231,17 +231,15 @@ definimos la función \texttt{(composicion s1 s2)}
 \begin{code}
 composicion :: Sust -> Sust -> Sust
 composicion s1 s2 = 
-    hacerApropiada [(y,susTerm s1 y') | (y,y') <- s2 ] ++
-    [x | x <- s1, fst x `notElem` dominio s2]
+  hacerApropiada [(y,susTerm s1 y') | (y,y') <- s2 ] ++
+  [x | x <- s1, fst x `notElem` dominio s2]
 \end{code}
 
 Por ejemplo,
 
 \begin{sesion}
-ghci> composicion [(x,tx)] [(y,ty)]
-[(x,x)]
-ghci> composicion [(x,tx)] [(x,ty)]
-[(x,y)]
+composicion [(x,tx)] [(y,ty)]  ==  [(x,x)]
+composicion [(x,tx)] [(x,ty)]  ==  [(x,y)]
 \end{sesion}
 
 \begin{code}
@@ -250,7 +248,7 @@ composicionConmutativa s1 s2 =
   composicion s1 s2 == composicion s2 s1
 \end{code} 
  
-Y comprobando con QuickCheck, no lo es
+Y comprobando con QuickCheck que no lo es
 
 \begin{sesion}
 ghci> quickCheck composicionConmutativa
@@ -262,12 +260,8 @@ ghci> quickCheck composicionConmutativa
 Un contraejemplo más claro es
 
 \begin{sesion}
-ghci> composicion [(x,tx)] [(y,ty)]
-[(x,x)]
-ghci> composicion  [(y,ty)] [(x,tx)]
-[(y,y)]
-ghci> composicion  [(y,ty)] [(x,tx)] == composicion [(x,tx)] [(y,ty)]
-False
+composicion [(x,tx)] [(y,ty)]  ==  [(x,x)]
+composicion [(y,ty)] [(x,tx)]  ==  [(y,y)]
 \end{sesion}
 
 \begin{nota}
@@ -312,64 +306,63 @@ unificadoresListas [] [] = [identidad]
 unificadoresListas [] _  = []
 unificadoresListas _ []  = []
 unificadoresListas (t:ts) (r:rs) = 
-    [composicion u1 u2
-    | u1 <- unificadoresTerminos t r
-    , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs)]   
+  [composicion u1 u2
+  | u1 <- unificadoresTerminos t r
+  , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs)]   
 \end{code}
 
-Por ejemplo
+Por ejemplo,
 
 \begin{sesion}
-ghci> unificadoresListas [tx] [ty]
-[[(x,y)]]
-ghci> unificadoresListas [tx] [tx]
-[[]]
+unificadoresListas [tx] [ty]  ==  [[(x,y)]]
+unificadoresListas [tx] [tx]  ==  [[]]
 \end{sesion}
 
 \section{Skolem}
 
 \begin{Def}
-  Una fórmula está en forma \textbf{normal conjuntiva} si es una conjunción de
+  Una fórmula está en \textbf{forma normal conjuntiva} si es una conjunción de
   disyunciones de literales.
-  $$(p_1\vee \dots \vee p_n)\wedge \dots \wedge (q_1\vee \dots \vee q_m)$$
+  $$(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$$
 \end{Def}
 
 \begin{Def}
-  Una fórmula está en forma \textbf{normal disyuntiva} si es una disyunción de
+  Una fórmula está en \textbf{forma normal disyuntiva} si es una disyunción de
   conjunciones de literales.
-  $$(p_1 \wedge \dots \wedge p_n)\vee \dots \vee (q_1\wedge \dots \wedge q_m)$$
+  $$(p_1 \wedge \dots \wedge p_n) \vee \dots \vee (q_1\wedge \dots \wedge q_m)$$
 \end{Def}
+
 \subsection{Forma rectificada}
 
 \begin{Def}
   Una fórmula $F$ está en forma \textbf{rectificada} si ninguna variable
   aparece libre y ligada y cada cuantificador se refiere a una variable
-  diferente
+  diferente.
 \end{Def}
 
 \subsection{Forma normal prenexa}
 
 \begin{Def}
   Una fórmula $F$ está en forma \textbf{normal prenexa} si es de la forma
-  $\{C_ix_i\}_{\forall i}G$
-  donde $C_i\in \{\forall ,\exists \}$ y $G$ no tiene cuantificadores.
+  $Q_1x_1 \dots Q_nx_nG$ donde $Q_i \in \{\forall ,\exists \}$ y $G$ no tiene
+  cuantificadores.
 \end{Def}
 
 \subsection{Forma normal prenexa conjuntiva}
 \begin{Def}
-  Una fórmula $F$ está en forma \textbf{normal prenexa conjuntiva}
-  si está en forma normal prenexa con $G$ en forma normal conjuntiva.
+  Una fórmula $F$ está en \textbf{forma normal prenexa conjuntiva} si está en
+  forma normal prenexa con $G$ en forma normal conjuntiva.
 \end{Def}
 
 \subsection{Forma de Skolem}
 
 \begin{Def}
-  La fórmula \texttt{F} está en forma de \textbf{Skolem} si es de la forma
-  $\forall x_1 \dots \forall x_n \texttt{G}$, donde $n\geq 0$ y \texttt{G}
-  no tiene cuantificadores.
+  La fórmula \texttt{F} está en \textbf{forma de Skolem} si es de la forma
+  $\forall x_1 \dots \forall x_n G$, donde $n \geq 0$ y $G$ no tiene
+  cuantificadores.
 \end{Def}
 
-Para alcanzar una fórmula en forma de Skolem emplearemos sustituciones y
+Para transformar una fórmula en forma de Skolem emplearemos sustituciones y
 unificaciones. Además, necesitamos eliminar las equivalencias e implicaciones.
 Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 
@@ -380,8 +373,7 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 
 \begin{Def}
   Las fórmulas \texttt{F} y \texttt{G} son \textbf{equisatisfacibles} si se cumple
-  $(\texttt{F} \text{ satisfacible } \Leftrightarrow 
-    \texttt{G} \text{ satisfacible })$
+  ambas son satisfacibles o ninguna lo es.
 \end{Def}
 
 Definimos la función \texttt{(elimImpEquiv f)}, para obtener fórmulas
@@ -394,10 +386,10 @@ elimImpEquiv (Atom f xs) =
 elimImpEquiv (Ig t1 t2) =
   Ig t1 t2
 elimImpEquiv (Equiv f1 f2) =
-  Conj [ elimImpEquiv (Impl f1 f2),
-         elimImpEquiv (Impl f2 f1)]
+  Conj [elimImpEquiv (Impl f1 f2),
+        elimImpEquiv (Impl f2 f1)]
 elimImpEquiv (Impl f1 f2) =
-  Disy [ Neg f1, f2]
+  Disy [Neg f1, f2]
 elimImpEquiv (Neg f) =
   Neg (elimImpEquiv f)
 elimImpEquiv (Disy fs) =
@@ -410,28 +402,30 @@ elimImpEquiv (Ex x f) =
   Ex x (elimImpEquiv f)
 \end{code}
 
-Empleamos las fórmulas 2,3 y 4 ya definidas anteriormente como ejemplo:
+Empleamos las fórmulas 2, 3 y 4 ya definidas anteriormente como ejemplo:
 
 \begin{sesion}
-ghci> formula_2
+ghci> formula2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> elimImpEquiv formula_2
+ghci> elimImpEquiv formula2
 ∀x ∀y (¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
-ghci> formula_3
+ghci> formula3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> elimImpEquiv formula_3
+ghci> elimImpEquiv formula3
 (¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
-ghci> formula_4
+ghci> formula4
 ∃x R[cero,x]
-ghci> elimImpEquiv formula_4
+ghci> elimImpEquiv formula4
 ∃x R[cero,x]
 \end{sesion}
 
 Finalmente, definamos una cadena de funciones, para finalizar con
 \texttt{(skolem f)} que transforma \texttt{f} a su forma de Skolem.
 
-Se define la función \texttt{(skol k vs)} que convierte una lista
-de variables a un término.
+Se define la función \texttt{(skol k vs)} que convierte una lista de variables
+a un término de Skolem.
+
+\comentario{Comentar los términos de Skolem.}
 
 \index{\texttt{skol}}
 \begin{code}
@@ -442,8 +436,7 @@ skol k vs = Ter ("sk" ++ show k) [Var x | x <- vs]
 Por ejemplo,
 
 \begin{sesion}
-ghci> skol 1 [x]
-sk1[x]
+skol 1 [x]  ==  sk1[x]
 \end{sesion}
 
 Definimos la función \texttt{(skf f vs pol k)}, donde
@@ -455,6 +448,8 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
 \item \texttt{k} es de tipo \texttt{Int} y sirve como identificador
   de la forma de Skolem.
 \end{enumerate}
+
+\comentario{Definir polaridad.}
 
 \index{\texttt{skf}}
 \begin{code}
@@ -487,6 +482,7 @@ skf (Neg f) vs pol k =
 \end{code}
 
 donde la skolemización de una lista está definida por  
+
 \index{\texttt{skfs}}
 \begin{code}
 skfs :: [Form] -> [Variable] -> Bool -> Int -> ([Form],Int)
@@ -498,6 +494,7 @@ skfs (f:fs) vs pol k = (f':fs',j)
 
 La skolemización de una fórmula sin equivalencias ni implicaciones se define
 por \index{\texttt{sk}}
+
 \begin{code}
 sk :: Form -> Form
 sk f = fst (skf f [] True 0)
@@ -515,22 +512,24 @@ skolem  = sk . elimImpEquiv
 Por ejemplo,
 
 \begin{sesion}
-ghci> skolem formula_2
+ghci> skolem formula2
 ∀x ∀y (¬R[x,y]⋁(R[x,sk0[x,y]]⋀R[sk0[x,y],y]))
-ghci> skolem formula_3
+ghci> skolem formula3
 (¬R[x,y]⋁(R[x,sk0]⋀R[sk0,y]))
-ghci> skolem formula_4
+ghci> skolem formula4
 R[cero,sk0]
-ghci> skolem formula_5
+ghci> skolem formula5
 (¬P[sk0]⋁∀y Q[x,y])
 \end{sesion}
 
 \section{Tableros semánticos}
 
 \begin{Def}
-  Una fórmula o conjunto de fórmulas es \textbf{consistente} si tiene algún modelo. En
-  caso contrario, se denomina inconsistente.
+  Un conjunto de fórmulas es \textbf{consistente} si tiene algún modelo. En
+  caso contrario, se denomina \textbf{inconsistente}.
 \end{Def}
+
+\comentario{Distinguir el caso de fórmulas con variables libres.}
 
 La idea de obtener fórmulas equivalentes nos hace introducir los tipos de
 fórmulas alfa, beta, gamma y delta. No son más que equivalencias ordenadas por
@@ -556,14 +555,12 @@ Las definimos en Haskell
 \index{\texttt{alfa}}
 \begin{code}
 alfa :: Form -> Bool
-alfa (Conj _) = True
+alfa (Conj _)       = True
 alfa (Neg (Disy _)) = True
-alfa _ = False
+alfa _              = False
 \end{code}
 
 \vspace*{2ex}
-
-
 
 \item Fórmulas beta 
   
@@ -598,8 +595,6 @@ beta _              = False
     \neg \exists x F & \neg F [x/t ] \\ \hline
   \end{array}$
 
-
-
 \vspace*{1ex}
 
 Notar que $t$ es un término básico.
@@ -630,16 +625,21 @@ gamma _              = False
 
   Notar que $a$ es una constante nueva.
 
+\comentario{Añadir la definición en Haskell de fórmulas deltas.}
+  
 \end{itemize}
 
 \begin{nota}
   En las tablas, cada elemento de una columna es equivalente a su análogo en la
   otra columna.
+
+  \comentario{Precisar la equivalencia con las componentes.}
+  
 \end{nota}
 
 Mediante estas equivalencias se procede a lo que se denomina método de los
 tableros semánticos. Uno de los objetivos del método de los tableros es
-determinar si una fórmula es inconsistente, así como la búsqueda de modelos.
+determinar si una fórmula es consistente, así como la búsqueda de modelos.
 
 \begin{Def}
   Un \textbf{literal} es un átomo o la negación de un átomo.
@@ -650,13 +650,17 @@ Lo definimos en haskell
 \index{\texttt{literal}}
 \begin{code}
 atomo, negAtomo, literal :: Form -> Bool
-atomo (Atom n ts)          = True
-atomo _                    = False
-negAtomo (Neg (Atom n ts)) = True
-negAtomo  _                = False
-literal f = atomo f || negAtomo f
 
+atomo (Atom _ _)          = True
+atomo _                   = False
+
+negAtomo (Neg (Atom _ _)) = True
+negAtomo  _               = False
+
+literal f = atomo f || negAtomo f
 \end{code}
+
+\comentario{Incluir algoritmo de tableros.}
 
 \begin{Def}
   Se dice que una hoja es \textbf{cerrada} si contiene una fórmula y su negación.
@@ -707,7 +711,6 @@ r = Atom "r" []
 Para que la fórmula quede
 
 \begin{code}
-
 tab1 = Neg (Impl (Disy [p,q]) (Conj [p,q]))
 \end{code}
 
@@ -721,7 +724,6 @@ ghci> tab1
 \end{Def}
 
 Un ejemplo de tablero cerrado es
-
 
 \begin{center}
 \begin{tikzpicture}[sibling distance=15em,
@@ -761,9 +763,10 @@ ghci> tab2
   ramas abiertas.
 \end{Teo}
 
-Nuestro objetivo es definir en Haskell un método para el cálculo de
-tableros semánticos. El contenido relativo a tableros semánticos 
-se encuentra en el módulo \texttt{Tableros}.
+Nuestro objetivo es definir en Haskell un método para el cálculo de tableros
+semánticos. El contenido relativo a tableros semánticos se encuentra en el
+módulo \texttt{Tableros}.
+
 \entrada{Tableros}
 
 
