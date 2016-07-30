@@ -458,7 +458,8 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
   \item  Una cantidad de apariciones par de $x$ en la subfórmula $F$ de
     $\forall x F$ indica que $x$ tiene una polaridad positiva en la fórmula. 
   \end{itemize*}
-  
+\end{Def}
+
 \comentario{Pendiente revisión polaridad.}
 
 \index{\texttt{skf}}
