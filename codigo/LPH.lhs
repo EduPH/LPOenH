@@ -1,8 +1,8 @@
-El contenido de esta sección se encuentra en el módulo \texttt{LPH}, en él se
+El contenido de esta sección se encuentra en el módulo \texttt{LPH}. En él se
 pretende asentar las bases de la lógica de primer orden y su implementación en
 Haskell, con el objetivo de construir los cimientos para las posteriores
 implementaciones de algoritmos de la lógica de primer orden en siguientes
-capítulos.. 
+capítulos.
 
 \begin{code}
 module LPH where
@@ -11,22 +11,23 @@ import Modelo
 import Data.List
 import Test.QuickCheck
 \end{code}
-Los elementos básicos de las fórmulas en la lógica de primer orden, así como
-en la lógica proposicional son las variables.
 
-Definimos un tipo de dato para las variables. Una variable estará
-compuesta por:
+Los elementos básicos de las fórmulas en la lógica de primer orden, así como en
+la lógica proposicional son las variables.
+
+Definimos un tipo de dato para las variables. Una variable estará compuesta
+por:
 
 Un \texttt{nombre}, que será una lista de caracteres.
 
 \begin{code}
-type Nombre   = String
+type Nombre = String
 \end{code}
 
 Un \texttt{índice}, lista de enteros.
 
 \begin{code}
-type Indice   = [Int]
+type Indice = [Int]
 \end{code}
 
 Quedando el tipo de dato \texttt{Variable}
@@ -326,6 +327,9 @@ True
 
 Por ahora siempre hemos establecido propiedades, pero podríamos haber definido
 relaciones binarias, ternarias, \dots, n--arias.
+
+\comentario{Elegir entre un capítulo completo de lógica predicativa (i.e. sin
+  símbolos de función) o incluirlo en la LPO.}
 
 \section{Términos funcionales}
 
