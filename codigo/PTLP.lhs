@@ -422,12 +422,11 @@ Finalmente, definamos una cadena de funciones, para finalizar con
 \texttt{(skolem f)} que transforma \texttt{f} a su forma de Skolem.
 
 Se define la función \texttt{(skol k vs)} que convierte una lista de variables
-a un término de Skolem. Al calcular la forma de skolem de una fórmula,
-mantendremos unos identificadores para las variables, estos identificadores
-son los que hemos denotado \textbf{término de skolem}, está compuesto
-por las siglas ``sk'' y un entero que lo identifique.
+a un término de Skolem. Al calcular la forma de skolem de una fórmula, las variables
+cuantificadas son sustituidas por lo que denotamos \textbf{término de skolem} para obtener
+una fórmula libre. Los términos de skolem estan compuestos por las siglas ``sk''
+y un entero que lo identifique.
 
-\comentario{Mejorar comentario de los términos de Skolem.(Edu)}
 
 \index{\texttt{skol}}
 \begin{code}
