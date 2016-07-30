@@ -449,7 +449,8 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
 \end{enumerate}
 
 \begin{Def}
-  \textbf{Polaridad}
+  La \textbf{Polaridad} cuantifica las apariciones de las variables cuantificadas
+  de la siguiente forma:
   \begin{itemize*}
   \item  Una cantidad de apariciones impar de $x$ en la subfórmula $F$ de
     $\exists x F$ indica que $x$ tiene una polaridad negativa en la fórmula.
@@ -457,8 +458,6 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
     $\forall x F$ indica que $x$ tiene una polaridad positiva en la fórmula. 
   \end{itemize*}
 \end{Def}
-
-\comentario{Pendiente revisión polaridad.}
 
 \index{\texttt{skf}}
 \begin{code}
