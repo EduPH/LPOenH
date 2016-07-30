@@ -644,7 +644,7 @@ Las definimos en Haskell
 \begin{code}
 delta :: Form -> Bool
 delta  (Neg (PTodo _ _))    = True
-delta  (Ex _ _))            = True
+delta  (Ex _ _)             = True
 delta _                     = False
 \end{code}
 \vspace*{2ex}

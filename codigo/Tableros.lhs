@@ -17,16 +17,20 @@ False
 
 A lo largo de esta sección trabajaremos con fórmulas en su forma de Skolem.
 
-Definimos el tipo de dato \texttt{Nodo}
+El método de tableros se suele representar en forma de árbol, por ello
+definiremos el tipo de dato \texttt{Nodo}. 
 
 \begin{code}
 data Nodo = Nd Indice [Termino] [Termino] [Form]
             deriving Show
 \end{code}
 
-\comentario{Explicar el significado de Nodo.}
+Donde la primera lista de términos representa los literales positivos,
+la segunda lista de términos negativos, y la lista de fórmulas 
+son aquellas ligadas a los términos de las listas anteriores.
 
-Para, finalmente, definir los tableros como una lista de nodos.
+
+Definimos los tableros como una lista de nodos.
 
 \begin{code}
 type Tablero = [Nodo]
