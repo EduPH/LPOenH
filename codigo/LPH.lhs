@@ -336,9 +336,6 @@ True
 Por ahora siempre hemos establecido propiedades, pero podríamos haber definido
 relaciones binarias, ternarias, \dots, n--arias.
 
-\comentario{Elegir entre un capítulo completo de lógica predicativa (i.e. sin
-  símbolos de función) o incluirlo en la LPO.}
-
 \section{Términos funcionales}
 
 En la sección anterior todos los términos han sido variables. Ahora
