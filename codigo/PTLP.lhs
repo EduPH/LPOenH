@@ -623,7 +623,19 @@ gamma _              = False
   \vspace*{1ex}
 
   Notar que $a$ es una constante nueva.
-
+  
+  \vspace*{2ex}
+  
+Las definimos en Haskell
+  
+  \index{\texttt{delta}}
+\begin{code}
+delta :: Form -> Bool
+delta  (Neg (PTodo _ _))    = True
+delta  (Ex _ _))            = True
+delta _                     = False
+\end{code}
+\vspace*{2ex}
 \comentario{Añadir la definición en Haskell de fórmulas deltas.}
   
 \end{itemize}
@@ -697,6 +709,8 @@ Ejemplo de tablero completo
   ;
   \end{tikzpicture}
 \end{center}
+
+\comentario{Se solapan las ramas del arbol}
 
 La fórmula del tablero se representa en Haskell
 Se definen los átomos.
