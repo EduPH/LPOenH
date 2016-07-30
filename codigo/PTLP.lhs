@@ -53,10 +53,10 @@ igual.
 
 \begin{code}
 hacerApropiada :: Sust -> Sust
-hacerApropiada xs = [x | x <- xs, Var (fst x) /= snd x]
+hacerApropiada [] = []
+hacerApropiada (x:xs) | Var (fst x) /= snd x = x: hacerApropiada xs
+                      | otherwise = hacerApropiada xs
 \end{code}
-
-\comentario{La definición de hacerApropiada se puede simplificar usando patrones.}
 
 Por ejemplo,
 
