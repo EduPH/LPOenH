@@ -8,19 +8,17 @@ import Dominio
 import PFH
 \end{code}
 
-La lógica de primer orden permite representar dar una representación
-al conocimiento. Nosotros trabajaremos con modelos a través de un
-dominio de entidades; en concreto,aquellas del módulo \texttt{Dominio}.
-Cada entidad de dicho módulo representa un sujeto. Cada sujeto cumplirá
-distintos predicados.
+La lógica de primer orden permite dar una representación al
+conocimiento. Nosotros trabajaremos con modelos a través de un dominio de
+entidades; en concreto, aquellas del módulo \texttt{Dominio}. Cada entidad de
+dicho módulo representa un sujeto. Cada sujeto tendrá distintas propiedades.
 
-Posteriormente, se definirá un modelo lógico. Aquí empleamos el término
-modelo como una representación de la realidad. En secciones posteriores
-estos modelos serán posibles interpretaciones para fórmulas.
+Posteriormente, se definirá un modelo lógico. Aquí empleamos el término modelo
+como una representación de la realidad. En secciones posteriores estos modelos
+serán posibles interpretaciones para fórmulas.
   
-Damos un ejemplo de predicados lógicos para la clasificación
-botánica. La cual no es completa, pero nos da una idea de la
-manera de una representación lógica.
+Damos un ejemplo de predicados lógicos para la clasificación botánica. La cual
+no es completa, pero nos da una idea de la manera de una representación lógica.
 
 Primero definimos los elementos que pretendemos clasificar, y que cumplirán los
 predicados. Para ello, definimos como función cada elemento de un            
@@ -60,9 +58,9 @@ tomate      = N
 trigo       = G 
 \end{code}
 
-Una vez que ya tenemos todos los elementos a clasificar definidos, se procede
-a la interpretación de los predicados. Es decir, una clasificación
-de aquellos elementos que cumplen un cierto predicado.
+Una vez que ya tenemos todos los elementos a clasificar definidos, se procede a
+la interpretación de los predicados. Es decir, una clasificación de aquellos
+elementos que cumplen un cierto predicado.
 
 \begin{Def}
   Un \textbf{predicado} es una oración narrativa que puede ser verdadera o falsa.
