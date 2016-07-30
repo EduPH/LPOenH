@@ -14,6 +14,7 @@ enumeración de los elementos \texttt{(Enum)}.
 
 Para mostrarlas por pantalla, definimos las entidades en la clase
 \texttt{(Show)} de la siguiente forma
+
 \begin{code}
 instance Show Entidades where
     show A = "A"; show B = "B"; show C = "C";
@@ -26,12 +27,16 @@ instance Show Entidades where
     show V = "V"; show W = "W"; show X = "X";
     show Y = "Y"; show Z = "Z"; show Inespecifico = "*" 
 \end{code}
+
 Colocamos todas las entidades en una lista
+
 \begin{code}
 entidades :: [Entidades]
 entidades = [minBound..maxBound]
 \end{code}
+
 De manera que si lo ejecutamos
+
 \begin{sesion}
 ghci> entidades
 [A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,*]
