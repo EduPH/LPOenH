@@ -146,16 +146,24 @@ ghci> simetrica
 \end{sesion}
 
 \begin{Def}
-  Una \textbf{estructura del lenguaje} es un par $\mathcal{I} = (\mathcal{U},I)$
+  Una \textbf{estructura del lenguaje} $L$  es un par $\mathcal{I} = (\mathcal{U},I)$
   tal que
   \begin{enumerate}
-  \item $\mathcal{I}$ es un conjunto no vacío, denominado universo.
-  \item $\mathcal{I}$ es una función 
-    $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$
+  \item $\mathcal{U}$ es un conjunto no vacío, denominado universo.
+  \item $I$ es una función con dominio el conjunto de símbolos propios de $L$
+    $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$ tal que
+    \begin{itemize*}
+    \item si $c$ es una constante de $L$, entonces $I(c) \in \mathcal{U}$
+    \item si $f$ es un símbolo de función n--aria de $L$, entonces
+      $I(f):\mathcal{U}^n \rightarrow \mathcal{U}$
+    \item si $P$ es un símbolo de relación 0--aria de $L$, entonces
+      $I(P)\in \left\{1,\right\}$
+    \item si $R$ es un símbolo de relación n--aria de $L$, entonces
+      $I(R)\subseteq \mathcal{U}^n$
+    \end{itemize*}
   \end{enumerate}
 \end{Def}
 
-\comentario{Corregir la definición de estructura del lenguaje.}
 
 Definimos el tipo de dato relativo al universo
 
