@@ -636,7 +636,6 @@ delta  (Ex _ _))            = True
 delta _                     = False
 \end{code}
 \vspace*{2ex}
-\comentario{Añadir la definición en Haskell de fórmulas deltas.}
   
 \end{itemize}
 
