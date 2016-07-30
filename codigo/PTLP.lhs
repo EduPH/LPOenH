@@ -450,7 +450,16 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
   de la forma de Skolem.
 \end{enumerate}
 
-\comentario{Definir polaridad.}
+\begin{Def}
+  \textbf{Polaridad}
+  \begin{itemize*}
+  \item  Una cantidad de apariciones impar de $x$ en la subfórmula $F$ de
+    $\exists x F$ indica que $x$ tiene una polaridad negativa en la fórmula.
+  \item  Una cantidad de apariciones par de $x$ en la subfórmula $F$ de
+    $\forall x F$ indica que $x$ tiene una polaridad positiva en la fórmula. 
+  \end{itemize*}
+  
+\comentario{Pendiente revisión polaridad.}
 
 \index{\texttt{skf}}
 \begin{code}
