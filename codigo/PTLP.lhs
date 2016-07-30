@@ -72,10 +72,10 @@ Como la sustitución es una aplicación, podemos distinguir \texttt{dominio} y
 \index{\texttt{recorrido}}
 \begin{code}
 dominio :: Sust -> [Variable]
-dominio = map fst
+dominio = nub . map fst
 
 recorrido :: Sust -> [Termino]
-recorrido = map snd
+recorrido = nub . map snd
 \end{code}
 
 Por ejemplo,
@@ -87,7 +87,6 @@ recorrido [(x,tx)]         ==  [x]
 recorrido [(x,tx),(x,ty)]  ==  [x,y]
 \end{sesion}
 
-\comentario{Modificar dominio y recorrido para eliminar repeticiones.}
 
 Posteriormente, se define una función que hace la sustitución de una variable
 concreta. La denotamos \texttt{(sustituyeVar sust var)}
