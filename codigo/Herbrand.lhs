@@ -417,7 +417,10 @@ simbolosPred f = [str | (Atom str _) <- ps]
 \end{code}
 
 \comentario{Definir directamente simbolosPred sin usar predForm y eliminar
-  predForm y preddicadosForm.}
+  predForm y predicadosForm. Respuesta a comentario: La razón de no
+  haber definido simbolosPred sin predForm y predicadosForm es por la
+  necesidad de mantener la aridad del predicado para la definición de
+  base de Herbrand.}
 
 Finalmente, necesitamos aplicar los símbolos de predicado al universo de
 Herbrand correspondiente.
@@ -437,7 +440,18 @@ apPred (p:ps) ts = map (aplicaPred p) (subconjuntosTam (aridadP p) ts)
                    ++ apPred ps ts
 \end{code}
 
-\comentario{Añadir ejemplos de aplicaPred y apPred.}
+Algunos ejemplos son
+
+\begin{sesion}
+ghci> aplicaPred (Atom "P" [tx]) [ty]
+P[y]
+ghci> aplicaPred (Atom "R" [tx,ty]) [tz,ty]
+R[z,y]
+ghci> apPred [Atom "P" [tx]] [tx,ty,tz]
+[P[z],P[y],P[x]]
+ghci> apPred [Atom "P" [tx], Atom "R" [tx,ty]] [tx,ty,tz]
+[P[z],P[y],P[x],R[y,z],R[z,y],R[x,z],R[z,x],R[x,y],R[y,x]]
+\end{sesion}
 
 Definimos la función \texttt{(baseHerbrand n f)}
 
