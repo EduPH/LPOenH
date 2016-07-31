@@ -13,15 +13,14 @@ conocimiento. Nosotros trabajaremos con modelos a través de un dominio de
 entidades; en concreto, aquellas del módulo \texttt{Dominio}. Cada entidad de
 dicho módulo representa un sujeto. Cada sujeto tendrá distintas propiedades.
 
-Posteriormente, se definirá un modelo lógico. Aquí empleamos el término modelo
-como una representación de la realidad. En secciones posteriores estos modelos
-serán posibles interpretaciones para fórmulas.
+En secciones posteriores se definirá un modelo lógico. Aquí empleamos el término modelo
+como una modelización o representación de la realidad. 
   
 Damos un ejemplo de predicados lógicos para la clasificación botánica. La cual
 no es completa, pero nos da una idea de la manera de una representación lógica.
 
 Primero definimos los elementos que pretendemos clasificar, y que cumplirán los
-predicados. Para ello, definimos como función cada elemento de un            
+predicados. Con este fin, definimos una función para cada elemento del            
 dominio de entidades.
 
 \begin{code}
