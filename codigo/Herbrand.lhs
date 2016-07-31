@@ -400,7 +400,8 @@ Algunos ejemplos
 
 \end{sesion}
 
-\comentario{Aplicar baseHerbrand a los ejemplos de LMF.}
+\comentario{Aplicar baseHerbrand a los ejemplos de LMF. Faltan aquellos
+  elementos que repiten constante. PE: Q(a,a) }
 
 Podemos hacer un análisis de la fórmula 6, calculando sus constantes, símbolos
 funcionales y símbolos de predicado. Así como el universo de Herbrand y la base
