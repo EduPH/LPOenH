@@ -173,12 +173,22 @@ aplicaFunAConst (Ter s _) = Ter s
 
 aplicaFun [] cs = []
 aplicaFun (f:fs) cs = 
-    map (aplicaFunAConst f) (subconjuntosTam (aridadF f) cs) 
+    map (aplicaFunAConst f) (combinacionesR (aridadF f) cs) 
                             ++ aplicaFun fs cs
 \end{code}
 
 Así podemos ya obtener el universo de Herbrand de una fórmula
 \texttt{f} definiendo \texttt{(univHerbrand n f)}
+
+
+\begin{code}
+combinacionesR :: Int -> [a] -> [[a]]
+combinacionesR _ [] = []
+combinacionesR 0 _  = [[]]
+combinacionesR k (x:xs) =
+    [x:ys | ys <- combinacionesR (k-1) (x:xs)] ++ combinacionesR k xs
+\end{code}
+\comentario{Pendiente reubicación}
 
 \index{\texttt{univHerbrand}}
 \begin{code}
@@ -190,6 +200,8 @@ univHerbrand n f =
         (univHerbrand (n-1) f))
 \end{code}
 
+\comentario{Faltan aquellos elementos funcionales con aridad mayor que 1
+            que repitan constante}
 
 Por ejemplo
 \begin{code}
@@ -367,7 +379,7 @@ aplicaPred (Atom str _) = Atom str
 
 apPred :: [Form] -> [Termino] -> [Form]
 apPred [] ts = []
-apPred (p:ps) ts = map (aplicaPred p) (subconjuntosTam (aridadP p) ts)
+apPred (p:ps) ts = map (aplicaPred p) (combinacionesR (aridadP p) ts)
                    ++ apPred ps ts
 \end{code}
 
@@ -389,9 +401,7 @@ Definimos la función \texttt{(baseHerbrand n f)}
 \index{\texttt{baseHerbrand}}
 \begin{code}
 baseHerbrand :: (Eq a, Num a) => a -> Form -> [Form]
-baseHerbrand n f = nub (apPred (predForm f) (univHerbrand n f) 
-                   ++ ([aplicaPred p (replicate (aridadP p) t) |  
-                   p <- (predForm f), t <- (univHerbrand n f)]))
+baseHerbrand n f = nub (apPred (predForm f) (univHerbrand n f)) 
 \end{code}
 
 Algunos ejemplos
