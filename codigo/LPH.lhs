@@ -348,7 +348,7 @@ consideraremos cualquier término.
 \end{Def}
 
 Definimos un tipo de dato para los términos que serán la base para la
-definición de fórmulas en lógica de primer orden que no esté compuesta sólo por
+definición de fórmulas en lógica de primer orden que no están compuestas sólo por
 variables.
 
 \begin{code}
@@ -391,7 +391,7 @@ ghci> Ter "f" [tx,ty]
 f[x,y]
 \end{sesion}
 
-Caracterizamos las funciones mediante la función \texttt{(esVariable x)}, que
+Caracterizamos las variables mediante la función \texttt{(esVariable x)}, que
 determina si un término es una variable
 
 \index{\texttt{esVariable}}
@@ -427,7 +427,7 @@ data Form = Atom Nombre [Termino]
      deriving (Eq,Ord)
 \end{code}
    
-Y seguimos, análogamente a la sección enterior, definiendo la representación de
+Y procedemos análogamente a la sección enterior, definiendo la representación de
 fórmulas por pantalla.
 
 \begin{code}
@@ -477,8 +477,8 @@ dato
 type InterpretacionF a = String -> [a] -> a
 \end{code}
 
-Para poder hacer las interpretaciones a las fórmulas, se necesita primero
-interpretar el valor de los términos.
+Para interpretar las fórmulas, se necesita primero una
+interpretación del valor en los términos.
 
 \begin{Def}
   Dada una estructura $\mathcal{I}=(U,I)$ de $L$ y una asignación $A$ en
@@ -499,7 +499,7 @@ interpretar el valor de los términos.
   $\mathcal{I}_A$ se lee ``el valor de $t$ en $\mathcal{I}$ respecto de $A$''.
 \end{nota}
 
-Definimos \texttt{(valorT i a t)}
+Definimos \texttt{(valorT i a t)} que es la función de evaluación de término
 
 \index{\texttt{valorT}}
 \begin{code}
