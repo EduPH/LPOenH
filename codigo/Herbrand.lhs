@@ -199,26 +199,21 @@ Por ejemplo
 ghci> formula2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> univHerbrand 0 formula2
-[x,y,sk0]
+[a]
 ghci> formula3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> univHerbrand 0 formula3
-[x,y,sk0]
+[a]
 ghci> formula4
 ∃x R[cero,x]
 ghci> univHerbrand 0 formula4
-[cero,sk0]
+[cero]
 λ> formula5
 (∀x P[x]⟹∀y Q[x,y])
 ghci> univHerbrand 0 formula5
-[sk0,x,y]
+[a]
 \end{sesion}
 
-\begin{nota}
-  En el universo de Herbrand no aparecen variables. Aunque
-  hemos mantenido los nombres de las variables ahora son 
-  constantes.
-\end{nota}
 
 \begin{Prop}
   $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de función.
@@ -238,13 +233,7 @@ quedando como ejemplo
 ghci> formula6
 ∀x P[f[x]]
 ghci> univHerbrand 5 formula6
-[x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]],f[f[f[f[f[x]]]]]]
-ghci> formula7
-∀x P[f[x,y]]
-ghci>  univHerbrand 2 formula7
-[x,y,f[x,y],f[y,x],f[f[x,y],f[y,x]],f[f[y,x],f[x,y]],
-f[y,f[y,x]],f[f[y,x],y],f[y,f[x,y]],f[f[x,y],y],
-f[x,f[y,x]],f[f[y,x],x],f[x,f[x,y]],f[f[x,y],x]]
+[a,f[a],f[f[a]],f[f[f[a]]],f[f[f[f[a]]]],f[f[f[f[f[a]]]]]]
 \end{sesion}
 
 Hay que tener en cuenta que se dispara la cantidad de elementos del universo de
@@ -391,18 +380,7 @@ baseHerbrand n f = apPred (predForm f) (univHerbrand n f)
 Algunos ejemplos
 
 \begin{sesion}
-ghci> baseHerbrand 0 formula2
-[R[y,sk0],R[sk0,y],R[x,sk0],R[sk0,x],R[x,y],R[y,x]]
-ghci> baseHerbrand 0 formula3
-[R[y,sk0],R[sk0,y],R[x,sk0],R[sk0,x],R[x,y],R[y,x]]
-ghci> baseHerbrand 0 formula4
-[R[cero,sk0],R[sk0,cero]]
-ghci> baseHerbrand 0 formula5
-[P[y],P[x],P[sk0],Q[x,y],Q[y,x],Q[sk0,y],Q[y,sk0],Q[sk0,x],Q[x,sk0]]
-ghci> univHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
-[a,b,c]
-ghci> baseHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
-[P[c],P[b],P[a]]
+
 \end{sesion}
 
 \comentario{Aplicar baseHerbrand a los ejemplos de LMF.}
@@ -412,34 +390,7 @@ funcionales y símbolos de predicado. Así como el universo de Herbrand y la bas
 de Herbrand.
 
 \begin{sesion}
-ghci> formula6
-∀x P[f[x]]
-ghci> constForm formula6
-[]
-ghci> funForm formula6
-[f[x]]
-ghci> predForm formula6
-[P[f[x]]]
-ghci> univHerbrand 0 formula6
-[x]
-ghci> univHerbrand 1 formula6
-[x,f[x]]
-ghci> univHerbrand 2 formula6
-[x,f[x],f[f[x]]]
-ghci> univHerbrand 3 formula6
-[x,f[x],f[f[x]],f[f[f[x]]]]
-ghci> univHerbrand 4 formula6
-[x,f[x],f[f[x]],f[f[f[x]]],f[f[f[f[x]]]]]
-ghci> baseHerbrand 0 formula6
-[P[x]]
-ghci> baseHerbrand 1 formula6
-[P[f[x]],P[x]]
-ghci> baseHerbrand 2 formula6
-[P[f[f[x]]],P[f[x]],P[x]]
-ghci> baseHerbrand 3 formula6
-[P[f[f[f[x]]]],P[f[f[x]]],P[f[x]],P[x]]
-ghci> baseHerbrand 4 formula6
-[P[f[f[f[f[x]]]]],P[f[f[f[x]]]],P[f[f[x]]],P[f[x]],P[x]]
+
 \end{sesion}
 
 \comentario{Corregir el análisis de la base de Herbrand.}
