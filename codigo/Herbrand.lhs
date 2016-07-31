@@ -269,7 +269,7 @@ length (univHerbrand 3 formula7)  ==  1446
 
 \comentario{Comprobar todos los ejemplos}
 
-\Section{Base de Herbrand}
+\section{Base de Herbrand}
 
 \begin{Def}
   La \textbf{base de Herbrand} $\mathcal{BH}(L)$ de un lenguaje $L$ es el
