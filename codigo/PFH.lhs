@@ -113,19 +113,19 @@ ghci> [x | x <- ["descartes","pitagoras","gauss"], x `contieneLaLetra` 'e']
   funciones ya definidas.
 \end{nota}
 
-Otro ejemplo que nos será importante es poder construir subconjuntos
-de una lista.
+Otro ejemplo que nos será importante es poder construir combinaciones
+con repeticiones de una lista
 
+\index{\texttt{combinacionesR}}
 \begin{code}
-subconjuntos :: [t] -> [[t]]
-subconjuntos [] = [[]]
-subconjuntos (x:xs) = zss++[x:ys | ys <- zss]
-    where zss = subconjuntos xs
-
-subconjuntosTam :: Int -> [a] -> [[a]]
-subconjuntosTam n xs = 
-    concat [permutations x | x <- subconjuntos xs, length x == n]
+combinacionesR :: Int -> [a] -> [[a]]
+combinacionesR _ [] = []
+combinacionesR 0 _  = [[]]
+combinacionesR k (x:xs) =
+    [x:ys | ys <- combinacionesR (k-1) (x:xs)] ++ combinacionesR k xs
 \end{code}
+
+
 \subsection{Funciones map y filter}
 
 Introducimos un par de funciones de mucha relevancia en el uso de listas en

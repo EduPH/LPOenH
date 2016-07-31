@@ -180,16 +180,6 @@ aplicaFun (f:fs) cs =
 Así podemos ya obtener el universo de Herbrand de una fórmula
 \texttt{f} definiendo \texttt{(univHerbrand n f)}
 
-
-\begin{code}
-combinacionesR :: Int -> [a] -> [[a]]
-combinacionesR _ [] = []
-combinacionesR 0 _  = [[]]
-combinacionesR k (x:xs) =
-    [x:ys | ys <- combinacionesR (k-1) (x:xs)] ++ combinacionesR k xs
-\end{code}
-\comentario{Pendiente reubicación}
-
 \index{\texttt{univHerbrand}}
 \begin{code}
 univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
