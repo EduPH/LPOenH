@@ -399,7 +399,7 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 
 \begin{Def}
   Las fórmulas \texttt{F} y \texttt{G} son \textbf{equisatisfacibles} si se cumple
-  ambas son satisfacibles o ninguna lo es.
+  que ambas son satisfacibles o ninguna lo es.
 \end{Def}
 
 Definimos la función \texttt{(elimImpEquiv f)}, para obtener fórmulas
@@ -708,7 +708,34 @@ negAtomo  _               = False
 literal f = atomo f || negAtomo f
 \end{code}
 
-\comentario{Incluir algoritmo de tableros.}
+El método de tableros de un conjunto de fórmulas $S$ sigue el siguiente
+algoritmo:
+
+\begin{itemize*}
+\item El árbol cuyo único nodo tiene como etiqueta $S$ es
+  un tablero de $S$.
+\item Sea $\mathcal{T}$ un tablero de $S$ y $S_1$ la etiqueta de
+  una hoja  de $\mathcal{T}$.
+  \begin{enumerate}
+  \item Si $S_1$ contiene una fórmula y su negación, entonces el árbol
+    obtenido añadiendo como hijo de $S_1$ el nodo etiquetado con
+    $\left\{ \perp \right\}$ es un tablero de $S$.
+  \item Si $S_1$ contiene una doble negación $\neg \neg F$, entonces
+    el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
+    con $(S_1 \backlash \left\{\neg \neg F \right\})\cup \left\{ F \right\}$
+    es un tablero de $S$.
+  \item Si $S_1$ contiene una fórmula alfa $F$ de componentes $F_1$ y $F_2$,
+    entonces el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
+    con $(S_1 \backlash \left\{ F \right\})\cup \left\{ F_1,F_2 \right\}$
+    es un tablero de $S$.
+  \item Si $S_1$ contiene una fórmula beta de $F$ de componentes $F_1$ y $F_2$,
+    entonces el árbol obtenido añadiendo como hijos de $S_1$ los nodos
+    etiquetados con $(S_1 \backlash \left\{ F \right\}) \cup \left\{ F_1 \right\}$ y
+    $(S_1 \backlash \left\{ F \right\})\cup \left\{ F_2 \right\}$ es un tablero
+    de $S$.
+  \end{enumerate}
+\end{itemize*}
+
 
 \begin{Def}
   Se dice que una hoja es \textbf{cerrada} si contiene una fórmula y su negación.
