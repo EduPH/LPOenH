@@ -194,24 +194,33 @@ univHerbrand n f =
 
 
 Por ejemplo
-
+\begin{code}
+u = Variable "u" []
+tu = Var u
+\end{code}
 \begin{sesion}
 ghci> formula2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> univHerbrand 0 formula2
 [a]
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> univHerbrand 0 formula3
-[a]
-ghci> formula4
-∃x R[cero,x]
-ghci> univHerbrand 0 formula4
-[cero]
-λ> formula5
-(∀x P[x]⟹∀y Q[x,y])
-ghci> univHerbrand 0 formula5
-[a]
+ghci> 
+ghci> Conj [Disy [Atom "P" [a],Atom "P" [b]],
+            Disy [Neg (Atom "P" [b]),Atom "P" [c]],
+            Impl (Atom "P" [a]) (Atom "P" [c])]
+((P[a]⋁P[b])⋀((¬P[b]⋁P[c])⋀(P[a]⟹P[c])))
+ghci> univHerbrand 0 (Conj [Disy [Atom "P" [a],Atom "P" [b]],
+                            Disy [Neg (Atom "P" [b]),Atom "P" [c]],
+                            Impl (Atom "P" [a]) (Atom "P" [c])])
+[a,b,c]
+
+ghci> Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx]) 
+                    (Disy [Atom "P" [a],Atom "R" [ty]]))),
+                     Impl (Atom "P" [b]) (Neg (Ex z (Ex u (Atom "Q" [tz,tu]))))]
+(∀x ∀y (Q[b,x]⟹(P[a]⋁R[y]))⋀(P[b]⟹¬∃z ∃u Q[z,u]))
+ghci> univHerbrand 0 (Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx]) 
+                     (Disy [Atom "P" [a],Atom "R" [ty]]))),
+                      Impl (Atom "P" [b]) (Neg (Ex z (Ex u (Atom "Q" [tz,tu]))))])
+[b,a]
 \end{sesion}
 
 
