@@ -287,6 +287,12 @@ ghci> univHerbrand 0 formula5
 [sk0,x,y]
 \end{sesion}
 
+\begin{nota}
+  En el universo de Herbrand no aparecen variables. Aunque
+  hemos mantenido los nombres de las variables ahora son 
+  constantes.
+\end{nota}
+
 \begin{Prop}
   $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de función.
 \end{Prop}
