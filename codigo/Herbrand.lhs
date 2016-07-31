@@ -105,12 +105,12 @@ obtendremos las constantes de la fórmula. Por ejemplo
 \begin{sesion}
 ghci> Atom "P" [a,tx]
 P[a,x]
-ghci> constForm constDeTerm (Atom "P" [a,tx])
+ghci> constForm (Atom "P" [a,tx])
 [a]
 ghci> Conj [Atom "P" [a, Ter "f" [tx,b]], Atom "R" [Ter "g" [tx,ty],c]]
 (P[a,f[x,b]]⋀R[g[x,y],c])
-ghci> constForm constDeTerm (Conj [Atom "P" [a, Ter "f" [tx,b]], 
-                                   Atom "R" [Ter "g" [tx,ty],c]])
+ghci> constForm  (Conj [Atom "P" [a, Ter "f" [tx,b]], 
+                  Atom "R" [Ter "g" [tx,ty],c]])
 [a,b,c]
 \end{sesion}
 
@@ -224,7 +224,7 @@ Definimos fórmulas con términos funcionales para el ejemplo
 \begin{code}
 formula6, formula7 :: Form
 formula6 = PTodo x (Atom "P" [Ter "f" [tx]])
-formula7 = PTodo x (Atom "P" [Ter "f" [tx,ty]])
+formula7 = PTodo x (Atom "P" [Ter "f" [a,b]])
 \end{code}
 
 quedando como ejemplo 
@@ -234,6 +234,14 @@ ghci> formula6
 ∀x P[f[x]]
 ghci> univHerbrand 5 formula6
 [a,f[a],f[f[a]],f[f[f[a]]],f[f[f[f[a]]]],f[f[f[f[f[a]]]]]]
+λ> univHerbrand 0 formula7
+[a,b]
+λ> univHerbrand 1 formula7
+[a,b,f[a,b],f[b,a]]
+λ> univHerbrand 2 formula7
+[a,b,f[a,b],f[b,a],f[f[a,b],f[b,a]],f[f[b,a],f[a,b]],f[b,f[b,a]],
+f[f[b,a],b],f[b,f[a,b]],f[f[a,b],b],f[a,f[b,a]],f[f[b,a],a],f[a,f[a,b]],
+f[f[a,b],a]]
 \end{sesion}
 
 Hay que tener en cuenta que se dispara la cantidad de elementos del universo de
