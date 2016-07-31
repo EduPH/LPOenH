@@ -50,12 +50,45 @@ esConstante a   ==  True
 esConstante tx  ==  False
 \end{sesion}
 
-Definimos \texttt{(constForm f)} que devuelve las constantes de \texttt{f}.
+
+Definimos la función \texttt{(constDeTerm t)} que determine las de un
+término \texttt{t}.
+
+\index{\texttt{constDeTerm}}
+\begin{code}
+constDeTerm :: Termino -> [Termino]
+constDeTerm (Var _) = []
+constDeTerm c@(Ter _ []) = [c]
+constDeTerm (Ter str (t:ts)) | esConstante t = t: aux (Ter str ts)
+                             | otherwise = 
+                                 constDeTerm t ++ aux (Ter str ts)
+                             where
+                               aux (Ter _ []) = []
+                               aux t = constDeTerm t
+\end{code}
+
+\begin{nota}
+  La función \texttt{aux} evita que en la recursión consideremos
+  un término funcional como constante al quedarse vacía la lista
+  de elementos a los que se aplica.
+\end{nota}
+
+Por ejemplo
+
+\begin{sesion}
+ghci> Ter "f" [Ter "a" [] , Ter "b" [] , Ter "g" [tx, Ter "c" []]]
+f[a,b,g[x,c]]
+ghci> constDeTerm (Ter "f" [Ter "a" [] , Ter "b" [] , Ter "g" [tx, Ter "c" []]])
+[a,b,c]
+\end{sesion}
+
+Definimos \texttt{(constForm f)} que devuelve las constantes de la
+fórmula \texttt{f}.
 
 \index{\texttt{constForm}}
 \begin{code}
 constForm :: Form -> [Termino]
-constForm (Atom _ ts)   = nub [t | t <- ts, esConstante t]
+constForm (Atom _ ts)   =  nub (concat [constDeTerm t | t <- ts])
 constForm (Neg f)       = constForm f
 constForm (Impl f1 f2)  = constForm f1 `union` constForm f2
 constForm (Equiv f1 f2) = constForm f1 `union` constForm f2
@@ -65,10 +98,19 @@ constForm (PTodo x f)   = constForm f
 constForm (Ex x f)      = constForm f
 \end{code}
 
-\comentario{Corregir la definición de constForm para poder calcular las
-  constantes de téminos compuestos; por ejemplo, $R(f(x)$}
+Por ejemplo
 
-\comentario{Añadir ejemplos de constForm.}
+\begin{sesion}
+ghci> Atom "P" [a,tx]
+P[a,x]
+ghci> constForm (Atom "P" [a,tx])
+[a]
+ghci> Conj [Atom "P" [a, Ter "f" [tx,b]], Atom "R" [Ter "g" [tx,ty],c]]
+(P[a,f[x,b]]⋀R[g[x,y],c])
+ghci> constForm (Conj [Atom "P" [a, Ter "f" [tx,b]], Atom "R" [Ter "g" [tx,ty],c]])
+[a,b,c]
+\end{sesion}
+
 
 Definimos \texttt{(esFuncion f)} y \texttt{(funForm f)} para obtener todos los
 símbolos funcionales que aparezcan en la fórmula \texttt{f}.
