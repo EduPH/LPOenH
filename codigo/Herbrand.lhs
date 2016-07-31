@@ -451,21 +451,18 @@ Algunos ejemplos
 
 \begin{sesion}
 ghci> baseHerbrand 0 formula2
-[R[x,y],R[y,x]]
+[R[y,sk0],R[sk0,y],R[x,sk0],R[sk0,x],R[x,y],R[y,x]]
 ghci> baseHerbrand 0 formula3
-[R[x,y],R[y,x],R[sk0,y],R[y,sk0],R[sk0,x],R[x,sk0]]
+[R[y,sk0],R[sk0,y],R[x,sk0],R[sk0,x],R[x,y],R[y,x]]
 ghci> baseHerbrand 0 formula4
 [R[cero,sk0],R[sk0,cero]]
 ghci> baseHerbrand 0 formula5
-[P[x],P[y],P[sk0],Q[y,x],Q[x,y],Q[sk0,x],Q[x,sk0],Q[sk0,y],Q[y,sk0]]
+[P[y],P[x],P[sk0],Q[x,y],Q[y,x],Q[sk0,y],Q[y,sk0],Q[sk0,x],Q[x,sk0]]
 ghci> univHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
 [a,b,c]
 ghci> baseHerbrand 0 (Conj [(Atom "P" [a]),(Atom "P" [b]),(Atom "P" [c])])
 [P[c],P[b],P[a]]
 \end{sesion}
-
-\comentario{Corregir los ejemplos de base de Herbrand. No deben de aparecer
-  variables.}
 
 \comentario{Aplicar baseHerbrand a los ejemplos de LMF.}
 
