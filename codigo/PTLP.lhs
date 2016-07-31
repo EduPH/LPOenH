@@ -452,7 +452,12 @@ Se define la función \texttt{(skol k vs)} que convierte una lista de variables
 a un término de Skolem. Al calcular la forma de skolem de una fórmula, las variables
 cuantificadas son sustituidas por lo que denotamos \textbf{término de skolem} para obtener
 una fórmula libre. Los términos de skolem estan compuestos por las siglas ``sk''
-y un entero que lo identifique.
+y un entero que lo identifique. 
+
+\begin{nota}
+  El término de skolem está expresado con la misma
+  estructura que los términos funcionales.
+\end{nota}
 
 
 \index{\texttt{skol}}

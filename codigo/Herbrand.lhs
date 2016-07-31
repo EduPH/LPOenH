@@ -33,7 +33,62 @@ import PTLP
   $$H_{i+1}(L) = H_i(L)\cup \{f(t_1,\dots,t_n):f\in \mathcal{F}_n \text{ y } t_i\in H_i (L)\}$$
 \end{Prop}
 
-Para ello, primero necesitamos caracterizar las constantes. Definimos la
+
+Para poder construir de manera correcta el universo de Herbrand
+necesitamos que la fórmula no tenga variables repetidas entre las
+variables libres y las ligadas. Por ello, repetimos la misma estructura
+que en la forma de skolem, pero estableciendo los términos de skolem
+como constantes, sin indicar la variable de la que dependían.
+
+\begin{code}
+terSk :: Show a => a -> t -> Termino
+terSk k vs = Ter ("sk" ++ show k) []
+
+skf1 :: Form -> [Variable] -> Bool -> Int -> (Form,Int)
+skf1 (Atom n ts) _ _ k =
+  (Atom n ts,k)
+skf1 (Conj fs) vs pol k =
+  (Conj fs',j)
+  where (fs',j) = skfs1 fs vs pol k
+skf1 (Disy fs) vs pol k =
+  (Disy fs', j)
+  where (fs',j) = skfs1 fs vs pol k
+skf1 (PTodo x f) vs True k =
+  (PTodo x f',j)
+  where vs'    = insert x vs
+        (f',j) = skf1 f vs' True k
+skf1 (PTodo x f) vs False k =
+  skf (sustitucionForm b f) vs False (k+1)
+  where b = [(x,terSk k vs)]
+skf1 (Ex x f) vs True k =
+  skf (sustitucionForm b f) vs True (k+1)
+  where b = [(x,terSk k vs)]
+skf1 (Ex x f) vs False k =
+  (Ex x f',j)
+  where vs' = insert x vs
+        (f',j) = skf1 f vs' False k
+skf1 (Neg f) vs pol k =
+  (Neg f',j)
+  where (f',j) = skf1 f vs (not pol) k
+
+skfs1 :: [Form] -> [Variable] -> Bool -> Int -> ([Form],Int)
+skfs1 [] _ _ k        = ([],k)
+skfs1 (f:fs) vs pol k = (f':fs',j)
+  where (f',j1) = skf1  f  vs pol k
+        (fs',j) = skfs1 fs vs pol j1
+
+
+sk1 :: Form -> Form
+sk1 f = fst (skf1 f [] True 0)
+
+sinVariablesRep :: Form -> Form
+sinVariablesRep = sk1 . elimImpEquiv
+\end{code}
+
+
+
+
+A continuación caracterizamos las constantes. Definimos la
 función \texttt{(esConstante c)}.
 
 \index{\texttt{esConstante}}
@@ -202,7 +257,7 @@ Así podemos ya obtener el universo de Herbrand de una fórmula
 \index{\texttt{univHerbrand}}
 \begin{code}
 univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
-univHerbrand 0 f =  constForm termAConst f
+univHerbrand 0 f =  constForm termAConst (sinVariablesRep f)
 univHerbrand 1 f = 
     nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
 univHerbrand n f = 
@@ -217,22 +272,20 @@ Por ejemplo
 ghci> formula2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> univHerbrand 0 formula2
-[x,y,z]
+[x,y,sk0]
 ghci> formula3
 (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> univHerbrand 0 formula3
-[x,y,z]
+[x,y,sk0]
 ghci> formula4
 ∃x R[cero,x]
 ghci> univHerbrand 0 formula4
-[cero,x]
-ghci> formula5
+[cero,sk0]
+λ> formula5
 (∀x P[x]⟹∀y Q[x,y])
 ghci> univHerbrand 0 formula5
-[x,y]
+[sk0,x,y]
 \end{sesion}
-
-\comentario{Corregir Herbrand. Problemas con variables libres}
 
 \begin{Prop}
   $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de función.
@@ -260,9 +313,6 @@ ghci>  univHerbrand 2 formula7
 f[y,f[y,x]],f[f[y,x],y],f[y,f[x,y]],f[f[x,y],y],
 f[x,f[y,x]],f[f[y,x],x],f[x,f[x,y]],f[f[x,y],x]]
 \end{sesion}
-
-\comentario{Corregir los ejemplos de univHerbrand. En el universo de Herbrand
-  no hay variables.}
 
 Hay que tener en cuenta que se dispara la cantidad de elementos del universo de
 Herbrand ante términos funcionales con aridad grande.
