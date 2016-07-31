@@ -185,8 +185,6 @@ Así podemos ya obtener el universo de Herbrand de una fórmula
 univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
 univHerbrand 0 f = if  constForm  f /= [] then constForm f
                    else [a]
-univHerbrand 1 f = 
-    nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
 univHerbrand n f = 
     nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  
         (univHerbrand (n-1) f))
@@ -243,11 +241,11 @@ ghci> formula6
 ∀x P[f[x]]
 ghci> univHerbrand 5 formula6
 [a,f[a],f[f[a]],f[f[f[a]]],f[f[f[f[a]]]],f[f[f[f[f[a]]]]]]
-λ> univHerbrand 0 formula7
+ghci> univHerbrand 0 formula7
 [a,b]
-λ> univHerbrand 1 formula7
+ghci> univHerbrand 1 formula7
 [a,b,f[a,b],f[b,a]]
-λ> univHerbrand 2 formula7
+ghci> univHerbrand 2 formula7
 [a,b,f[a,b],f[b,a],f[f[a,b],f[b,a]],f[f[b,a],f[a,b]],f[b,f[b,a]],
 f[f[b,a],b],f[b,f[a,b]],f[f[a,b],b],f[a,f[b,a]],f[f[b,a],a],f[a,f[a,b]],
 f[f[a,b],a]]
@@ -369,7 +367,7 @@ aplicaPred (Atom str _) = Atom str
 
 apPred :: [Form] -> [Termino] -> [Form]
 apPred [] ts = []
-apPred (p:ps) ts = map (aplicaPred p) (subconjuntosTam (aridadP p) ts) 
+apPred (p:ps) ts = map (aplicaPred p) (subconjuntosTam (aridadP p) ts)
                    ++ apPred ps ts
 \end{code}
 
@@ -391,17 +389,25 @@ Definimos la función \texttt{(baseHerbrand n f)}
 \index{\texttt{baseHerbrand}}
 \begin{code}
 baseHerbrand :: (Eq a, Num a) => a -> Form -> [Form]
-baseHerbrand n f = apPred (predForm f) (univHerbrand n f)
+baseHerbrand n f = nub (apPred (predForm f) (univHerbrand n f) 
+                   ++ ([aplicaPred p (replicate (aridadP p) t) |  
+                   p <- (predForm f), t <- (univHerbrand n f)]))
 \end{code}
 
 Algunos ejemplos
 
 \begin{sesion}
+ghci> baseHerbrand 0 (Conj [Disy [Atom "P" [a],Atom "P" [b]],        
+                            Disy [Neg (Atom "P" [b]),Atom "P" [c]],                      
+                            Impl (Atom "P" [a]) (Atom "P" [c])])
+[P[c],P[b],P[a]
 
+ghci> baseHerbrand 0 (Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx])  
+                  (Disy [Atom "P" [a],Atom "R" [ty]]))),      
+                         Impl (Atom "P" [b]) (Neg (Ex z (Ex u (Atom "Q" [tz,tu]))))])
+[R[a],R[b],P[a],P[b],Q[b,a],Q[a,b],R[b],R[a],P[b],P[a],Q[b,b],Q[a,a]]
 \end{sesion}
 
-\comentario{Aplicar baseHerbrand a los ejemplos de LMF. Faltan aquellos
-  elementos que repiten constante. PE: Q(a,a) }
 
 Podemos hacer un análisis de la fórmula 6, calculando sus constantes, símbolos
 funcionales y símbolos de predicado. Así como el universo de Herbrand y la base
