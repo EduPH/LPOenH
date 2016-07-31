@@ -722,16 +722,16 @@ algoritmo:
     $\left\{ \perp \right\}$ es un tablero de $S$.
   \item Si $S_1$ contiene una doble negación $\neg \neg F$, entonces
     el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
-    con $(S_1 \backlash \left\{\neg \neg F \right\})\cup \left\{ F \right\}$
+    con $(S_1 \backslash \left\{\neg \neg F \right\})\cup \left\{ F \right\}$
     es un tablero de $S$.
   \item Si $S_1$ contiene una fórmula alfa $F$ de componentes $F_1$ y $F_2$,
     entonces el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
-    con $(S_1 \backlash \left\{ F \right\})\cup \left\{ F_1,F_2 \right\}$
+    con $(S_1 \backslash \left\{ F \right\})\cup \left\{ F_1,F_2 \right\}$
     es un tablero de $S$.
   \item Si $S_1$ contiene una fórmula beta de $F$ de componentes $F_1$ y $F_2$,
     entonces el árbol obtenido añadiendo como hijos de $S_1$ los nodos
-    etiquetados con $(S_1 \backlash \left\{ F \right\}) \cup \left\{ F_1 \right\}$ y
-    $(S_1 \backlash \left\{ F \right\})\cup \left\{ F_2 \right\}$ es un tablero
+    etiquetados con $(S_1 \backslash \left\{ F \right\}) \cup \left\{ F_1 \right\}$ y
+    $(S_1 \backslash \left\{ F \right\})\cup \left\{ F_2 \right\}$ es un tablero
     de $S$.
   \end{enumerate}
 \end{itemize*}
