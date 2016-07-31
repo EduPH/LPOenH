@@ -1,8 +1,7 @@
-El contenido de esta sección se encuentra en el módulo \texttt{LPH}. En él se
+El contenido de esta sección se encuentra en el módulo \texttt{LPH}. Se
 pretende asentar las bases de la lógica de primer orden y su implementación en
 Haskell, con el objetivo de construir los cimientos para las posteriores
-implementaciones de algoritmos de la lógica de primer orden en siguientes
-capítulos.
+implementaciones de algoritmos en los siguientes capítulos.
 
 \begin{code}
 module LPH where
@@ -68,7 +67,7 @@ a2 = Variable "a" [2]
 a3 = Variable "a" [3]
 \end{code}
 
-De manera que su visualización sería
+De manera que su visualización será
 
 \begin{sesion}
 ghci> x
@@ -150,8 +149,8 @@ ghci> simetrica
   tal que
   \begin{enumerate}
   \item $\mathcal{U}$ es un conjunto no vacío, denominado universo.
-  \item $I$ es una función con dominio el conjunto de símbolos propios de $L$
-    $\texttt{Símbolos} \rightarrow \texttt{Símbolos}$ tal que
+  \item $I$ es una función con dominio el conjunto de símbolos propios de $L$. 
+    $L: \texttt{Símbolos} \rightarrow \texttt{Símbolos}$ tal que
     \begin{itemize*}
     \item si $c$ es una constante de $L$, entonces $I(c) \in \mathcal{U}$
     \item si $f$ es un símbolo de función n--aria de $L$, entonces
@@ -165,7 +164,8 @@ ghci> simetrica
 \end{Def}
 
 
-Definimos el tipo de dato relativo al universo
+Definimos el tipo de dato relativo al universo como una
+lista de elementos.
 
 \begin{code}
 type Universo a = [a] 
@@ -182,8 +182,8 @@ Se define un tipo de dato para las asignaciones
 type Asignacion a = Variable -> a
 \end{code}
 
-Necesitamos definir una asignación para los ejemplos. En nuestro
-caso, tomamos una asignación constante muy sencilla.
+Necesitamos definir una asignación para los ejemplos. Tomamos una
+asignación constante muy sencilla.
 
 \begin{code}
 asignacion :: a -> Entidades
@@ -195,40 +195,6 @@ asignacion v = A
 En esta sección se pretende interpretar fórmulas. Una interpretación toma
 valores para las variables proposicionales, y se evalúan en una fórmula,
 determinando si la fórmula es verdadera o falsa, bajo esa interpretación.
-
-Se definirá mediante la función \texttt{valor}.
-
-Implementamos $s(x|d)$, mediante la función \texttt{(sustituye s x d v)}.
-$s(x|d)$ viene dado por la fórmula
-\begin{equation*}
-\text{sustituye (s(t),x,d,v)}= \left\{
- \begin{array}{ll}
-  \text{d}, & \text{si } \text{x} = \text{v} \\
-  \text{s(v)}, & \text{ en caso contrario} 
-\end{array} \right.
-\end{equation*}
-donde \texttt{s} es una aplicación que asigna un valor a una variable.
-
-\comentario{Reformular la especificación de $s(x|d)$.}
-
-En Haskell se expresa mediante guardas
-
-\index{\texttt{sustituye}}
-\begin{code}
-sustituye :: Asignacion a -> Variable -> a -> Asignacion a
-sustituye s x d v | x == v    = d 
-                  | otherwise = s v
-\end{code}
-
-Esta función es auxiliar para la evaluación de fórmulas.
-
-Un par de ejemplos de la función \texttt{(sustituye s x d v)} son
-\begin{sesion}
-ghci> sustituye asignacion y B z
-A
-ghci> sustituye asignacion y B y
-B
-\end{sesion}
 
 \begin{Def}
   Una \textbf{interpretación proposicional} es una aplicación
@@ -254,6 +220,37 @@ representamos mediante el 0, y verdadero mediante el 1.
      \hline
    \end{tabular}
 \end{center}
+
+Se definirá mediante la función \texttt{valor}. Para ello se
+implementa $s(x|d)$, que es la aplicación de la asignación $s$ pero con
+$x$ interpretado como $d$, mediante la función
+\texttt{(sustituye s x d v)}. $s(x|d)$ viene dado por la fórmula
+\begin{equation*}
+\text{sustituye (s(t),x,d,v)}= \left\{
+ \begin{array}{ll}
+  \text{d}, & \text{si } \text{x} = \text{v} \\
+  \text{s(v)}, & \text{ en caso contrario} 
+\end{array} \right.
+\end{equation*}
+
+En Haskell se expresa mediante guardas
+
+\index{\texttt{sustituye}}
+\begin{code}
+sustituye :: Asignacion a -> Variable -> a -> Asignacion a
+sustituye s x d v | x == v    = d 
+                  | otherwise = s v
+\end{code}
+
+Esta función es auxiliar para la evaluación de fórmulas.
+
+Un par de ejemplos de la función \texttt{(sustituye s x d v)} son
+\begin{sesion}
+ghci> sustituye asignacion y B z
+A
+ghci> sustituye asignacion y B y
+B
+\end{sesion}
 
 \begin{Def}
   Una \textbf{interpretación de una estructura del lenguaje} es un par
