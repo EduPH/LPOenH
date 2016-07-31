@@ -34,60 +34,6 @@ import PTLP
 \end{Prop}
 
 
-Para poder construir de manera correcta el universo de Herbrand
-necesitamos que la fórmula no tenga variables repetidas entre las
-variables libres y las ligadas. Por ello, repetimos la misma estructura
-que en la forma de skolem, pero estableciendo los términos de skolem
-como constantes, sin indicar la variable de la que dependían.
-
-\begin{code}
-terSk :: Show a => a -> t -> Termino
-terSk k vs = Ter ("sk" ++ show k) []
-
-skf1 :: Form -> [Variable] -> Bool -> Int -> (Form,Int)
-skf1 (Atom n ts) _ _ k =
-  (Atom n ts,k)
-skf1 (Conj fs) vs pol k =
-  (Conj fs',j)
-  where (fs',j) = skfs1 fs vs pol k
-skf1 (Disy fs) vs pol k =
-  (Disy fs', j)
-  where (fs',j) = skfs1 fs vs pol k
-skf1 (PTodo x f) vs True k =
-  (PTodo x f',j)
-  where vs'    = insert x vs
-        (f',j) = skf1 f vs' True k
-skf1 (PTodo x f) vs False k =
-  skf (sustitucionForm b f) vs False (k+1)
-  where b = [(x,terSk k vs)]
-skf1 (Ex x f) vs True k =
-  skf (sustitucionForm b f) vs True (k+1)
-  where b = [(x,terSk k vs)]
-skf1 (Ex x f) vs False k =
-  (Ex x f',j)
-  where vs' = insert x vs
-        (f',j) = skf1 f vs' False k
-skf1 (Neg f) vs pol k =
-  (Neg f',j)
-  where (f',j) = skf1 f vs (not pol) k
-
-skfs1 :: [Form] -> [Variable] -> Bool -> Int -> ([Form],Int)
-skfs1 [] _ _ k        = ([],k)
-skfs1 (f:fs) vs pol k = (f':fs',j)
-  where (f',j1) = skf1  f  vs pol k
-        (fs',j) = skfs1 fs vs pol j1
-
-
-sk1 :: Form -> Form
-sk1 f = fst (skf1 f [] True 0)
-
-sinVariablesRep :: Form -> Form
-sinVariablesRep = sk1 . elimImpEquiv
-\end{code}
-
-
-
-
 A continuación caracterizamos las constantes. Definimos la
 función \texttt{(esConstante c)}.
 
@@ -137,20 +83,20 @@ ghci> constDeTerm (Ter "f" [Ter "a" [] , Ter "b" [] , Ter "g" [tx, Ter "c" []]])
 [a,b,c]
 \end{sesion}
 
-Definimos \texttt{(constForm fun f)} que según la función \texttt{fun}
-que apliquemos tendrá dos funciones posibles. 
+Definimos \texttt{(constForm  f)} para determinar las constantes de
+\texttt{f}. 
 
 \index{\texttt{constForm}}
 \begin{code}
-constForm :: Eq a => (Termino -> [a]) -> Form -> [a]
-constForm fun (Atom _ ts)   =  nub (concat [fun t | t <- ts])
-constForm fun (Neg f)       =  constForm fun f
-constForm fun (Impl f1 f2)  = (constForm fun f1) `union` (constForm fun f2)
-constForm fun (Equiv f1 f2) = (constForm fun f1) `union` (constForm fun f2)
-constForm fun (Conj fs)     = nub (concatMap (constForm fun) fs)
-constForm fun (Disy fs)     = nub (concatMap (constForm fun) fs)
-constForm fun (PTodo x f)   = constForm fun f
-constForm fun (Ex x f)      = constForm fun f
+constForm :: Form -> [Termino]
+constForm  (Atom _ ts)   =  nub (concat [constDeTerm t | t <- ts])
+constForm  (Neg f)       = constForm f
+constForm  (Impl f1 f2)  = constForm f1 `union` constForm f2
+constForm  (Equiv f1 f2) = constForm f1 `union` constForm f2
+constForm  (Conj fs)     = nub (concatMap constForm fs)
+constForm  (Disy fs)     = nub (concatMap constForm fs)
+constForm  (PTodo x f)   = constForm  f
+constForm  (Ex x f)      = constForm  f
 \end{code}
 
 Si como función auxiliar de \texttt{constForm} empleamos \texttt{constDeTerm}
@@ -167,26 +113,6 @@ ghci> constForm constDeTerm (Conj [Atom "P" [a, Ter "f" [tx,b]],
                                    Atom "R" [Ter "g" [tx,ty],c]])
 [a,b,c]
 \end{sesion}
-
-Definimos la función \texttt{termAConst t} que devuelve devuelve las constantes
-y las variables como constantes.
-
-\index{\texttt{termAConst}}
-\begin{code}
-termAConst :: Termino -> [Termino]
-termAConst (Var (Variable str i) ) = [Ter str []]
-termAConst c@(Ter _ []) = [c]
-termAConst (Ter str (t:ts)) | esConstante t = t: aux (Ter str ts)
-                            | otherwise = 
-                                 termAConst t ++ aux (Ter str ts)
-                             where
-                               aux (Ter _ []) = []
-                               aux t = termAConst t
-\end{code}
-                           
-Si empleamos \texttt{termAConst} como función auxiliar de \texttt{constForm}
-obtendremos una lista de las constantes de la fórmula, así como las variables
-como constantes nuevas.
 
 
 Definimos \texttt{(esFuncion f)} y \texttt{(funForm f)} para obtener todos los
@@ -257,7 +183,8 @@ Así podemos ya obtener el universo de Herbrand de una fórmula
 \index{\texttt{univHerbrand}}
 \begin{code}
 univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
-univHerbrand 0 f =  constForm termAConst (sinVariablesRep f)
+univHerbrand 0 f = if  constForm  f /= [] then constForm f
+                   else [a]
 univHerbrand 1 f = 
     nub (univHerbrand 0 f ++ aplicaFun (funForm f) (univHerbrand 0 f))
 univHerbrand n f = 
