@@ -82,7 +82,7 @@ Por ejemplo,
 
 \begin{sesion}
 dominio [(x,tx)]           ==  [x]
-dominio [(x,tx),(x,ty)]    ==  [x,x]
+dominio [(x,tx),(x,ty)]    ==  [x]
 recorrido [(x,tx)]         ==  [x]
 recorrido [(x,tx),(x,ty)]  ==  [x,y]
 \end{sesion}
@@ -271,6 +271,35 @@ composicion [(y,ty)] [(x,tx)]  ==  [(y,y)]
   todas las apariciones de variables introducidas por la sustitución
   en esa fórmula resultan libres.
 \end{Def}
+
+Un ejemplo de una sustitución que no es libre
+
+\begin{sesion}
+ghci> Ex x (Atom "R" [tx,ty])
+∃x R[x,y]
+ghci> variablesLibres (Ex x (Atom "R" [tx,ty]))
+[y]
+ghci> sustitucionForm [(y,tx)] (Ex x (Atom "R" [tx,ty]))
+∃x R[x,x]
+ghci> variablesLibres (sustitucionForm [(y,tx)] (Ex x (Atom "R" [tx,ty])))
+[]
+\end{sesion}
+
+Un ejemplo de una sustitución libre
+
+\begin{sesion}
+ghci> formula5
+(∀x P[x]⟹∀y Q[x,y])
+ghci> variablesLibres formula5
+[x]
+ghci> sustitucionForm [(x,tz)] formula5
+(∀x P[x]⟹∀y Q[z,y])
+ghci> variablesLibres (sustitucionForm [(x,tz)] formula5)
+[z]
+\end{sesion}
+
+\comentario{¿Una sustitución libre se puede caracterizar por la longitud de
+  la lista de variables libres antes y despues de la sustitución?}
 
 \section{Unificación}
 
