@@ -113,16 +113,16 @@ ghci> [x | x <- ["descartes","pitagoras","gauss"], x `contieneLaLetra` 'e']
   funciones ya definidas.
 \end{nota}
 
-Otro ejemplo que nos será importante es poder construir combinaciones
+Otro ejemplo que nos será importante es poder construir variaciones
 con repeticiones de una lista
 
-\index{\texttt{combinacionesR}}
+\index{\texttt{variacionesR}}
 \begin{code}
-combinacionesR :: Int -> [a] -> [[a]]
-combinacionesR _ [] = []
-combinacionesR 0 _  = [[]]
-combinacionesR k (x:xs) =
-    [x:ys | ys <- combinacionesR (k-1) (x:xs)] ++ combinacionesR k xs
+variacionesR :: Int -> [a] -> [[a]]
+variacionesR _ [] = [[]]
+variacionesR 0 _  = [[]] 
+variacionesR k xs =
+    [z:ys | z <- xs, ys <- variacionesR (k-1) xs]
 \end{code}
 
 

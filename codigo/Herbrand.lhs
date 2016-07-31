@@ -173,7 +173,7 @@ aplicaFunAConst (Ter s _) = Ter s
 
 aplicaFun [] cs = []
 aplicaFun (f:fs) cs = 
-    map (aplicaFunAConst f) (combinacionesR (aridadF f) cs) 
+    map (aplicaFunAConst f) (variacionesR (aridadF f) cs) 
                             ++ aplicaFun fs cs
 \end{code}
 
@@ -246,11 +246,14 @@ ghci> univHerbrand 5 formula6
 ghci> univHerbrand 0 formula7
 [a,b]
 ghci> univHerbrand 1 formula7
-[a,b,f[a,b],f[b,a]]
+[a,b,f[a,a],f[a,b],f[b,a],f[b,b]]
 ghci> univHerbrand 2 formula7
-[a,b,f[a,b],f[b,a],f[f[a,b],f[b,a]],f[f[b,a],f[a,b]],f[b,f[b,a]],
-f[f[b,a],b],f[b,f[a,b]],f[f[a,b],b],f[a,f[b,a]],f[f[b,a],a],f[a,f[a,b]],
-f[f[a,b],a]]
+[a,b,f[a,a],f[a,b],f[b,a],f[b,b],f[a,f[a,a]],f[a,f[a,b]],f[a,f[b,a]],f[a,f[b,b]],
+f[b,f[a,a]],f[b,f[a,b]],f[b,f[b,a]],f[b,f[b,b]],f[f[a,a],a],f[f[a,a],b],f[f[a,a],
+f[a,a]],f[f[a,a],f[a,b]],f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],f[f[a,b],b],
+f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],f[f[a,b],f[b,a]],f[f[a,b],f[b,b]],f[f[b,a],a],
+f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],
+f[f[b,b],a],f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
 \end{sesion}
 
 Hay que tener en cuenta que se dispara la cantidad de elementos del universo de
@@ -258,12 +261,15 @@ Herbrand ante términos funcionales con aridad grande.
 
 \begin{sesion}
 length (univHerbrand 0 formula7)  ==  2
-length (univHerbrand 1 formula7)  ==  4
-length (univHerbrand 2 formula7)  ==  14
-length (univHerbrand 3 formula7)  ==  184
+length (univHerbrand 1 formula7)  ==  6
+length (univHerbrand 2 formula7)  ==  38
+length (univHerbrand 3 formula7)  ==  1446
 \end{sesion}
 
-\section{Base de Herbrand}
+
+\comentario{Comprobar todos los ejemplos}
+
+\Section{Base de Herbrand}
 
 \begin{Def}
   La \textbf{base de Herbrand} $\mathcal{BH}(L)$ de un lenguaje $L$ es el
@@ -369,7 +375,7 @@ aplicaPred (Atom str _) = Atom str
 
 apPred :: [Form] -> [Termino] -> [Form]
 apPred [] ts = []
-apPred (p:ps) ts = map (aplicaPred p) (combinacionesR (aridadP p) ts)
+apPred (p:ps) ts = map (aplicaPred p) (variacionesR (aridadP p) ts)
                    ++ apPred ps ts
 \end{code}
 
