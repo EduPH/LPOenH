@@ -500,7 +500,7 @@ ghci> baseHerbrand 2 formula6
   \end{equation*}
 \end{nota}
 
-\comentario{Nota provisional, seguramente se añada en Cap.2 o 3 la forma clausal}
+\comentario{Nota provisional, seguramente se añada en Cap.2 ó 3 la forma clausal}
 
 \begin{Prop}
   Una interpretación de Herbrand queda determinada por un subconjunto de
@@ -513,7 +513,7 @@ de la base de Herbrand que sea modelo de la fórmula \texttt{f}. Para
 definirla necesitamos una función previa \texttt{(valorHerbrand f f n)} que
 realiza una recursión sobre la fórmula \texttt{f}, comprobando que
 exista algún elemento de la base de Herbrand que sea modelo de la
-fórmula. Finalmente \texttt{valHerbrand} será una evaluación de
+fórmula. Finalmente, \texttt{valHerbrand} será una evaluación de
 \texttt{valorHerbrand}.
 
 \index{\texttt{valorHerbrand}}
@@ -620,3 +620,7 @@ Pero es satisfacible
 ghci> satisfacible 0 formula10
 True
 \end{sesion}
+
+\section{Extensiones de Herbrand}
+
+\comentario{Extensiones de Herbrand en proceso}
