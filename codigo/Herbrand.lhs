@@ -7,6 +7,7 @@ import Data.List
 import PFH
 import LPH
 import PTLP
+import Tableros
 \end{code}
 
 \begin{Def}
@@ -499,6 +500,12 @@ ghci> baseHerbrand 2 formula6
   \end{equation*}
 \end{nota}
 
+\comentario{Nota provisional, seguramente se añada en Cap.2 o 3 la forma clausal}
+
+\begin{Prop}
+  Una interpretación de Herbrand queda determinada por un subconjunto de
+  la base de Herbrand.
+\end{Prop}
 
 
 Definimos \texttt{(valHerbrand f n)} que determina si existe algún subconjunto
@@ -571,3 +578,45 @@ ghci> satisfacible 1 formula9
 False
 \end{sesion}
 
+\section{Consistencia mediante modelos de Herbrand}
+
+\begin{Prop}
+  Sea $S$ un conjunto de fórmulas básicas. Son equivalentes:
+  \begin{enumerate}
+    \item $S$ es consistente.
+    \item $S$ tiene un modelo de Herbrand.
+  \end{enumerate}
+\end{Prop}
+
+\begin{Prop}
+  Existen conjuntos de fórmulas consistentes sin modelos de Herbrand.
+\end{Prop}
+
+Un ejemplo de fórmula consistente sin modelo de Herbrand
+
+\begin{code}
+formula10 :: Form
+formula10 = Conj [Ex x (Atom "P" [tx]), Neg (Atom "P" [a])]
+\end{code}
+
+Como podemos ver aplicando \texttt{valHerbrand}
+
+\begin{sesion}
+ghci> formula10
+(∃x P[x]⋀¬P[a])
+ghci> valHerbrand formula10 0
+False
+ghci> valHerbrand formula10 1
+False
+ghci> valHerbrand formula10 2
+False
+ghci> valHerbrand formula10 3
+False
+\end{sesion}
+
+Pero es satisfacible
+
+\begin{sesion}
+ghci> satisfacible 0 formula10
+True
+\end{sesion}
