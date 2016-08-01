@@ -56,6 +56,7 @@ x, y, z :: Variable
 x = Variable "x" []
 y = Variable "y" []
 z = Variable "z" []
+u = Variable "u" []
 \end{code}
 
 Y definimos también variables empleando índices
@@ -363,6 +364,7 @@ tx, ty, tz :: Termino
 tx = Var x
 ty = Var y
 tz = Var z
+tu = Var u
 \end{code}
 
 Como hemos introducido, también tratamos con constantes, por ejemplo:

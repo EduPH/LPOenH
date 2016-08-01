@@ -126,6 +126,15 @@ esFuncion (Ter _ xs) | not (null xs) = True
 esFuncion _ = False
 \end{code}
 
+Por ejemplo
+
+\begin{sesion}
+ghci> esFuncion (Ter "f" [a])
+True
+ghci> esFuncion (Ter "a" [])
+False
+\end{sesion}
+
 \index{\texttt{funForm}}
 \begin{code}
 funForm :: Form -> [Termino]
@@ -169,8 +178,10 @@ listas de la anterior.
 \index{\texttt{aplicaFunAConst}}
 \index{\texttt{aplicaFun}}
 \begin{code}
+aplicaFunAConst :: Termino -> [Termino] -> Termino
 aplicaFunAConst (Ter s _) = Ter s  
 
+aplicaFun :: [Termino] -> [Termino] -> [Termino]
 aplicaFun [] cs = []
 aplicaFun (f:fs) cs = 
     map (aplicaFunAConst f) (variacionesR (aridadF f) cs) 
@@ -190,20 +201,14 @@ univHerbrand n f =
         (univHerbrand (n-1) f))
 \end{code}
 
-\comentario{Faltan aquellos elementos funcionales con aridad mayor que 1
-            que repitan constante}
-
 Por ejemplo
-\begin{code}
-u = Variable "u" []
-tu = Var u
-\end{code}
+
 \begin{sesion}
 ghci> formula2
 ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 ghci> univHerbrand 0 formula2
 [a]
-ghci> 
+
 ghci> Conj [Disy [Atom "P" [a],Atom "P" [b]],
             Disy [Neg (Atom "P" [b]),Atom "P" [c]],
             Impl (Atom "P" [a]) (Atom "P" [c])]
@@ -266,9 +271,6 @@ length (univHerbrand 2 formula7)  ==  38
 length (univHerbrand 3 formula7)  ==  1446
 \end{sesion}
 
-
-\comentario{Comprobar todos los ejemplos}
-
 \section{Base de Herbrand}
 
 \begin{Def}
@@ -286,6 +288,13 @@ fórmula atómica \texttt{f}.
 aridadP :: Form -> Int
 aridadP (Atom _ xs) = length xs
 \end{code}
+
+Por ejemplo para $R(x,y,a)$ la aridad es 3
+
+\begin{sesion}
+ghci> aridadP (Atom "R" [tx,ty,a])
+3
+\end{sesion}
 
 Definimos \texttt{(esPredicado f)} que determina si \texttt{f} es un predicado.
 
@@ -406,12 +415,12 @@ Algunos ejemplos
 ghci> baseHerbrand 0 (Conj [Disy [Atom "P" [a],Atom "P" [b]],        
                             Disy [Neg (Atom "P" [b]),Atom "P" [c]],                      
                             Impl (Atom "P" [a]) (Atom "P" [c])])
-[P[c],P[b],P[a]
+[P[a],P[b],P[c]]
 
 ghci> baseHerbrand 0 (Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx])  
                   (Disy [Atom "P" [a],Atom "R" [ty]]))),      
                          Impl (Atom "P" [b]) (Neg (Ex z (Ex u (Atom "Q" [tz,tu]))))])
-[R[a],R[b],P[a],P[b],Q[b,a],Q[a,b],R[b],R[a],P[b],P[a],Q[b,b],Q[a,a]]
+[R[b],R[a],P[b],P[a],Q[b,b],Q[b,a],Q[a,b],Q[a,a]]
 \end{sesion}
 
 
@@ -420,10 +429,27 @@ funcionales y símbolos de predicado. Así como el universo de Herbrand y la bas
 de Herbrand.
 
 \begin{sesion}
-
+ghci> formula6
+∀x P[f[x]]
+ghci> constForm formula6
+[]
+ghci> funForm formula6
+[f[x]]
+λ> simbolosPred formula6
+["P"]
+ghci> univHerbrand 0 formula6
+[a]
+ghci> univHerbrand 1 formula6
+[a,f[a]]
+ghci> univHerbrand 2 formula6
+[a,f[a],f[f[a]]]
+ghci> baseHerbrand 0 formula6
+[P[a]]
+ghci> baseHerbrand 1 formula6
+[P[a],P[f[a]]]
+ghci> baseHerbrand 2 formula6
+[P[a],P[f[a]],P[f[f[a]]]]
 \end{sesion}
-
-\comentario{Corregir el análisis de la base de Herbrand.}
 
 \begin{Teo}
   $\mathcal{BH}(L)$ es finita si y sólo si $L$ no tiene símbolos de función.
