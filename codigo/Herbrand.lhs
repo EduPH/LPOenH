@@ -435,7 +435,7 @@ ghci> constForm formula6
 []
 ghci> funForm formula6
 [f[x]]
-λ> simbolosPred formula6
+ghci> simbolosPred formula6
 ["P"]
 ghci> univHerbrand 0 formula6
 [a]
