@@ -598,8 +598,15 @@ data Clausulas = Cs [Clausula]
 Definimos su representación
 
 \begin{code}
+instance Show Clausula where
+    show (C []) = "[]"
+    show (C fs) = "{" ++  init (tail (show fs)) ++ "}"
+instance Show Clausulas where
+    show (Cs []) = "[]"
+    show (Cs cs) = "{" ++  init (tail (show cs)) ++ "}"
 
 \end{code}
+
 \begin{sesion}
 ghci> Neg (Conj [p,Impl q r])
 ¬(p⋀(q⟹r))
