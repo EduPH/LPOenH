@@ -636,3 +636,48 @@ de $C$.
 $C\sigma $ es una \textbf{instancia básica} de $C$ si todos los
 literales de $C\sigma $ son básicos.
 
+\end{Def}
+
+Por ejemplo, si tenemos $C=\left\{P(x,a),\neg P(x,f(y)) \right\}$, 
+una instancia básica sería
+\begin{equation*}
+
+C[x/a,y/f(a)] = \left\{P(a,a),\neg P(x,f(f(a))) \right\}
+
+\end{equation*}
+
+Que en haskell lo habríamos representado por
+
+\begin{sesion}
+ghci> Conj [Atom "P" [tx,a],Neg (Atom "P" [tx,Ter "f" [ty]])]
+(P[x,a]⋀¬P[x,f[y]])
+ghci> sustitucionForm [(x,a),(y,Ter "f" [a])] 
+        (Conj [Atom "P" [tx,a], Neg (Atom "P" [tx,Ter "f" [ty]])])
+(P[a,a]⋀¬P[a,f[f[a]]])
+\end{sesion}
+
+\comentario{Decidir si dar una representación a Cláusulas o dejar como 
+  conjunción de fórmulas}
+
+\begin{Def}
+  La \textbf{extensión de Herbrand} de un conjunto de cláusulas $Cs$
+  es el conjunto de fórmulas
+\begin{equation*}
+
+  EH(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
+    \sigma (x) \in UH(Cs) \right\}
+
+\end{equation*}
+\end{Def}
+
+\begin{Prop}
+  $EH(L)=\cup_{i\geq 0} EH_i(L)$, donde $EH_i(L)$ es el nivel $i$
+  de la $EH(L)$
+\begin{equation*}
+
+  EH_i(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
+    \sigma (x) \in UH_i(Cs) \right\}
+
+\end{equation*}
+
+\end{Prop}
