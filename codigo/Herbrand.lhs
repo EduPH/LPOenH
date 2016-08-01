@@ -460,7 +460,7 @@ ghci> baseHerbrand 2 formula6
 \section{Interpretaciones de Herbrand}
 
 \begin{Def}
-  Una \textbf{interpretación de Herbrand} de una fórmula $F$ es una interpretación
+  Una \textbf{interpretación de Herbrand} es una interpretación
   $\mathcal{I} = (\mathcal{U},I)$ tal que
   \begin{itemize}
   \item $\mathcal{U}$ es el universo de Herbrand de $F$.
@@ -479,25 +479,35 @@ ghci> baseHerbrand 2 formula6
   Herbrand de $S$ que es modelo de $S$.
 \end{Def}
 
-\comentario{Falta la definición de interpretación de Herbrand de un conjunto de fórmulas.}
 
 \begin{nota}
   Los conjuntos de fórmulas pueden ser representados mediante
   \textbf{cláusulas} que no son más que fórmulas entre comas, donde las comas
-  representan la conjunción. Posteriormente definiremos las cláusulas pero por
-  ahora representamos conjuntos como conjunción de funciones.
+  representan la conjunción. Por ejemplo, las cláusulas 
+  \begin{equation*}
+
+    \left\{ P(a) \vee P(b), \neg P(b) \vee P(c), P(a) \rightarrow P(c) \right\}
+
+  \end{equation*}
+
+  es equivalente a escribir
+
+  \begin{equation*}
+
+    (P(a) \vee P(b)) \wedge (\neg P(b) \vee P(c)) \wedge (P(a) \rightarrow P(c))
+
+  \end{equation*}
 \end{nota}
 
-\comentario{Aclarar la nota sobre cláusulas.}
 
-Definimos \texttt{(valHerbrand f)} para determinar si existe algún subconjunto
-de la base de Herbrand que sea modelo de la fórmula \texttt{f}.
 
-Para la recursión necesitamos la fórmula \texttt{(valorHerbrand f f)} pues hace
-recursión en una de las \texttt{f} para luego calcular la base de Herbrand de
-la otra.
-
-\comentario{Aclarar el significado de valorHerbrand y añadir ejemplos.}
+Definimos \texttt{(valHerbrand f n)} que determina si existe algún subconjunto
+de la base de Herbrand que sea modelo de la fórmula \texttt{f}. Para  
+definirla necesitamos una función previa \texttt{(valorHerbrand f f n)} que
+realiza una recursión sobre la fórmula \texttt{f}, comprobando que
+exista algún elemento de la base de Herbrand que sea modelo de la
+fórmula. Finalmente \texttt{valHerbrand} será una evaluación de
+\texttt{valorHerbrand}.
 
 \index{\texttt{valorHerbrand}}
 \begin{code}
@@ -550,8 +560,6 @@ False
 ghci> valHerbrand formula6 1
 True
 ghci> valHerbrand formula2 0
-False
-ghci> valHerbrand formula2 1
 True
 \end{sesion}
 
