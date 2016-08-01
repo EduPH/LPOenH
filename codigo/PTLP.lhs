@@ -586,6 +586,20 @@ es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$
 \comentario{Para definir formas clausales necesito convertir fórmulas
   a su forma normal conjuntiva}
 
+Se define los tipos de dato \texttt{Clausula} y \texttt{Clausulas},
+para representar una cláusula o un conjunto de ellas respectivamente.
+\begin{code}
+
+data Clausula  = C [Form]
+data Clausulas = Cs [Clausula]
+
+\end{code}
+
+Definimos su representación
+
+\begin{code}
+
+\end{code}
 \begin{sesion}
 ghci> Neg (Conj [p,Impl q r])
 ¬(p⋀(q⟹r))
