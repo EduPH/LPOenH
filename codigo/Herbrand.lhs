@@ -681,3 +681,4 @@ ghci> sustitucionForm [(x,a),(y,Ter "f" [a])]
 \end{equation*}
 
 \end{Prop}
+

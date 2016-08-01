@@ -642,7 +642,9 @@ True
 Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
 
 \begin{Def}
+\\
   \begin{itemize}
+
   \item Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación para
     la que \texttt{F} es verdadera.
   \item Una fórmula $F$ es \textbf{válida} si toda interpretación es modelo de
