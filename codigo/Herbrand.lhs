@@ -500,8 +500,6 @@ ghci> baseHerbrand 2 formula6
   \end{equation*}
 \end{nota}
 
-\comentario{Nota provisional, seguramente se añada en Cap.2 ó 3 la forma clausal}
-
 \begin{Prop}
   Una interpretación de Herbrand queda determinada por un subconjunto de
   la base de Herbrand.
@@ -623,4 +621,18 @@ True
 
 \section{Extensiones de Herbrand}
 
-\comentario{Extensiones de Herbrand en proceso}
+\comentario{Lo vamos a definir por cláusulas. 
+Se necesita una definición de cláusulas previa. Decidir dónde}
+
+\begin{Def} 
+Sea $C=\left\{ L_1,\dot ,L_n \right\}$ una cláusula de $L$ y 
+$\sigma$ una sustitución de $L$. Entonces, $C\sigma = 
+\left\{ L_1\sigma,\dots, L_n\sigma \right\}$ es una \textbf{instancia}
+de $C$.
+\end{Def}
+
+\begin{Def}
+
+$C\sigma $ es una \textbf{instancia básica} de $C$ si todos los
+literales de $C\sigma $ son básicos.
+
