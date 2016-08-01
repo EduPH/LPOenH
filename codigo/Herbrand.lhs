@@ -84,7 +84,7 @@ ghci> constDeTerm (Ter "f" [Ter "a" [] , Ter "b" [] , Ter "g" [tx, Ter "c" []]])
 \end{sesion}
 
 Definimos \texttt{(constForm  f)} para determinar las constantes de
-\texttt{f}. 
+la fórmula \texttt{f}. 
 
 \index{\texttt{constForm}}
 \begin{code}
@@ -171,8 +171,8 @@ aridadF (Ter _ ts) = length ts
 
 También necesitamos definir dos funciones auxiliares que apliquen los símbolos
 funcionales a las constantes del universo de Herbrand. Las funciones son
-\texttt{(aplicaFunAConst f c)} que aplica el símbolo funcional \texttt{f} a la
-constante \texttt{c} y \texttt{(aplicaFun fs cs)} que es una generalización a
+\texttt{(aplicaFunAConst f c)} ,que aplica el símbolo funcional \texttt{f} a la
+constante \texttt{c} ,y \texttt{(aplicaFun fs cs)} que es una generalización a
 listas de la anterior.
 
 \index{\texttt{aplicaFunAConst}}
@@ -188,17 +188,17 @@ aplicaFun (f:fs) cs =
                             ++ aplicaFun fs cs
 \end{code}
 
-Así podemos ya obtener el universo de Herbrand de una fórmula
+Así podemos obtener el universo de Herbrand de una fórmula
 \texttt{f} definiendo \texttt{(univHerbrand n f)}
 
 \index{\texttt{univHerbrand}}
 \begin{code}
 univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
-univHerbrand 0 f = if  constForm  f /= [] then constForm f
+univHerbrand 0 f = if  constForm  f /= [] then sort(constForm f)
                    else [a]
 univHerbrand n f = 
-    nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  
-        (univHerbrand (n-1) f))
+    sort (nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  
+        (univHerbrand (n-1) f)))
 \end{code}
 
 Por ejemplo
@@ -225,7 +225,7 @@ ghci> Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx])
 ghci> univHerbrand 0 (Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx]) 
                      (Disy [Atom "P" [a],Atom "R" [ty]]))),
                       Impl (Atom "P" [b]) (Neg (Ex z (Ex u (Atom "Q" [tz,tu]))))])
-[b,a]
+[a,b]
 \end{sesion}
 
 
@@ -253,12 +253,14 @@ ghci> univHerbrand 0 formula7
 ghci> univHerbrand 1 formula7
 [a,b,f[a,a],f[a,b],f[b,a],f[b,b]]
 ghci> univHerbrand 2 formula7
-[a,b,f[a,a],f[a,b],f[b,a],f[b,b],f[a,f[a,a]],f[a,f[a,b]],f[a,f[b,a]],f[a,f[b,b]],
-f[b,f[a,a]],f[b,f[a,b]],f[b,f[b,a]],f[b,f[b,b]],f[f[a,a],a],f[f[a,a],b],f[f[a,a],
-f[a,a]],f[f[a,a],f[a,b]],f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],f[f[a,b],b],
-f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],f[f[a,b],f[b,a]],f[f[a,b],f[b,b]],f[f[b,a],a],
-f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],
-f[f[b,b],a],f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
+[a,b,f[a,a],f[a,b],f[a,f[a,a]],f[a,f[a,b]],f[a,f[b,a]],
+f[a,f[b,b]],f[b,a],f[b,b],f[b,f[a,a]],f[b,f[a,b]],f[b,f[b,a]],
+f[b,f[b,b]],f[f[a,a],a],f[f[a,a],b],f[f[a,a],f[a,a]],f[f[a,a],
+f[a,b]],f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],f[f[a,b],b],
+f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],f[f[a,b],f[b,a]],f[f[a,b],
+f[b,b]],f[f[b,a],a],f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],
+f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],f[f[b,b],b],f[f[b,b],
+f[a,a]],f[f[b,b],f[a,b]],f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
 \end{sesion}
 
 Hay que tener en cuenta que se dispara la cantidad de elementos del universo de
@@ -420,7 +422,7 @@ ghci> baseHerbrand 0 (Conj [Disy [Atom "P" [a],Atom "P" [b]],
 ghci> baseHerbrand 0 (Conj [PTodo x (PTodo y (Impl (Atom "Q" [b,tx])  
                   (Disy [Atom "P" [a],Atom "R" [ty]]))),      
                          Impl (Atom "P" [b]) (Neg (Ex z (Ex u (Atom "Q" [tz,tu]))))])
-[R[b],R[a],P[b],P[a],Q[b,b],Q[b,a],Q[a,b],Q[a,a]]
+[R[a],R[b],P[a],P[b],Q[a,a],Q[a,b],Q[b,a],Q[b,b]]
 \end{sesion}
 
 
