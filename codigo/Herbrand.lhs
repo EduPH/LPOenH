@@ -481,25 +481,6 @@ ghci> baseHerbrand 2 formula6
 \end{Def}
 
 
-\begin{nota}
-  Los conjuntos de fórmulas pueden ser representados mediante
-  \textbf{cláusulas} que no son más que fórmulas entre comas, donde las comas
-  representan la conjunción. Por ejemplo, las cláusulas 
-  \begin{equation*}
-
-    \left\{ P(a) \vee P(b), \neg P(b) \vee P(c), P(a) \rightarrow P(c) \right\}
-
-  \end{equation*}
-
-  es equivalente a escribir
-
-  \begin{equation*}
-
-    (P(a) \vee P(b)) \wedge (\neg P(b) \vee P(c)) \wedge (P(a) \rightarrow P(c))
-
-  \end{equation*}
-\end{nota}
-
 \begin{Prop}
   Una interpretación de Herbrand queda determinada por un subconjunto de
   la base de Herbrand.
@@ -638,12 +619,11 @@ literales de $C\sigma $ son básicos.
 
 \end{Def}
 
-Por ejemplo, si tenemos $C=\left\{P(x,a),\neg P(x,f(y)) \right\}$, 
+Por ejemplo, si tenemos $C=\left\{ P(x,a),\neg P(x,f(y)) \right\} $, 
 una instancia básica sería
+
 \begin{equation*}
-
-C[x/a,y/f(a)] = \left\{P(a,a),\neg P(x,f(f(a))) \right\}
-
+  C[x/a,y/f(a)] = \left\{ P(a,a),\neg P(x,f(f(a))) \right\}
 \end{equation*}
 
 Que en haskell lo habríamos representado por
@@ -659,23 +639,23 @@ ghci> sustitucionForm [(x,a),(y,Ter "f" [a])]
 \begin{Def}
   La \textbf{extensión de Herbrand} de un conjunto de cláusulas $Cs$
   es el conjunto de fórmulas
-\begin{equation*}
 
-  EH(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
-    \sigma (x) \in UH(Cs) \right\}
+  \begin{equation*}
+    EH(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
+      \sigma (x) \in UH(Cs) \right\}
+  \end{equation*}
 
-\end{equation*}
 \end{Def}
 
 \begin{Prop}
+  
   $EH(L)=\cup_{i\geq 0} EH_i(L)$, donde $EH_i(L)$ es el nivel $i$
   de la $EH(L)$
-\begin{equation*}
 
-  EH_i(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
-    \sigma (x) \in UH_i(Cs) \right\}
-
-\end{equation*}
+  \begin{equation*}
+    EH_i(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
+      \sigma (x) \in UH_i(Cs) \right\}
+  \end{equation*}
 
 \end{Prop}
 
