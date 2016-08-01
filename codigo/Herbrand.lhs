@@ -656,9 +656,6 @@ ghci> sustitucionForm [(x,a),(y,Ter "f" [a])]
 (P[a,a]⋀¬P[a,f[f[a]]])
 \end{sesion}
 
-\comentario{Decidir si dar una representación a Cláusulas o dejar como 
-  conjunción de fórmulas}
-
 \begin{Def}
   La \textbf{extensión de Herbrand} de un conjunto de cláusulas $Cs$
   es el conjunto de fórmulas

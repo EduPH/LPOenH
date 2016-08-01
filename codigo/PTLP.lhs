@@ -344,6 +344,7 @@ unificadoresListas [tx] [ty]  ==  [[(x,y)]]
 unificadoresListas [tx] [tx]  ==  [[]]
 \end{sesion}
 
+
 \section{Skolem}
 
 \begin{Def}
@@ -562,6 +563,32 @@ ghci> skolem formula4
 R[cero,sk0]
 ghci> skolem formula5
 (¬P[sk0]⋁∀y Q[x,y])
+\end{sesion}
+
+
+\section{Forma clausal}
+
+\comentario{Decidir si es buena ubicación para formas clausales}
+
+\begin{Def}
+  Una \textbf{forma clausal} de una fórmula $F$ es un conjunto de cláusulas
+  equivalente a $F$.
+\end{Def}
+
+\begin{Prop}
+  Si $(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$ es una forma
+  notmal conjuntiva de la fórmula $F$. Entonces, es una forma clausal de $F$ es
+  $\left\{ (p_1\vee \dots \vee p_n) , \dots , (q_1 \vee \dots \vee q_m) \right\}$
+
+Por ejemplo una forma clausal de $\neg (p \wedge (q \rightarrow r))$
+es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$
+
+\comentario{Para definir formas clausales necesito convertir fórmulas
+  a su forma normal conjuntiva}
+
+\begin{sesion}
+ghci> Neg (Conj [p,Impl q r])
+¬(p⋀(q⟹r))
 \end{sesion}
 
 \section{Tableros semánticos}

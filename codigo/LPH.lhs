@@ -785,3 +785,4 @@ formulaAbierta formula2  ==  False
 formulaAbierta formula3  ==  True
 formulaAbierta formula4  ==  False
 \end{sesion}
+
