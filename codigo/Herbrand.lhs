@@ -648,7 +648,6 @@ ghci> sustitucionForm [(x,a),(y,Ter "f" [a])]
 \end{Def}
 
 \begin{Prop}
-  
   $EH(L)=\cup_{i\geq 0} EH_i(L)$, donde $EH_i(L)$ es el nivel $i$
   de la $EH(L)$
 
@@ -656,6 +655,5 @@ ghci> sustitucionForm [(x,a),(y,Ter "f" [a])]
     EH_i(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
       \sigma (x) \in UH_i(Cs) \right\}
   \end{equation*}
-
 \end{Prop}
 

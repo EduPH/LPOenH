@@ -353,6 +353,8 @@ unificadoresListas [tx] [tx]  ==  [[]]
   $$(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$$
 \end{Def}
 
+\comentario{Definir forma normal conjuntiva para desarrollar forma clausal.}
+
 \begin{Def}
   Una fórmula está en \textbf{forma normal disyuntiva} si es una disyunción de
   conjunciones de literales.
@@ -579,6 +581,7 @@ ghci> skolem formula5
   Si $(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$ es una forma
   notmal conjuntiva de la fórmula $F$. Entonces, es una forma clausal de $F$ es
   $\left\{ (p_1\vee \dots \vee p_n) , \dots , (q_1 \vee \dots \vee q_m) \right\}$
+\end{Prop}
 
 Por ejemplo una forma clausal de $\neg (p \wedge (q \rightarrow r))$
 es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$
@@ -620,6 +623,7 @@ su forma clausal es
 ghci> Cs [C [Neg p,q], C [Neg p, Neg r]]
 {{¬p,q},{¬p,¬r}}
 \end{sesion}
+\comentario{Al compilar LaTex no aparece el símbolo }
 
 Dada una fórmula en su forma normal conjuntiva, podemos convertirla
 a su forma causal por medio de la función \texttt{(formNCAC f)}
