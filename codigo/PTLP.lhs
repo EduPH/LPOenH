@@ -471,6 +471,7 @@ interiorizaDisy (Disy fs) =
       combina [] ys = []
       combina xs [] = []
       combina xs ys = [[x,y] | x <- xs, y <- ys]
+interiorizaDisy f = f
 \end{code}
 
 \begin{nota}
