@@ -756,6 +756,23 @@ ghci> formNCAC (Conj [p, Disy [q,r]])
 {{p},{q,r}}
 \end{sesion}
 
+Para definir \texttt{(formaClausal f)} que transforma \texttt{f}
+a su forma clausal.
+
+\begin{code}
+
+formaClausal :: Form -> Clausulas
+formaClausal  = formNCAC . formaNormalConjuntiva
+
+\end{code}
+
+Por ejemplo
+
+\begin{sesion}
+ghci> formaClausal (Neg (Conj [p, Impl q r]))
+{{¬p,q},{¬p,¬r}}
+\end{sesion}
+
 \section{Tableros semánticos}
 
 \begin{Def}
