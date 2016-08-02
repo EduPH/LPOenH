@@ -768,7 +768,7 @@ delta _                     = False
 
   Cada elemento de la izquierda de las tablas es equivalente a la
   entrada de la derecha de la tabla que esté en su misma altura.
-  Es decir, considerando las tablas como matrices $a_{i,1}\equiv a_{i,2}$.
+  Es decir, considerando las tablas como matrices $a_{i,1}\equiv a_{i,2} \forall i$.
   
 \end{nota}
 
@@ -863,7 +863,7 @@ Ejemplo de tablero completo
 
 \comentario{Se solapan las ramas del arbol}
 
-La fórmula del tablero se representa en Haskell
+Representamos la fórmula de este tablero en Haskell.
 Se definen los átomos.
 
 \begin{code}

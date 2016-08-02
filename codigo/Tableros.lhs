@@ -6,7 +6,7 @@ import Debug.Trace
 \end{code}
 
 Hemos importado la librería \texttt{Debug.Trace} porque emplearemos la función
-\texttt{trace}. CompruebaTabta función tiene como argumentos una cadena de caracteres,
+\texttt{trace}. Esta función tiene como argumentos una cadena de caracteres,
 una función, y un valor sobre el que se aplica la función. Por ejemplo
 
 \begin{sesion}
@@ -26,7 +26,7 @@ data Nodo = Nd Indice [Termino] [Termino] [Form]
 \end{code}
 
 Donde la primera lista de términos representa los literales positivos,
-la segunda lista de términos negativos, y la lista de fórmulas 
+la segunda lista de términos representa los negativos, y la lista de fórmulas 
 son aquellas ligadas a los términos de las listas anteriores.
 
 
@@ -36,7 +36,8 @@ Definimos los tableros como una lista de nodos.
 type Tablero = [Nodo]
 \end{code}
 
-Necesitamos poder reconocer las dobles negaciones
+Necesitamos poder reconocer las dobles negaciones, para ello
+definimos la función \texttt{dobleNeg f}.
 
 \index{\texttt{dobleNeg}}
 \begin{code}
@@ -44,7 +45,8 @@ dobleNeg (Neg (Neg f)) = True
 dobleNeg _             = False
 \end{code}
 
-Una función auxiliar de conversión de literales a términos.
+Una función auxiliar de conversión de literales a términos es
+\texttt{listeralATer t}.
 
 \index{\texttt{literalATer}}
 \begin{code}
@@ -118,7 +120,8 @@ ghci> descomponer formula4
 \end{sesion}
 
 
-Definimos \texttt{(ramificacion nodo)} que ramifica un nodo.
+Definimos \texttt{(ramificacion nodo)} que ramifica un nodo aplicando          
+las equivalencias adecuadas.
 
 \index{\texttt{ramificacion}}
 \begin{code}
@@ -210,9 +213,11 @@ expandeTableroG n (nodo:nodos)
   | nodoExpandido nodo =
       trace (show nodo ++ "\n\n") (nodo : expandeTableroG n nodos)
   | k == n =
-      trace (show nodo ++ "\n\n") (expandeTableroG k (nuevoNodo ++ nodos))
+      trace (show nodo ++ "\n\n") (expandeTableroG k 
+                                  (nuevoNodo ++ nodos))
   | otherwise =
-      trace (show nodo ++"\n\n") (expandeTableroG (n-1) (nodos ++ nuevoNodo))
+      trace (show nodo ++"\n\n") (expandeTableroG (n-1) 
+                                 (nodos ++ nuevoNodo))
   where (k, nuevoNodo) = ramificacionP n nodo
 \end{code}
 
