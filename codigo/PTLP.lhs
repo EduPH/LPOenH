@@ -354,9 +354,7 @@ unificadoresListas [tx] [tx]  ==  [[]]
   $$(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$$
 \end{Def}
 
-\comentario{Definir forma normal conjuntiva para desarrollar forma clausal.}
-
-Definimos la función \texttt{enFormaNC f} para determinar si una fórmula
+Definimos la función \texttt{(enFormaNC f)} para determinar si una fórmula
 está en su forma normal conjuntiva.
 
 \index{\texttt{enFormaNC}}
@@ -459,7 +457,7 @@ interiorizaNeg (PTodo x f) = PTodo x (interiorizaNeg f)
 interiorizaNeg (Ex x f) = Ex x (interiorizaNeg f)
 \end{code}
 
-Definimos \texttt{interiorizaDisy f} para interiorizar las disyunciones
+Definimos \texttt{(interiorizaDisy f)} para interiorizar las disyunciones
 
 \begin{code}
 interiorizaDisy :: Form -> Form
@@ -489,7 +487,7 @@ interiorizaDisy (Disy fs) =
 \end{nota}
 
 Así, hemos construido el algoritmo para el cálculo de formas normales
-conjuntivas. Definimos la función \texttt{formaNormalConjuntiva f}
+conjuntivas. Definimos la función \texttt{(formaNormalConjuntiva f)}
 
 \begin{code}
 
