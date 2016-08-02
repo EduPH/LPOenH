@@ -607,9 +607,39 @@ instance Show Clausulas where
 
 \end{code}
 
+Por ejemplo de
+
 \begin{sesion}
 ghci> Neg (Conj [p,Impl q r])
 ¬(p⋀(q⟹r))
+\end{sesion}
+
+su forma clausal es
+
+\begin{sesion}
+ghci> Cs [C [Neg p,q], C [Neg p, Neg r]]
+{{¬p,q},{¬p,¬r}}
+\end{sesion}
+
+Dada una fórmula en su forma normal conjuntiva, podemos convertirla
+a su forma causal por medio de la función \texttt{(formNCAC f)}
+
+\index{\texttt{formNCAC}}
+\begin{code}
+formNCAC :: Form -> Clausulas
+formNCAC (Conj fs) = Cs (map disyAClau fs)
+    where
+      disyAClau p@(Atom _ _) = C [p]
+      disyAClau (Disy fs) = C fs
+\end{code}
+
+Por ejemplo
+
+\begin{sesion}
+ghci> Conj [p, Disy [q,r]]
+(p⋀(q⋁r))
+ghci> formNCAC (Conj [p, Disy [q,r]])
+{{p},{q,r}}
 \end{sesion}
 
 \section{Tableros semánticos}
