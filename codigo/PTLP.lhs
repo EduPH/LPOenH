@@ -765,10 +765,10 @@ delta _                     = False
 \end{itemize}
 
 \begin{nota}
-  En las tablas, cada elemento de una columna es equivalente a su análogo en la
-  otra columna.
 
-  \comentario{Precisar la equivalencia con las componentes.}
+  Cada elemento de la izquierda de las tablas es equivalente a la
+  entrada de la derecha de la tabla que esté en su misma altura.
+  Es decir, considerando las tablas como matrices $a_{i,1}\equiv a_{i,2}$.
   
 \end{nota}
 
