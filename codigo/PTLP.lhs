@@ -471,6 +471,9 @@ interiorizaDisy (Disy fs) =
       combina [] ys = []
       combina xs [] = []
       combina xs ys = [[x,y] | x <- xs, y <- ys]
+
+interiorizaDisy (PTodo x f) = PTodo x (interiorizaDisy f)
+interiorizaDisy (Ex x f) = Ex x (interiorizaDisy f)
 interiorizaDisy f = f
 \end{code}
 
@@ -696,9 +699,6 @@ ghci> skolem formula5
 Por ejemplo una forma clausal de $\neg (p \wedge (q \rightarrow r))$
 es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$
 
-\comentario{Para definir formas clausales necesito convertir fórmulas
-  a su forma normal conjuntiva}
-
 Se define los tipos de dato \texttt{Clausula} y \texttt{Clausulas},
 para representar una cláusula o un conjunto de ellas respectivamente.
 \begin{code}
@@ -772,6 +772,9 @@ Por ejemplo
 ghci> formaClausal (Neg (Conj [p, Impl q r]))
 {{¬p,q},{¬p,¬r}}
 \end{sesion}
+
+\comentario{Solucionar excepción forma clausal con cuantificadores universal
+  y existencial}
 
 \section{Tableros semánticos}
 
