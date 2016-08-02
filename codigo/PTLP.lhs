@@ -355,6 +355,45 @@ unificadoresListas [tx] [tx]  ==  [[]]
 
 \comentario{Definir forma normal conjuntiva para desarrollar forma clausal.}
 
+Definimos la función \texttt{enFormaNC f} para determinar si una fórmula
+está en su forma normal conjuntiva.
+
+\index{\texttt{enFormaNC}}
+\begin{code}
+enFormaNC :: Form -> Bool
+enFormaNC (Conj fs) = and [(literal f) || (esConj f) | f <- fs]
+    where
+      esConj (Disy fs) = all (literal) fs
+      esConj _ = False
+\end{code}
+
+Por ejemplo
+
+\begin{sesion}
+enFormaNC (Conj [p, Disy [q,r]])             == True
+enFormaNC (Conj [Impl p r, Disy [q, Neg r]]) == False
+enFormaNC (Conj [p, Disy [q, Neg r]])        == True
+\end{sesion}
+
+Aplicando a una fórmula $F$ el siguiente algoritmo se obtiene
+una forma normal conjuntiva de $F$.
+
+\begin{enumerate*}
+\item Eliminar los bicondicionales usando la equivalencia
+  $$ A \leftrightarrow B \equiv (A \rightarrow B) \wedge (B \rightarrow A)$$
+\item Eliminar los condicionales usando la equivalencia
+  $$ A \rightarrow B \equiv \neg A \vee B  $$
+\item Interiorizar las negaciones usando las equivalencias
+  $$ \neg (A \wedge B) \equiv \neg A \vee \neg B$$
+  $$ \neg (A \vee B) \equiv \neg A \wedge \neg B$$
+  $$ \neg \neg A \equiv A $$
+\item Interiorizar las disyunciones usando las equivalencias
+  $$ A\vee (B \wedge C) \equiv (A \vee B) \wedge (A \vee C)  $$
+  $$ (A \wedge B) \vee C \equiv (A \vee C) \wedge (B \vee C) $$
+\end{enumerate*}
+
+
+
 \begin{Def}
   Una fórmula está en \textbf{forma normal disyuntiva} si es una disyunción de
   conjunciones de literales.
