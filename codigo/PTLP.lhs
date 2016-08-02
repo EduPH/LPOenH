@@ -439,7 +439,7 @@ ghci> elimImpEquiv formula4
 ∃x R[cero,x]
 \end{sesion}
 
-Interiorizamos las negaciones mediante la función \texttt{(interiorizaNeg f).
+Interiorizamos las negaciones mediante la función \texttt{(interiorizaNeg f)}.
 
   
 \index{\texttt{interiorizaNeg}}
@@ -462,9 +462,50 @@ interiorizaNeg (Ex x f) = Ex x (interiorizaNeg f)
 Definimos \texttt{interiorizaDisy f} para interiorizar las disyunciones
 
 \begin{code}
-
-  
+interiorizaDisy :: Form -> Form
+interiorizaDisy (Disy fs) = 
+    Conj (map (Disy) (concat (aux [ aux1 f | f <- fs])))
+    where
+      aux [] = []
+      aux (xs:xss) = map (combina xs) xss ++ aux xss
+      aux1 p | literal p = [p]
+      aux1 (Conj xs) = xs
+      combina [] ys = []
+      combina xs [] = []
+      combina xs ys = [[x,y] | x <- xs, y <- ys]
 \end{code}
+
+\begin{nota}
+  Explicación de las funciones auxiliares
+  \begin{itemize*}
+  \item La función \texttt{aux} aplica la función \texttt{combina}
+    las listas de las conjunciones.
+  \item La función \texttt{aux1} toma las listas de las conjunciones o
+    construye una lista de un literal.
+  \item La función \texttt{combina xs ys} elabora listas de dos elementos
+    de las listas \texttt{xs} e \texttt{ys}.
+  \end{itemize*}
+  
+\end{nota}
+
+Así, hemos construido el algoritmo para el cálculo de formas normales
+conjuntivas. Definimos la función \texttt{formaNormalConjuntiva f}
+
+\begin{code}
+
+formaNormalConjuntiva :: Form -> Form
+formaNormalConjuntiva = interiorizaDisy . interiorizaNeg . elimImpEquiv
+
+\end{code}
+
+Por ejemplo
+
+\begin{sesion}
+ghci> Neg (Conj [p, Impl q r])
+¬(p⋀(q⟹r))
+ghci> formaNormalConjuntiva (Neg (Conj [p, Impl q r]))
+((¬p⋁q)⋀(¬p⋁¬r))
+\end{sesion}
 
 \begin{Def}
   Una fórmula está en \textbf{forma normal disyuntiva} si es una disyunción de
