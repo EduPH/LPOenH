@@ -347,6 +347,7 @@ unificadoresListas [tx] [tx]  ==  [[]]
 
 \section{Skolem}
 
+\subsection{Formas normales}
 \begin{Def}
   Una fórmula está en \textbf{forma normal conjuntiva} si es una conjunción de
   disyunciones de literales.
@@ -392,7 +393,78 @@ una forma normal conjuntiva de $F$.
   $$ (A \wedge B) \vee C \equiv (A \vee C) \wedge (B \vee C) $$
 \end{enumerate*}
 
+Implementamos estos pasos en Haskell
 
+Definimos la función \texttt{(elimImpEquiv f)}, para obtener fórmulas
+equivalentes sin equivalencias ni implicaciones.
+
+\index{\texttt{elimImpEquiv}}
+\begin{code}
+elimImpEquiv :: Form -> Form
+elimImpEquiv (Atom f xs) =
+  Atom f xs
+elimImpEquiv (Ig t1 t2) =
+  Ig t1 t2
+elimImpEquiv (Equiv f1 f2) =
+  Conj [elimImpEquiv (Impl f1 f2),
+        elimImpEquiv (Impl f2 f1)]
+elimImpEquiv (Impl f1 f2) =
+  Disy [Neg f1, f2]
+elimImpEquiv (Neg f) =
+  Neg (elimImpEquiv f)
+elimImpEquiv (Disy fs) =
+  Disy (map elimImpEquiv fs)
+elimImpEquiv (Conj fs) =
+  Conj (map elimImpEquiv fs)
+elimImpEquiv (PTodo x f) =
+  PTodo x (elimImpEquiv f)
+elimImpEquiv (Ex x f) =
+  Ex x (elimImpEquiv f)
+\end{code}
+
+Empleamos las fórmulas 2, 3 y 4 ya definidas anteriormente como ejemplo:
+
+\begin{sesion}
+ghci> formula2
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> elimImpEquiv formula2
+∀x ∀y (¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
+ghci> formula3
+(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> elimImpEquiv formula3
+(¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
+ghci> formula4
+∃x R[cero,x]
+ghci> elimImpEquiv formula4
+∃x R[cero,x]
+\end{sesion}
+
+Interiorizamos las negaciones mediante la función \texttt{(interiorizaNeg f).
+
+  
+\index{\texttt{interiorizaNeg}}
+\begin{code}
+interiorizaNeg :: Form -> Form 
+interiorizaNeg p@(Atom f xs) = p
+interiorizaNeg (Equiv f1 f2) = 
+    Equiv (interiorizaNeg f1) (interiorizaNeg f2)
+interiorizaNeg (Impl f1 f2) = Impl (interiorizaNeg f1) (interiorizaNeg f2)
+interiorizaNeg (Neg (Disy fs)) = Conj (map (interiorizaNeg) (map (Neg) fs))
+interiorizaNeg (Neg (Conj fs)) = Disy (map (interiorizaNeg) (map (Neg) fs))
+interiorizaNeg (Neg (Neg f)) = interiorizaNeg f
+interiorizaNeg (Neg f) = Neg (interiorizaNeg f)
+interiorizaNeg (Disy fs) = Disy (map interiorizaNeg fs)
+interiorizaNeg (Conj fs) = Conj (map interiorizaNeg fs)
+interiorizaNeg (PTodo x f) = PTodo x (interiorizaNeg f)
+interiorizaNeg (Ex x f) = Ex x (interiorizaNeg f)
+\end{code}
+
+Definimos \texttt{interiorizaDisy f} para interiorizar las disyunciones
+
+\begin{code}
+
+  
+\end{code}
 
 \begin{Def}
   Una fórmula está en \textbf{forma normal disyuntiva} si es una disyunción de
@@ -444,48 +516,7 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
   que ambas son satisfacibles o ninguna lo es.
 \end{Def}
 
-Definimos la función \texttt{(elimImpEquiv f)}, para obtener fórmulas
-equivalentes sin equivalencias ni implicaciones.
 
-\begin{code}
-elimImpEquiv :: Form -> Form
-elimImpEquiv (Atom f xs) =
-  Atom f xs
-elimImpEquiv (Ig t1 t2) =
-  Ig t1 t2
-elimImpEquiv (Equiv f1 f2) =
-  Conj [elimImpEquiv (Impl f1 f2),
-        elimImpEquiv (Impl f2 f1)]
-elimImpEquiv (Impl f1 f2) =
-  Disy [Neg f1, f2]
-elimImpEquiv (Neg f) =
-  Neg (elimImpEquiv f)
-elimImpEquiv (Disy fs) =
-  Disy (map elimImpEquiv fs)
-elimImpEquiv (Conj fs) =
-  Conj (map elimImpEquiv fs)
-elimImpEquiv (PTodo x f) =
-  PTodo x (elimImpEquiv f)
-elimImpEquiv (Ex x f) =
-  Ex x (elimImpEquiv f)
-\end{code}
-
-Empleamos las fórmulas 2, 3 y 4 ya definidas anteriormente como ejemplo:
-
-\begin{sesion}
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> elimImpEquiv formula2
-∀x ∀y (¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> elimImpEquiv formula3
-(¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
-ghci> formula4
-∃x R[cero,x]
-ghci> elimImpEquiv formula4
-∃x R[cero,x]
-\end{sesion}
 
 Finalmente, definamos una cadena de funciones, para finalizar con
 \texttt{(skolem f)} que transforma \texttt{f} a su forma de Skolem.
