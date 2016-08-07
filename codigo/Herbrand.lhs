@@ -4,17 +4,15 @@ El contenido de este capítulo se encuentra en el módulo
 \begin{code}
 module Herbrand where
 import Data.List
-import PFH
-import LPH
-import PTLP
-import Tableros
+import Text.PrettyPrint.GenericPretty (pp)
+import PFH                            
+import LPH                            
+import PTLP                           
 \end{code}
 
-\begin{Def}
-  Una \textbf{fórmula básica} es una fórmula sin variables ni cuantificadores.
-\end{Def}
-
 \section{Universo de Herbrand}
+
+\comentario{Reescribir la sección de "Universo de Herbrand" usando Herbrand.hs}
 
 \begin{Def}
   El \textbf{universo de Herbrand} de $L$ es el conjunto de términos básicos de
@@ -35,106 +33,91 @@ import Tableros
 \end{Prop}
 
 
-A continuación caracterizamos las constantes. Definimos la
-función \texttt{(esConstante c)}.
+A continuación caracterizamos las constantes. Definimos la función
+\texttt{(esConstante t)} que se verifica si el término \texttt{t} es una
+constante.
 
 \index{\texttt{esConstante}}
 \begin{code}
+-- | Ejemplos
+-- >>> esConstante a
+-- True
+-- >>> esConstante tx
+-- False
 esConstante :: Termino -> Bool
 esConstante (Ter _ []) = True
 esConstante _          = False
 \end{code}
 
-Un par de ejemplos
-
-\begin{sesion}
-esConstante a   ==  True
-esConstante tx  ==  False
-\end{sesion}
-
-
-Definimos la función \texttt{(constDeTerm t)} que determine las de un
+El valor de \texttt{(constantesTerm t)} es el conjunto de las constantes del
 término \texttt{t}.
 
-\index{\texttt{constDeTerm}}
+\index{\texttt{constantesTerm}}
 \begin{code}
-constDeTerm :: Termino -> [Termino]
-constDeTerm (Var _) = []
-constDeTerm c@(Ter _ []) = [c]
-constDeTerm (Ter str (t:ts)) | esConstante t = t: aux (Ter str ts)
-                             | otherwise = 
-                                 constDeTerm t ++ aux (Ter str ts)
-                             where
-                               aux (Ter _ []) = []
-                               aux t = constDeTerm t
+-- | Ejemplos
+-- >>> let t = Ter "f" [Ter "a" [], Ter "b" [], Ter "g" [tx, Ter "a" []]]
+-- >>> t
+-- f[a,b,g[x,a]]
+-- >>> constantesTerm t
+-- [a,b]
+constantesTerm :: Termino -> [Termino]
+constantesTerm (Var _)      = []
+constantesTerm c@(Ter _ []) = [c]
+constantesTerm (Ter f ts)   = nub (concatMap constantesTerm ts)
 \end{code}
 
-\begin{nota}
-  La función \texttt{aux} evita que en la recursión consideremos
-  un término funcional como constante al quedarse vacía la lista
-  de elementos a los que se aplica.
-\end{nota}
+El valor \texttt{(constantesForm f)} es el conjunto de las constantes de la
+fórmula \texttt{f}.
 
-Por ejemplo
-
-\begin{sesion}
-ghci> Ter "f" [Ter "a" [] , Ter "b" [] , Ter "g" [tx, Ter "c" []]]
-f[a,b,g[x,c]]
-ghci> constDeTerm (Ter "f" [Ter "a" [] , Ter "b" [] , Ter "g" [tx, Ter "c" []]])
-[a,b,c]
-\end{sesion}
-
-Definimos \texttt{(constForm  f)} para determinar las constantes de
-la fórmula \texttt{f}. 
-
-\index{\texttt{constForm}}
+\index{\texttt{constantesForm}}
 \begin{code}
-constForm :: Form -> [Termino]
-constForm  (Atom _ ts)   =  nub (concat [constDeTerm t | t <- ts])
-constForm  (Neg f)       = constForm f
-constForm  (Impl f1 f2)  = constForm f1 `union` constForm f2
-constForm  (Equiv f1 f2) = constForm f1 `union` constForm f2
-constForm  (Conj fs)     = nub (concatMap constForm fs)
-constForm  (Disy fs)     = nub (concatMap constForm fs)
-constForm  (PTodo x f)   = constForm  f
-constForm  (Ex x f)      = constForm  f
+-- | Ejemplos
+-- >>> let f1 = Atom "R" [a,tx]
+-- >>> f1
+-- R[a,x]
+-- >>> constantesForm f1
+-- [a]
+-- >>> let f2 = Conj [Atom "P" [a, Ter "f" [tx,b]], f1]
+-- >>> f2
+-- (P[a,f[x,b]]⋀R[a,x])
+-- >>> constantesForm f2
+-- [a,b]
+-- >>> let f3 = PTodo x f2
+-- >>> f3
+-- ∀x (P[a,f[x,b]]⋀R[a,x])
+-- >>> constantesForm f3
+-- [a,b]
+constantesForm :: Form -> [Termino]
+constantesForm (Atom _ ts)   = nub (concatMap constantesTerm ts)
+constantesForm (Neg f)       = constantesForm f
+constantesForm (Impl f1 f2)  = constantesForm f1 `union` constantesForm f2
+constantesForm (Equiv f1 f2) = constantesForm f1 `union` constantesForm f2
+constantesForm (Conj fs)     = nub (concatMap constantesForm fs)
+constantesForm (Disy fs)     = nub (concatMap constantesForm fs)
+constantesForm (PTodo _ f)   = constantesForm f
+constantesForm (Ex _ f)      = constantesForm f
 \end{code}
 
-Si como función auxiliar de \texttt{constForm} empleamos \texttt{constDeTerm}
-obtendremos las constantes de la fórmula. Por ejemplo
-
-\begin{sesion}
-ghci> Atom "P" [a,tx]
-P[a,x]
-ghci> constForm (Atom "P" [a,tx])
-[a]
-ghci> Conj [Atom "P" [a, Ter "f" [tx,b]], Atom "R" [Ter "g" [tx,ty],c]]
-(P[a,f[x,b]]⋀R[g[x,y],c])
-ghci> constForm  (Conj [Atom "P" [a, Ter "f" [tx,b]], 
-                  Atom "R" [Ter "g" [tx,ty],c]])
-[a,b,c]
-\end{sesion}
-
-
-Definimos \texttt{(esFuncion f)} y \texttt{(funForm f)} para obtener todos los
-símbolos funcionales que aparezcan en la fórmula \texttt{f}.
+La propiedad \texttt{(esFuncion t)} se verifica si \texttt{t} es un término
+compuesto (es decir, es un témino pero no es una variable ni una constante).
 
 \index{\texttt{esFuncion}}
 \begin{code}
+-- | Ejemplos
+-- >>> esFuncion (Ter "f" [a])
+-- True
+-- >>> esFuncion (Ter "f" [])
+-- False
+-- >>> esFuncion tx
+-- False
 esFuncion :: Termino -> Bool
-esFuncion (Ter _ xs) | not (null xs) = True
-                     | otherwise = False
-esFuncion _ = False
+esFuncion (Ter _ xs) = not (null xs)
+esFuncion _          = False
 \end{code}
 
-Por ejemplo
 
-\begin{sesion}
-ghci> esFuncion (Ter "f" [a])
-True
-ghci> esFuncion (Ter "a" [])
-False
-\end{sesion}
+\texttt{(funForm f)} para obtener todos los
+símbolos funcionales que aparezcan en la fórmula \texttt{f}.
 
 \index{\texttt{funForm}}
 \begin{code}
@@ -172,8 +155,8 @@ aridadF (Ter _ ts) = length ts
 
 También necesitamos definir dos funciones auxiliares que apliquen los símbolos
 funcionales a las constantes del universo de Herbrand. Las funciones son
-\texttt{(aplicaFunAConst f c)} ,que aplica el símbolo funcional \texttt{f} a la
-constante \texttt{c} ,y \texttt{(aplicaFun fs cs)} que es una generalización a
+\texttt{(aplicaFunAConst f c)}, que aplica el símbolo funcional \texttt{f} a la
+constante \texttt{c} y \texttt{(aplicaFun fs cs)} que es una generalización a
 listas de la anterior.
 
 \index{\texttt{aplicaFunAConst}}
@@ -195,7 +178,7 @@ Así podemos obtener el universo de Herbrand de una fórmula
 \index{\texttt{univHerbrand}}
 \begin{code}
 univHerbrand :: (Eq a, Num a) => a -> Form -> Universo Termino
-univHerbrand 0 f = if  constForm  f /= [] then sort(constForm f)
+univHerbrand 0 f = if  constantesForm  f /= [] then sort(constantesForm f)
                    else [a]
 univHerbrand n f = 
     sort (nub (univHerbrand (n-1) f ++ aplicaFun (funForm f)  
@@ -275,6 +258,12 @@ length (univHerbrand 3 formula7)  ==  1446
 \end{sesion}
 
 \section{Base de Herbrand}
+
+\comentario{Reescribir la sección de "Base de Herbrand" usando Herbrand.hs}
+
+\begin{Def}
+  Una \textbf{fórmula básica} es una fórmula sin variables ni cuantificadores.
+\end{Def}
 
 \begin{Def}
   La \textbf{base de Herbrand} $\mathcal{BH}(L)$ de un lenguaje $L$ es el
@@ -434,7 +423,7 @@ de Herbrand.
 \begin{sesion}
 ghci> formula6
 ∀x P[f[x]]
-ghci> constForm formula6
+ghci> constantesForm formula6
 []
 ghci> funForm formula6
 [f[x]]
@@ -460,6 +449,9 @@ ghci> baseHerbrand 2 formula6
 
 \section{Interpretaciones de Herbrand}
 
+\comentario{Reescribir la sección de "Interpretaciones de Herbrand" usando
+  Herbrand.hs}
+
 \begin{Def}
   Una \textbf{interpretación de Herbrand} es una interpretación
   $\mathcal{I} = (\mathcal{U},I)$ tal que
@@ -471,6 +463,8 @@ ghci> baseHerbrand 2 formula6
 \end{Def}
 
 \section{Modelos de Herbrand}
+
+\comentario{Reescribir la sección de "Modelos de Herbrand" usando Herbrand.hs}
 
 \begin{Def}
   Un \textbf{modelo de Herbrand} de una fórmula $F$ es una interpretación de
@@ -559,6 +553,9 @@ False
 
 \section{Consistencia mediante modelos de Herbrand}
 
+\comentario{Reescribir la sección de "Consistencia mediante modelos de
+  Herbrand" usando Herbrand.hs}
+
 \begin{Prop}
   Sea $S$ un conjunto de fórmulas básicas. Son equivalentes:
   \begin{enumerate}
@@ -603,7 +600,7 @@ True
 \section{Extensiones de Herbrand}
 
 \comentario{Lo vamos a definir por cláusulas. 
-Se necesita una definición de cláusulas previa. Decidir dónde}
+  Se necesita una definición de cláusulas previa. Decidir dónde}
 
 \begin{Def} 
 Sea $C=\left\{ L_1,\dot ,L_n \right\}$ una cláusula de $L$ y 
