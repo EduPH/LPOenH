@@ -4,11 +4,16 @@ Haskell, con el objetivo de construir los cimientos para las posteriores
 implementaciones de algoritmos en los siguientes capítulos.
 
 \begin{code}
+{-# LANGUAGE DeriveGeneric #-}
+
 module LPH where
+
 import Dominio
 import Modelo
 import Data.List
 import Test.QuickCheck
+import Text.PrettyPrint
+import Text.PrettyPrint.GenericPretty 
 \end{code}
 
 Los elementos básicos de las fórmulas en la lógica de primer orden, así como en
@@ -33,7 +38,7 @@ Quedando el tipo de dato \texttt{Variable}
 
 \begin{code}
 data Variable = Variable Nombre Indice
-  deriving (Eq,Ord)
+  deriving (Eq,Ord,Generic)
 \end{code}
 
 Para una visualización agradable en pantalla se define su representación en la
@@ -47,6 +52,10 @@ instance Show Variable where
     where showInts []     = ""
           showInts [i]     = show i
           showInts (i:is') = show i ++ "_" ++ showInts is'
+
+instance Out Variable where
+  doc       = text . show 
+  docPrec _ = doc
 \end{code}
 
 Mostramos algunos ejemplos de definición de variables
@@ -130,20 +139,16 @@ Como ejemplo podemos representar las propiedades \texttt{reflexiva} y
 \index{\texttt{reflexiva}}
 \index{\texttt{simetrica}}
 \begin{code}
+-- | Ejemplos
+-- >>> reflexiva
+-- ∀x R[x,x]
+-- >>> simetrica
+-- ∀x ∀y (R[x,y]⟹R[y,x])
 reflexiva, simetrica :: Formula
 reflexiva = ParaTodo x (Atomo "R" [x,x])
 simetrica = ParaTodo x (ParaTodo y ( Atomo "R" [x,y] `Implica` 
                                      Atomo "R" [y,x]))
 \end{code}
-
-Quedando su representación por pantalla
-
-\begin{sesion}
-ghci> reflexiva
-∀x R[x,x]
-ghci> simetrica
-∀x ∀y (R[x,y]⟹R[y,x])
-\end{sesion}
 
 \begin{Def}
   Una \textbf{estructura del lenguaje} $L$  es un par $\mathcal{I} = (\mathcal{U},I)$
@@ -163,7 +168,6 @@ ghci> simetrica
     \end{itemize*}
   \end{enumerate}
 \end{Def}
-
 
 Definimos el tipo de dato relativo al universo como una
 lista de elementos.
@@ -222,10 +226,8 @@ representamos mediante el 0, y verdadero mediante el 1.
    \end{tabular}
 \end{center}
 
-Se definirá mediante la función \texttt{valor}. Para ello se
-implementa $s(x|d)$, que es la aplicación de la asignación $s$ pero con
-$x$ interpretado como $d$, mediante la función
-\texttt{(sustituye s x d v)}. $s(x|d)$ viene dado por la fórmula
+El valor de \texttt{(sustituye s x d)} es la asignación obtenida a partir de la
+asignación \texttt{s} pero con \texttt{x} interpretado como \texttt{d},
 \begin{equation*}
 \text{sustituye (s(t),x,d,v)}= \left\{
  \begin{array}{ll}
@@ -234,24 +236,17 @@ $x$ interpretado como $d$, mediante la función
 \end{array} \right.
 \end{equation*}
 
-En Haskell se expresa mediante guardas
-
 \index{\texttt{sustituye}}
 \begin{code}
+-- | Ejemplos
+-- >>> sustituye asignacion y B z
+-- A
+-- >>> sustituye asignacion y B y
+-- B
 sustituye :: Asignacion a -> Variable -> a -> Asignacion a
 sustituye s x d v | x == v    = d 
                   | otherwise = s v
 \end{code}
-
-Esta función es auxiliar para la evaluación de fórmulas.
-
-Un par de ejemplos de la función \texttt{(sustituye s x d v)} son
-\begin{sesion}
-ghci> sustituye asignacion y B z
-A
-ghci> sustituye asignacion y B y
-B
-\end{sesion}
 
 \begin{Def}
   Una \textbf{interpretación de una estructura del lenguaje} es un par
@@ -275,7 +270,7 @@ asignación \texttt{s}.
 valor :: Eq a => 
          Universo a -> InterpretacionR a -> Asignacion a 
                     -> Formula -> Bool
-valor _ i s (Atomo str vs)      = i str (map s vs)
+valor _ i s (Atomo r vs)        = i r (map s vs)
 valor _ _ s (Igual v1 v2)       = s v1 == s v2
 valor u i s (Negacion f)        = not (valor u i s f)
 valor u i s (Implica f1 f2)     = valor u i s f1 <= valor u i s f2
@@ -292,44 +287,32 @@ Empleando las entidades y los predicados definidos en los módulos
 \texttt{Dominio} y \texttt{Modelo}, establecemos un ejemplo del valor de una
 interpretación en una fórmula.
 
-Primero definimos la fórmula a interpretar
+Primero definimos la fórmula a interpretar y dos posibles interprestaciones
+
 \begin{code}
 formula1 :: Formula
 formula1 = ParaTodo x (Disyuncion [Atomo "P" [x],Atomo "Q" [x]])
-\end{code}
 
-\begin{sesion}
-ghci> formula1
-∀x (P[x]⋁[Q[x]])
-\end{sesion}
-
-Una interpretación para las propiedades \texttt{P} y \texttt{Q}, es comprobar
-si las plantas deben tener o no tener frutos.
-
-\begin{code}
 interpretacion1 :: String -> [Entidades] -> Bool
 interpretacion1 "P" [x] = angiosperma x
 interpretacion1 "Q" [x] = gimnosperma x
 interpretacion1 _ _     = False
-\end{code}
 
-Una segunda interpretación es si las plantas deben ser o no, acuáticas o
-terrestres.
-
-\begin{code}
 interpretacion2 :: String -> [Entidades] -> Bool
 interpretacion2 "P" [x] = acuatica  x
 interpretacion2 "Q" [x] = terrestre x
 interpretacion2 _ _     = False
 \end{code}
 
-Tomamos como universo todas las entidades menos la que denotamos \texttt{Inespecífico}
-\begin{sesion}
-ghci> valor (take 26 entidades) interpretacion1 asignacion formula1
-False
-ghci> valor (take 26 entidades) interpretacion2 asignacion formula1
-True
-\end{sesion}
+Tomando como universo todas las entidades, menos la que denotamos
+\texttt{Inespecífico}, se tienen los siguiente evaluaciones
+\begin{code}
+-- | Evaluaciones
+-- >>> valor (take 26 entidades) interpretacion1 asignacion formula1
+-- False
+-- >>> valor (take 26 entidades) interpretacion2 asignacion formula1
+-- True
+\end{code}
 
 Por ahora siempre hemos establecido propiedades, pero podríamos haber definido
 relaciones binarias, ternarias, \dots, n--arias.
@@ -349,12 +332,12 @@ consideraremos cualquier término.
 \end{Def}
 
 Definimos un tipo de dato para los términos que serán la base para la
-definición de fórmulas en lógica de primer orden que no están compuestas sólo por
-variables.
+definición de fórmulas en lógica de primer orden que no están compuestas sólo
+por variables.
 
 \begin{code}
 data Termino = Var Variable | Ter Nombre [Termino]
-  deriving (Eq,Ord)
+  deriving (Eq,Ord,Generic)
 \end{code}
 
 Algunos ejemplos de variables como términos
@@ -380,37 +363,34 @@ cero = Ter "cero" []
 Para mostrarlo por pantalla de manera comprensiva, definimos su representación.
 
 \begin{code}
+-- | Ejemplo
+-- >>> Ter "f" [tx,ty]
+-- f[x,y]
+
 instance Show Termino where
-    show (Var v)      = show v
-    show (Ter str []) = str
-    show (Ter str ts) = str ++ show ts
+  show (Var v)    = show v
+  show (Ter c []) = c
+  show (Ter f ts) = f ++ show ts
+
+instance Out Termino where
+  doc       = text . show 
+  docPrec _ = doc
 \end{code}
 
-Los términos funcionales son representados de la forma
-
-\begin{sesion}
-ghci> Ter "f" [tx,ty]
-f[x,y]
-\end{sesion}
-
-Caracterizamos las variables mediante la función \texttt{(esVariable x)}, que
-determina si un término es una variable
+La propiedad \texttt{(esVariable t)} se verifica si el término \texttt{t} es
+una variable.
 
 \index{\texttt{esVariable}}
 \begin{code}
+-- | Ejemplos
+-- >>> esVariable tx
+-- True
+-- >>> esVariable (Ter "f" [tx,ty])
+-- False
 esVariable :: Termino -> Bool
 esVariable (Var _) = True
 esVariable _       = False
 \end{code}
-
-Por ejemplo,
-
-\begin{sesion}
-ghci> esVariable tx
-True
-ghci> esVariable (Ter "f" [tx,ty])
-False
-\end{sesion}
 
 Ahora, creamos el tipo de dato \texttt{Form} de manera análoga a como lo
 hicimos en la sección anterior considerando simplemente variables, pero en este
@@ -426,13 +406,30 @@ data Form = Atom Nombre [Termino]
           | Disy [Form]
           | PTodo Variable Form
           | Ex Variable Form
-     deriving (Eq,Ord)
+  deriving (Eq,Ord,Generic)
 \end{code}
-   
+
+Algunos ejemplos de fórmulas son
+
+\begin{code}
+formula2, formula3 :: Form
+formula2 = PTodo x (PTodo y (Impl (Atom "R" [tx,ty]) 
+                             (Ex z (Conj [Atom "R" [tx,tz],
+                                          Atom "R" [tz,ty]]))))
+formula3 = Impl (Atom "R" [tx,ty])
+            (Ex z (Conj [Atom "R" [tx,tz],Atom "R" [tz,ty]]))
+
+\end{code}
+
 Y procedemos análogamente a la sección enterior, definiendo la representación de
 fórmulas por pantalla.
 
 \begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 instance Show Form where
     show (Atom r [])   = r
     show (Atom r ts)   = r ++ show ts
@@ -448,29 +445,11 @@ instance Show Form where
     show (Disy (f:fs)) = "(" ++ show f ++ "⋁" ++ show (Disy fs) ++ ")"  
     show (PTodo v f)   = "∀" ++ show v ++ (' ': show f) 
     show (Ex v f)      = "∃" ++ show v ++ (' ': show f) 
+
+instance Out Form where
+  doc       = text . show 
+  docPrec _ = doc
 \end{code}
-
-Algunos ejemplos de fórmulas son
-
-\begin{code}
-formula2, formula3 :: Form
-formula2 = PTodo x (PTodo y (Impl (Atom "R" [tx,ty]) 
-                             (Ex z (Conj [Atom "R" [tx,tz],
-                                          Atom "R" [tz,ty]]))))
-formula3 = Impl (Atom "R" [tx,ty])
-            (Ex z (Conj [Atom "R" [tx,tz],Atom "R" [tz,ty]]))
-
-\end{code}
-
-Dichas funciones serán empleadas en futuros ejemplos. Su representación por
-pantalla queda:
-
-\begin{sesion}
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-\end{sesion}
 
 Para la interpretación de los símbolos funcionales se define un nuevo tipo de
 dato
@@ -501,13 +480,56 @@ interpretación del valor en los términos.
   $\mathcal{I}_A$ se lee ``el valor de $t$ en $\mathcal{I}$ respecto de $A$''.
 \end{nota}
 
-Definimos \texttt{(valorT i a t)} que es la función de evaluación de término
+El valor de \texttt{(valorT i a t)} es el valor del término \texttt{t} en la
+interpretación \texttt{i} respecto de la asignación \texttt{a}.
 
 \index{\texttt{valorT}}
 \begin{code}
 valorT :: InterpretacionF a -> Asignacion a -> Termino -> a
 valorT i a (Var v)    = a v
 valorT i a (Ter f ts) = i f (map (valorT i a) ts)
+\end{code}
+
+Para evaluar ejemplos de evaluación de términos usaremos la siguiente
+interpretación de los símbolos de función
+
+\begin{code}
+interpretacionF1 :: String -> [Int] -> Int
+interpretacionF1 "cero" []    = 0
+interpretacionF1 "s"    [i]   = succ i
+interpretacionF1 "mas"  [i,j] = i + j
+interpretacionF1 "por"  [i,j] = i * j
+interpretacionF1 _ _          = 0
+\end{code}
+
+y la siguiente asignación
+\begin{code}
+asignacion1 :: Variable -> Int
+asignacion1 _ = 0
+\end{code}
+
+Con ello, se tiene
+
+\begin{code}
+-- | Evaluaciones
+-- >>> let t1 = Ter "cero" []
+-- >>> valorT interpretacionF1 asignacion1 t1
+-- 0
+-- >>> let t2 = Ter "s" [t1]
+-- >>> t2
+-- s[cero]
+-- >>> valorT interpretacionF1 asignacion1 t2
+-- 1
+-- >>> let t3 = Ter "mas" [t2,t2]
+-- >>> t3
+-- mas[s[cero],s[cero]]
+-- >>> valorT interpretacionF1 asignacion1 t3
+-- 2
+-- >>> let t4 = Ter "por" [t3,t3]
+-- >>> t4
+-- por[mas[s[cero],s[cero]],mas[s[cero],s[cero]]]
+-- >>> valorT interpretacionF1 asignacion1 t4
+-- 4
 \end{code}
 
 Definimos el tipo de dato \texttt{Interpretación} como un par formado por las
@@ -585,18 +607,15 @@ fórmula. Definimos las fórmulas 4 y 5, aunque emplearemos en el ejemplo
 sólo la \texttt{formula4}. 
 
 \begin{code}
+-- | Ejemplos
+-- >>> formula4
+-- ∃x R[cero,x]
+-- >>> formula5
+-- (∀x P[x]⟹∀y Q[x,y])
 formula4, formula5 :: Form
 formula4 = Ex x (Atom "R" [cero,tx])
 formula5 = Impl (PTodo x (Atom "P" [tx])) (PTodo y (Atom "Q" [tx,ty]))
 \end{code}
-
-Sus representaciones quedan
-\begin{sesion}
-ghci> formula4
-∃x R[cero,x]
-ghci> formula5
-(∀x P[x]⟹∀y Q[x,y])
-\end{sesion}
 
 En este caso tomamos como universo \texttt{U} los números naturales.
 Interpretamos \texttt{R} como la desigualdad $<$. Es decir, vamos a comprobar
@@ -609,29 +628,13 @@ interpretacionR1 "R" [x,y] = x < y
 interpretacionR1 _ _       = False
 \end{code}
 
-La interpretación de los símbolos de función es
+En este caso se tiene las siguientes evaluaciones
 
 \begin{code}
-interpretacionF1 :: String -> [Int] -> Int
-interpretacionF1 "cero" []    = 0
-interpretacionF1 "s"    [i]   = succ i
-interpretacionF1 "mas"  [i,j] = i + j
-interpretacionF1 "por"  [i,j] = i * j
-interpretacionF1 _ _          = 0
+-- | Evaluaciones
+-- >>> valorF [0..] (interpretacionR1,interpretacionF1) asignacion1 formula4
+-- True
 \end{code}
-
-Empleamos la siguiente asignación
-\begin{code}
-asignacion1 :: Variable -> Int
-asignacion1 _ = 0
-\end{code}
-
-Quedando el ejemplo
-
-\begin{sesion}
-ghci> valorF [0..] (interpretacionR1,interpretacionF1) asignacion1 formula4
-True
-\end{sesion}
 
 \begin{nota}
   Haskell es perezoso, así que podemos utilizar un universo infinito. Haskell
@@ -642,9 +645,7 @@ True
 Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
 
 \begin{Def}
-
   \begin{itemize}
-
   \item Un \textbf{modelo} de una fórmula \texttt{F} es una interpretación para
     la que \texttt{F} es verdadera.
   \item Una fórmula $F$ es \textbf{válida} si toda interpretación es modelo de
@@ -657,7 +658,7 @@ Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
 
 \subsection{Generadores}
 
-\comentario{Peniente de revisión.}
+\comentario{Pendiente de revisión.}
 
 Para poder emplear el sistema de comprobación QuickCheck, necesitamos poder
 generar elementos aleatorios de los tipos de datos creados hasta ahora.
@@ -672,6 +673,15 @@ que aparecen en un término o en una lista de ellos.
 \index{\texttt{varEnTerm}}
 \index{\texttt{varEnTerms}}
 \begin{code}
+-- Ejemplos
+-- >>> let t1 = Ter "f" [tx,a]
+-- >>> varEnTerm t1
+-- [x]
+-- >>> let t2 = Ter "g" [tx,a,ty]
+-- >>> varEnTerm t2
+-- [x,y]
+-- >>> varEnTerms [t1,t2]
+-- [x,y]
 varEnTerm :: Termino -> [Variable]
 varEnTerm (Var v)    = [v]
 varEnTerm (Ter _ ts) = varEnTerms ts
@@ -690,20 +700,24 @@ varEnTerms = nub . concatMap varEnTerm
   llaman la una a la otra.
 \end{nota}
 
-Por ejemplo,
-
-\begin{sesion}
-ghci> varEnTerm tx
-[x]
-ghci> varEnTerms [tx,ty,tz]
-[x,y,z]
-\end{sesion}
-
 La función \texttt{varEnForm} devuelve una lista de las variables que aparecen
 en una fórmula.
 
 \index{\texttt{varEnForm}}
 \begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> varEnForm formula2
+-- [x,y,z]
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> varEnForm formula3
+-- [x,y,z]
+-- >>> formula4
+-- ∃x R[cero,x]
+-- >>> varEnForm formula4
+-- [x]
 varEnForm :: Form -> [Variable]
 varEnForm (Atom _ ts)   = varEnTerms ts
 varEnForm (Ig t1 t2)    = nub (varEnTerm t1 ++ varEnTerm t2)
@@ -712,16 +726,9 @@ varEnForm (Impl f1 f2)  = varEnForm f1 `union` varEnForm f2
 varEnForm (Equiv f1 f2) = varEnForm f1 `union` varEnForm f2
 varEnForm (Conj fs)     = nub (concatMap varEnForm fs)
 varEnForm (Disy fs)     = nub (concatMap varEnForm fs)
-varEnForm (PTodo x f)   = nub (x : varEnForm f)
-varEnForm (Ex x f)      = nub (x : varEnForm f)
+varEnForm (PTodo x f)   = varEnForm f
+varEnForm (Ex x f)      = varEnForm f
 \end{code}
-
-Por ejemplo
-\begin{sesion}
-varEnForm formula2  ==  [x,y,z]
-varEnForm formula3  ==  [x,y,z]
-varEnForm formula4  ==  [x]
-\end{sesion}
 
 \begin{Def}
   Una variable es \textbf{libre} en una fórmula si no tiene ninguna aparición
@@ -732,6 +739,19 @@ La función \texttt{(variablesLibres f} devuelve las variables libres de la
 fórmula \texttt{f}.
 
 \begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> variablesLibres formula2
+-- []
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> variablesLibres formula3
+-- [x,y]
+-- >>> formula4
+-- ∃x R[cero,x]
+-- >>> variablesLibres formula4
+-- []
 variablesLibres :: Form -> [Variable]
 variablesLibres (Atom _ ts) =
   varEnTerms ts
@@ -758,13 +778,6 @@ variablesLibres (Ex x f) =
   aparición de la forma $\forall x$ o $\exists x$.
 \end{Def}
 
-Se proponen varios ejemplos
-\begin{sesion}
-variablesLibres formula2  ==  []
-variablesLibres formula3  ==  [x,y]
-variablesLibres formula4  ==  []
-\end{sesion}
-
 \begin{Def}
   Una \textbf{fórmula abierta} es una fórmula con variables libres.
 \end{Def}
@@ -774,15 +787,22 @@ abierta.
 
 \index{\texttt{formulaAbierta}}
 \begin{code}
+-- Ejemplos
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formulaAbierta formula3
+-- True
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formulaAbierta formula2
+-- False
 formulaAbierta :: Form -> Bool
 formulaAbierta = not . null . variablesLibres
 \end{code}
 
-Como acostumbramos, ponemos algunos ejemplos
+\ignora{
+  La validación es
 
-\begin{sesion}
-formulaAbierta formula2  ==  False
-formulaAbierta formula3  ==  True
-formulaAbierta formula4  ==  False
-\end{sesion}
-
+  codigo> doctest LPH
+  Examples: 37  Tried: 37  Errors: 0  Failures: 0
+}
