@@ -215,6 +215,7 @@ universoHerbrand n s@(_,fs,_) =
 Añadimos algunos ejemplos ilustrativos
 
 \begin{sesion}
+
 >>> let s1 = (["a","b","c"],[],[])
 >>> universoHerbrand 0 s1 
 [a,b,c]
@@ -264,6 +265,7 @@ a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
  f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
  f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
  f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
+
 \end{sesion}
 
 Se define el universo de Herbrand de una fórmula \texttt{f} a nivel
@@ -316,4 +318,183 @@ universoHerbrandForms n fs =
   nub (concatMap (universoHerbrandForm n) fs)
 \end{code}
 
+Por ejemplo
+
+\begin{sesion}
+>>> let f1 = Atom "R" [Ter "f" [tx]]
+>>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
+>>> let f3 = Atom "S" [Ter "g" [a,b]]
+>>> universoHerbrandForms 1 [f1,f2,f3]
+[a,f[a],b,f[b],g[a,a],g[a,b],g[b,a],g[b,b]]
+\end{sesion}
+
+
+\begin{Prop}
+  $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de función.
+\end{Prop}
+
+
 \section{Base de Herbrand}
+
+begin{Def}
+  Una \textbf{fórmula básica} es una fórmula sin variables ni
+  cuantificadores.
+\end{Def}
+
+\begin{Def}
+  La \textbf{base de Herbrand} $\mathcal{BH}(L)$ de un lenguaje $L$ es el
+  conjunto de átomos básicos de $L$.
+\end{Def}
+
+Implementamos la base de herbrand a nivel \texttt{n} de la signatura
+\texttt{s} mediante la función \texttt{(baseHerbrand n s)}
+
+\begin{code}
+baseHerbrand :: Int -> Signatura -> BaseH
+baseHerbrand n s@(_,_,rs) =
+  [Atom r ts | (r,k) <- rs
+             , ts <- variacionesR k u]
+  where u = universoHerbrand n s
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+>>> let s1 = (["a","b","c"],[],[("P",1)])
+>>> baseHerbrand 0 s1
+[P[a],P[b],P[c]]
+>>> let s2 = (["a","b","c"],[],[("P",1),("Q",1),("R",1)])
+>>> let s2 = (["a","b","c"],[("f",1)],[("P",1),("Q",1),("R",1)])
+>>> baseHerbrand 0 s2
+[P[a],P[b],P[c],Q[a],Q[b],Q[c],R[a],R[b],R[c]]
+>>> pp $ baseHerbrand 1 s2
+[P[a],P[b],P[c],P[f[a]],P[f[b]],P[f[c]],Q[a],Q[b],
+ Q[c],Q[f[a]],Q[f[b]],Q[f[c]],R[a],R[b],R[c],R[f[a]],
+ R[f[b]],R[f[c]]]
+\end{sesion}
+
+Se define la base de Herbrand de una fórmula \texttt{f} a nivel
+\texttt{n} mediante \texttt{(baseHerbrandForm n f)}.
+
+\begin{code}
+baseHerbrandForm :: Int -> Form -> BaseH
+baseHerbrandForm n f =
+  baseHerbrand n (signaturaForm f)
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+>>> let f1 = Atom "P" [Ter "f" [tx]]
+>>> f1
+P[f[x]]
+>>> baseHerbrandForm 2 f1
+[P[a],P[f[a]],P[f[f[a]]]]
+\end{sesion}
+
+Generalizamos la función anterior a una lista de fórmulas
+definiendo \texttt{(baseHerbrandForms n fs)}
+
+\begin{code}
+baseHerbrandForms :: Int -> [Form] -> BaseH
+baseHerbrandForms n fs =
+  baseHerbrandForm n (Conj fs)
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+>>> let f1 = Atom "P" [Ter "f" [tx]]
+>>> let f2 = Atom "Q" [Ter "g" [b]]
+>>> baseHerbrandForms 1 [f1,f2]
+[P[b],P[f[b]],P[g[b]],Q[b],Q[f[b]],Q[g[b]]]
+\end{sesion}
+
+\section{Interpretacion de Herbrand}
+
+\begin{Def}
+  Una \textbf{interpretación de Herbrand} es una interpretación
+  $\mathcal{I} = (\mathcal{U},I)$ tal que
+  \begin{itemize}
+  \item $\mathcal{U}$ es el universo de Herbrand de $F$.
+  \item $I(c) = c$, para constante $c$ de $F$.
+  \item $I(f) = f$, para cada símbolo funcional de $F$.
+  \end{itemize}
+\end{Def}
+
+Definimos un tipo de dato para los elementos que componen la
+interpretación de Herbrand.
+
+\begin{code}
+type UniversoH = Universo Termino
+
+type InterpretacionHR = InterpretacionR Termino
+
+type InterpretacionHF = InterpretacionF Termino
+
+type InterpretacionH = (InterpretacionHR, InterpretacionHF)  
+\end{code}
+
+
+\begin{code}
+type AtomosH = [Form]
+\end{code}
+\comentario{Definir fórmulas atómicas básicas}
+
+
+Se define la interpretación de Herbrand de un conjunto
+de átomos de Herbrand a través de \texttt{(interpretacionH fs)}
+
+\begin{code}
+interpretacionH :: AtomosH -> InterpretacionH
+interpretacionH fs = (iR,iF)
+  where iF f ts   = Ter  f ts
+        iR r ts   = Atom r ts `elem` fs
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+>>> let f1 = Atom "P" [a]
+>>> let f2 = Atom "P" [Ter "f" [a,b]]
+>>> let fs = [f1,f2]
+>>> let (iR,iF) = interpretacionH fs
+>>> iF "f" [a,c]
+f[a,c]
+>>> iR "P" [a]
+True
+>>> iR "P" [b]
+False
+>>> iR "P" [Ter "f" [a,b]]
+True
+>>> iR "P" [Ter "f" [a,a]]
+False
+\end{sesion}
+
+\begin{Prop}
+  Una interpretación de Herbrand queda determinada por un subconjunto de
+  la base de Herbrand.
+\end{Prop}
+
+
+Evaluamos una fórmula a través de una interpertación de Herbrand.
+Para ello definimos la función \texttt{(valorH u i f)}; donde
+\texttt{u} representa el universo, \texttt{i} la interpretación,
+y \texttt{f} la fórmula.
+
+\begin{code}
+valorH :: UniversoH -> InterpretacionH -> Form -> Bool
+valorH u i f =
+  valorF u i s f
+  where s _ = a
+\end{code}
+
+\section{Modelos de Herbrand}
+
+\begin{Def}
+  Un \textbf{modelo de Herbrand} de una fórmula $F$ es una interpretación de
+  Herbrand de $F$ que es modelo de $F$.
+
+  Un \textbf{modelo de Herbrand} de un conjunto de fórmulas $S$ es una interpretación de
+  Herbrand de $S$ que es modelo de $S$.
+\end{Def}
