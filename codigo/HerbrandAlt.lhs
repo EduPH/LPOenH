@@ -498,3 +498,72 @@ valorH u i f =
   Un \textbf{modelo de Herbrand} de un conjunto de fórmulas $S$ es una interpretación de
   Herbrand de $S$ que es modelo de $S$.
 \end{Def}
+
+Implementamos los subconjuntos del n-ésimo nivel de la base de 
+Herbrand de la fórmula \texttt{f} que son modelos de \texttt{f} 
+con la función \texttt{(modelosHForm n f)}.
+
+\begin{code}
+modelosHForm :: Int -> Form -> [AtomosH]
+modelosHForm n f =
+ [fs | fs <- subsequences bH
+      , valorH uH (interpretacionH fs) f]
+  where uH = universoHerbrandForm n f
+        bH = baseHerbrandForm n f
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+>>> let f1 = Disy [Atom "P" [a], Atom "P" [b]]
+>>> f1
+(P[a]⋁P[b])
+>>> modelosHForm 0 f1
+[[P[a]],[P[b]],[P[a],P[b]]]
+>>> let f2 = Impl (Atom "P" [a]) (Atom "P" [b])
+>>> f2
+(P[a]⟹P[b])
+>>> modelosHForm 0 f2
+[[],[P[b]],[P[a],P[b]]]
+>>> let f3 = Conj [Atom "P" [a], Atom "P" [b]]
+>>> f3
+(P[a]⋀P[b])
+>>> modelosHForm 0 f3
+[[P[a],P[b]]]
+>>> let f4 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
+>>> f4
+∀x (P[x]⟹Q[f[x]])
+>>> modelosHForm 0 f4
+[[],[Q[a]]]
+>>> modelosHForm 1 f4
+[[],[Q[a]],[Q[f[a]]],[P[a],Q[f[a]]],[Q[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
+>>> length (modelosHForm 2 f4)
+18
+\end{sesion}
+
+Generalizamos la definición anterior a una lista de fórmulas mediante
+la función \texttt{(modelosH n fs)}.
+
+\begin{code}
+modelosH :: Int -> [Form] -> [AtomosH]
+modelosH n fs =
+  [gs | gs <- subsequences bH
+      , and [valorH uH (interpretacionH gs) f | f <- fs]]
+  where uH = universoHerbrandForms n fs
+        bH = baseHerbrandForms n fs
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+>>> let f1 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
+>>> f1
+∀x (P[x]⟹Q[f[x]])
+>>> let f2 = Ex x (Atom "P" [tx])
+>>> f2
+∃x P[x]
+>>> modelosH 0 [f1,f2]
+[]
+>>> modelosH 1 [f1,f2]
+[[P[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
+\end{sesion}
