@@ -5,7 +5,7 @@ import PFH
 import LPH                           
 import PTLP                          
 
--- Una signatura es un terna formada po la lista de constantes, de
+-- Una signatura es un terna formada por la lista de constantes, de
 -- símbolos de función (con su aridad) y los símbolos de relación (con
 -- su aridad).
 type Signatura = ([Nombre],[(Nombre,Int)],[(Nombre,Int)]) 

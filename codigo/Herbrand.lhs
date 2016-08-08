@@ -654,3 +654,5 @@ ghci> sustitucionForm [(x,a),(y,Ter "f" [a])]
   \end{equation*}
 \end{Prop}
 
+Posteriormente, vamos a aportar una definición alternativa.
+\entrada{HerbrandAlt}
