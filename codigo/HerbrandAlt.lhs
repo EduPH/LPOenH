@@ -18,6 +18,7 @@ import LPH
 import PTLP
 \end{code}
 
+\comentario{Arreglar ejemplos}
 \section{Universo de Herbrand}
 
 \begin{Def}
