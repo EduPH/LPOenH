@@ -599,3 +599,9 @@ modelosH n fs =
   where uH = universoHerbrandForms n fs
         bH = baseHerbrandForms n fs
 \end{code}
+
+La validación es
+\begin{code}
+-- codigo> doctest HerbrandAlt.lhs
+-- Examples: 125  Tried: 125  Errors: 0  Failures: 0
+\end{code}
