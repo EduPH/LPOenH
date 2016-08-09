@@ -10,6 +10,7 @@ luego decidir si mantenemos ambos capítulos complementándose o nos
 quedamos solo con este.}
 
 \begin{code}
+{-# LANGUAGE DeriveGeneric #-}
 module Herbrand where
 import Data.List
 import Text.PrettyPrint.GenericPretty
@@ -43,6 +44,16 @@ que une las signaturas \texttt{s1} y \texttt{s2}.
 
 \index{\texttt{unionSignatura}}
 \begin{code}
+-- | Ejemplos
+-- >>> let s1 = (["a"],[("f",1)],[])
+-- >>> let s2 = (["b","c"],[("f",1),("g",2)],[("R",2)])
+-- >>> unionSignatura s1 s2
+-- (["a","b","c"],[("f",1),("g",2)],[("R",2)])
+\end{code}
+
+Su definición es
+
+\begin{code}
 unionSignatura :: Signatura -> Signatura -> Signatura
 unionSignatura (cs1,fs1,rs1) (cs2,fs2,rs2) =
     ( cs1 `union` cs2
@@ -50,38 +61,46 @@ unionSignatura (cs1,fs1,rs1) (cs2,fs2,rs2) =
     , rs1 `union` rs2 )
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
->>> let s1 = (["a"],[("f",1)],[])
->>> let s2 = (["b","c"],[("f",1),("g",2)],[("R",2)])
->>> unionSignatura s1 s2
-(["a","b","c"],[("f",1),("g",2)],[("R",2)])
-\end{sesion}
 
 Generalizamos la función anterior a la unión de una lista de signaturas
 mediante la función \texttt{(unionSignaturas ss)}.
 
 \index{\texttt{unionSignaturas}}
 \begin{code}
+-- | Ejemplos
+-- >>> let s1 = (["a"],[("f",1)],[])
+-- >>> let s2 = (["b","c"],[("f",1),("g",2)],[("R",2)])
+-- >>> let s3 = (["a","c"],[],[("P",1)])
+-- >>> unionSignaturas [s1,s2,s3]
+-- (["a","b","c"],[("f",1),("g",2)],[("R",2),("P",1)])
+\end{code}
+
+Su definición es
+
+\begin{code}
 unionSignaturas :: [Signatura] -> Signatura
 unionSignaturas = foldr unionSignatura ([], [], [])
 \end{code}
-
-Por ejemplo
-
-\begin{sesion}
->>> let s1 = (["a"],[("f",1)],[])
->>> let s2 = (["b","c"],[("f",1),("g",2)],[("R",2)])
->>> let s3 = (["a","c"],[],[("P",1)])
->>> unionSignaturas [s1,s2,s3]
-(["a","b","c"],[("f",1),("g",2)],[("R",2),("P",1)])
-\end{sesion}
 
 Se define la función \texttt{(signaturaTerm t)} que determina la
 signatura del término t.
 
 \index{\texttt{signaturaTerm}}
+\begin{code}
+-- | Ejemplos
+-- >>> signaturaTerm tx
+-- ([],[],[])
+-- >>> signaturaTerm a
+-- (["a"],[],[])
+-- >>> let t1 = Ter "f" [a,tx,Ter "g" [b,a]]
+-- >>> t1
+-- f[a,x,g[b,a]]
+-- >>> signaturaTerm t1
+-- (["a","b"],[("f",3),("g",2)],[])
+\end{code}
+
+Su definición es
+
 \begin{code}
 signaturaTerm :: Termino -> Signatura 
 signaturaTerm (Var _) = ([], [], [])
@@ -92,24 +111,39 @@ signaturaTerm (Ter f ts) = (cs,[(f,n)] `union` fs, rs)
       n          = length ts
 \end{code}
 
-A continuación, algunos ejemplos
-
-\begin{sesion}
->>> signaturaTerm tx
-([],[],[])
->>> signaturaTerm a
-(["a"],[],[])
->>> let t1 = Ter "f" [a,tx,Ter "g" [b,a]]
->>> t1
-f[a,x,g[b,a]]
->>> signaturaTerm t1
-(["a","b"],[("f",3),("g",2)],[])
-\end{sesion}
-
 Se define la signatura de una fórmula \texttt{f} mediante la función
 \texttt{(signaturaForm f)}.
 
 \index{\texttt{signaturaForm}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "R" [a,tx,Ter "g" [b,a]]
+-- >>> f1
+-- R[a,x,g[b,a]]
+-- >>> signaturaForm f1
+-- (["a","b"],[("g",2)],[("R",3)])
+-- >>> signaturaForm (Neg f1)
+-- (["a","b"],[("g",2)],[("R",3)])
+-- >>> let f2 = Atom "P" [b]
+-- >>> let f3 = Impl f1 f2
+-- >>> f3
+-- (R[a,x,g[b,a]]⟹P[b])
+-- >>> signaturaForm f3
+-- (["a","b"],[("g",2)],[("R",3),("P",1)])
+-- >>> let f4 = Conj [f1,f2,f3]
+-- >>> f4
+-- (R[a,x,g[b,a]]⋀(P[b]⋀(R[a,x,g[b,a]]⟹P[b])))
+-- >>> signaturaForm f4
+-- (["a","b"],[("g",2)],[("R",3),("P",1)])
+-- >>> let f5 = PTodo x f4
+-- >>> f5
+-- ∀x (R[a,x,g[b,a]]⋀(P[b]⋀(R[a,x,g[b,a]]⟹P[b])))
+-- >>> signaturaForm f5
+-- (["a","b"],[("g",2)],[("R",3),("P",1)])
+\end{code}
+
+Su definición es
+
 \begin{code}
 signaturaForm :: Form -> Signatura
 signaturaForm (Atom r ts) =
@@ -132,53 +166,27 @@ signaturaForm (Ex _ f) =
   signaturaForm f
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
--- >>> let f1 = Atom "R" [a,tx,Ter "g" [b,a]]
->>> f1
-R[a,x,g[b,a]]
->>> signaturaForm f1
-(["a","b"],[("g",2)],[("R",3)])
->>> signaturaForm (Neg f1)
-(["a","b"],[("g",2)],[("R",3)])
->>> let f2 = Atom "P" [b]
->>> let f3 = Impl f1 f2
->>> f3
-(R[a,x,g[b,a]]⟹P[b])
->>> signaturaForm f3
-(["a","b"],[("g",2)],[("R",3),("P",1)])
->>> let f4 = Conj [f1,f2,f3]
->>> f4
-(R[a,x,g[b,a]]⋀(P[b]⋀(R[a,x,g[b,a]]⟹P[b])))
->>> signaturaForm f4
-(["a","b"],[("g",2)],[("R",3),("P",1)])
->>> let f5 = PTodo x f4
->>> f5
-∀x (R[a,x,g[b,a]]⋀(P[b]⋀(R[a,x,g[b,a]]⟹P[b])))
->>> signaturaForm f5
-(["a","b"],[("g",2)],[("R",3),("P",1)])
-\end{sesion}
 
 Generalizamos la función anterior a una lista de fórmulas con la
 función \texttt{(signaturaForms fs)}.
 
 \index{\texttt{signaturaForms}}
 \begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "R" [Ter "f" [tx]]
+-- >>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
+-- >>> let f3 = Atom "S" [Ter "g" [a,b]]
+-- >>> signaturaForms [f1,f2,f3]
+-- (["a","b"],[("f",1),("g",2)],[("R",1),("Q",2),("S",1)])
+\end{code}
+
+Su definición es 
+
+\begin{code}
 signaturaForms :: [Form] -> Signatura
 signaturaForms fs =
   unionSignaturas (map signaturaForm fs)
 \end{code}
-
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = Atom "R" [Ter "f" [tx]]
->>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
->>> let f3 = Atom "S" [Ter "g" [a,b]]
->>> signaturaForms [f1,f2,f3]
-(["a","b"],[("f",1),("g",2)],[("R",1),("Q",2),("S",1)])
-\end{sesion}
 
 \begin{Def}
   El \textbf{universo de Herbrand} de $L$ es el conjunto de términos básicos de
@@ -201,6 +209,62 @@ Por ejemplo,
 Definimos la función \texttt{universoHerbrand n s} que es el universo de
 Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 
+\index{\texttt{universoHerbrand}}
+\begin{code}
+-- | Ejemplos 
+-- >>> let s1 = (["a","b","c"],[],[])
+-- >>> universoHerbrand 0 s1 
+-- [a,b,c]
+-- >>> universoHerbrand 1 s1 
+-- [a,b,c]
+
+-- >>> let s2 = ([],[("f",1)],[])
+-- >>> universoHerbrand 0 s2 
+-- [a]
+-- >>> universoHerbrand 1 s2 
+-- [a,f[a]]
+-- >>> universoHerbrand 2 s2 
+-- [a,f[a],f[f[a]]]
+ 
+-- >>> let s3 = (["a","b"],[("f",1),("g",1)],[])
+-- >>> universoHerbrand 0 s3 
+-- [a,b]
+-- >>> universoHerbrand 1 s3 
+-- [a,b,f[a],f[b],g[a],g[b]]
+-- >>> pp $ universoHerbrand 2 s3 
+-- [a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
+--  f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
+-- >>> universoHerbrand 3 (["a"],[("f",1)],[("R",1)]) 
+-- [a,f[a],f[f[a]],f[f[f[a]]]]
+-- >>> pp $ universoHerbrand 3 (["a","b"],[("f",1),("g",1)],[]) 
+-- a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
+--  f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]],f[f[f[a]]],
+--  f[f[f[b]]],f[f[g[a]]],f[f[g[b]]],f[g[f[a]]],
+--  f[g[f[b]]],f[g[g[a]]],f[g[g[b]]],g[f[f[a]]],
+--  g[f[f[b]]],g[f[g[a]]],g[f[g[b]]],g[g[f[a]]],
+--  g[g[f[b]]],g[g[g[a]]],g[g[g[b]]]]
+ 
+-- >>> let s4 = (["a","b"],[("f",2)],[])
+-- >>> universoHerbrand 0 s4
+-- [a,b]
+-- >>> universoHerbrand 1 s4
+-- [a,b,f[a,a],f[a,b],f[b,a],f[b,b]]
+-- >>> pp $ universoHerbrand 2 s4 
+-- [a,b,f[a,a],f[a,b],f[b,a],f[b,b],f[a,f[a,a]],
+--  f[a,f[a,b]],f[a,f[b,a]],f[a,f[b,b]],f[b,f[a,a]],
+--  f[b,f[a,b]],f[b,f[b,a]],f[b,f[b,b]],f[f[a,a],a],
+--  f[f[a,a],b],f[f[a,a],f[a,a]],f[f[a,a],f[a,b]],
+--  f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],
+--  f[f[a,b],b],f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],
+--  f[f[a,b],f[b,a]],f[f[a,b],f[b,b]],f[f[b,a],a],
+--  f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],
+--  f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
+--  f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
+--  f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
+\end{code}
+
+Su implementación es
+
 \begin{code}
 universoHerbrand :: Int -> Signatura -> [Termino]
 universoHerbrand 0 (cs,_,_) 
@@ -213,64 +277,42 @@ universoHerbrand n s@(_,fs,_) =
   where u = universoHerbrand (n-1) s 
 \end{code}
 
-Añadimos algunos ejemplos ilustrativos
-
-\begin{sesion}
-
->>> let s1 = (["a","b","c"],[],[])
->>> universoHerbrand 0 s1 
-[a,b,c]
->>> universoHerbrand 1 s1 
-[a,b,c]
-
->>> let s2 = ([],[("f",1)],[])
->>> universoHerbrand 0 s2 
-[a]
->>> universoHerbrand 1 s2 
-[a,f[a]]
->>> universoHerbrand 2 s2 
-[a,f[a],f[f[a]]]
- 
->>> let s3 = (["a","b"],[("f",1),("g",1)],[])
->>> universoHerbrand 0 s3 
-[a,b]
->>> universoHerbrand 1 s3 
-[a,b,f[a],f[b],g[a],g[b]]
->>> pp $ universoHerbrand 2 s3 
-[a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
- f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
->>> universoHerbrand 3 (["a"],[("f",1)],[("R",1)]) 
-[a,f[a],f[f[a]],f[f[f[a]]]]
->>> pp $ universoHerbrand 3 (["a","b"],[("f",1),("g",1)],[]) 
-a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
- f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]],f[f[f[a]]],
- f[f[f[b]]],f[f[g[a]]],f[f[g[b]]],f[g[f[a]]],
- f[g[f[b]]],f[g[g[a]]],f[g[g[b]]],g[f[f[a]]],
- g[f[f[b]]],g[f[g[a]]],g[f[g[b]]],g[g[f[a]]],
- g[g[f[b]]],g[g[g[a]]],g[g[g[b]]]]
- 
->>> let s4 = (["a","b"],[("f",2)],[])
->>> universoHerbrand 0 s4
-[a,b]
->>> universoHerbrand 1 s4
-[a,b,f[a,a],f[a,b],f[b,a],f[b,b]]
->>> pp $ universoHerbrand 2 s4 
-[a,b,f[a,a],f[a,b],f[b,a],f[b,b],f[a,f[a,a]],
- f[a,f[a,b]],f[a,f[b,a]],f[a,f[b,b]],f[b,f[a,a]],
- f[b,f[a,b]],f[b,f[b,a]],f[b,f[b,b]],f[f[a,a],a],
- f[f[a,a],b],f[f[a,a],f[a,a]],f[f[a,a],f[a,b]],
- f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],
- f[f[a,b],b],f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],
- f[f[a,b],f[b,a]],f[f[a,b],f[b,b]],f[f[b,a],a],
- f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],
- f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
- f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
- f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
-
-\end{sesion}
-
 Se define el universo de Herbrand de una fórmula \texttt{f} a nivel
 \texttt{n} mediante la función \texttt{(universoHerbrandForm n f)}.
+
+\index{\texttt{universoHerbrandForm}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "R" [a,b,c]
+-- >>> universoHerbrandForm 1 f1
+-- [a,b,c]
+-- >>> let f2 = Atom "R" [Ter "f" [tx]]
+-- >>> universoHerbrandForm 2 f2
+-- [a,f[a],f[f[a]]]
+-- >>> let f3 = Impl f2 (Atom "Q" [a,Ter "g" [b]])
+-- >>> f3
+-- (R[f[x]]⟹Q[a,g[b]])
+-- >>> pp $ universoHerbrandForm 2 f3
+-- [a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
+--  f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
+-- >>> let f4 = Atom "R" [Ter "f" [a,b]]
+-- >>> signaturaForm f4
+-- (["a","b"],[("f",2)],[("R",1)])
+-- >>> pp $ universoHerbrandForm 2 f4
+-- [a,b,f[a,a],f[a,b],f[b,a],f[b,b],f[a,f[a,a]],
+--  f[a,f[a,b]],f[a,f[b,a]],f[a,f[b,b]],f[b,f[a,a]],
+--  f[b,f[a,b]],f[b,f[b,a]],f[b,f[b,b]],f[f[a,a],a],
+--  f[f[a,a],b],f[f[a,a],f[a,a]],f[f[a,a],f[a,b]],
+--  f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],
+--  f[f[a,b],b],f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],
+--  f[f[a,b],f[b,a]],f[f[a,b],f[b,b]],f[f[b,a],a],
+--  f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],
+--  f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
+--  f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
+--  f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
+\end{code}
+
+A continuación, su definición es
 
 \begin{code}
 universoHerbrandForm :: Int -> Form -> [Termino]
@@ -278,57 +320,26 @@ universoHerbrandForm n f =
   universoHerbrand n (signaturaForm f)
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = Atom "R" [a,b,c]
->>> universoHerbrandForm 1 f1
-[a,b,c]
->>> let f2 = Atom "R" [Ter "f" [tx]]
->>> universoHerbrandForm 2 f2
-[a,f[a],f[f[a]]]
->>> let f3 = Impl f2 (Atom "Q" [a,Ter "g" [b]])
->>> f3
-(R[f[x]]⟹Q[a,g[b]])
->>> pp $ universoHerbrandForm 2 f3
-[a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
- f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
->>> let f4 = Atom "R" [Ter "f" [a,b]]
->>> signaturaForm f4
-(["a","b"],[("f",2)],[("R",1)])
->>> pp $ universoHerbrandForm 2 f4
-[a,b,f[a,a],f[a,b],f[b,a],f[b,b],f[a,f[a,a]],
- f[a,f[a,b]],f[a,f[b,a]],f[a,f[b,b]],f[b,f[a,a]],
- f[b,f[a,b]],f[b,f[b,a]],f[b,f[b,b]],f[f[a,a],a],
- f[f[a,a],b],f[f[a,a],f[a,a]],f[f[a,a],f[a,b]],
- f[f[a,a],f[b,a]],f[f[a,a],f[b,b]],f[f[a,b],a],
- f[f[a,b],b],f[f[a,b],f[a,a]],f[f[a,b],f[a,b]],
- f[f[a,b],f[b,a]],f[f[a,b],f[b,b]],f[f[b,a],a],
- f[f[b,a],b],f[f[b,a],f[a,a]],f[f[b,a],f[a,b]],
- f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
- f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
- f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
-\end{sesion}
-
 Se generaliza la definición anterior a una lista de fórmulas
 mediante la función \texttt{universoHerbrandForms n fs}
+
+\index{\texttt{universoHerbrandForms}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "R" [Ter "f" [tx]]
+-- >>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
+-- >>> let f3 = Atom "S" [Ter "g" [a,b]]
+-- >>> universoHerbrandForms 1 [f1,f2,f3]
+-- [a,f[a],b,f[b],g[a,a],g[a,b],g[b,a],g[b,b]]
+\end{code}
+
+Siendo su definición
 
 \begin{code}
 universoHerbrandForms :: Int -> [Form] -> [Termino]
 universoHerbrandForms n fs =
   nub (concatMap (universoHerbrandForm n) fs)
 \end{code}
-
-Por ejemplo
-
-\begin{sesion}
->>> let f1 = Atom "R" [Ter "f" [tx]]
->>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
->>> let f3 = Atom "S" [Ter "g" [a,b]]
->>> universoHerbrandForms 1 [f1,f2,f3]
-[a,f[a],b,f[b],g[a,a],g[a,b],g[b,a],g[b,b]]
-\end{sesion}
-
 
 \begin{Prop}
   $\mathcal{UH}$ es finito si y sólo si no tiene símbolos de función.
@@ -337,7 +348,7 @@ Por ejemplo
 
 \section{Base de Herbrand}
 
-begin{Def}
+\begin{Def}
   Una \textbf{fórmula básica} es una fórmula sin variables ni
   cuantificadores.
 \end{Def}
@@ -347,8 +358,32 @@ begin{Def}
   conjunto de átomos básicos de $L$.
 \end{Def}
 
+Definimos un tipo de dato para las bases de Herbrand
+
+\begin{code}
+type BaseH = [Form]
+\end{code}
+
 Implementamos la base de herbrand a nivel \texttt{n} de la signatura
 \texttt{s} mediante la función \texttt{(baseHerbrand n s)}
+
+\index{\texttt{baseHerbrand}}
+\begin{code}
+-- | Ejemplos
+-- >>> let s1 = (["a","b","c"],[],[("P",1)])
+-- >>> baseHerbrand 0 s1
+-- [P[a],P[b],P[c]]
+-- >>> let s2 = (["a","b","c"],[],[("P",1),("Q",1),("R",1)])
+-- >>> let s2 = (["a","b","c"],[("f",1)],[("P",1),("Q",1),("R",1)])
+-- >>> baseHerbrand 0 s2
+-- [P[a],P[b],P[c],Q[a],Q[b],Q[c],R[a],R[b],R[c]]
+-- >>> pp $ baseHerbrand 1 s2
+-- [P[a],P[b],P[c],P[f[a]],P[f[b]],P[f[c]],Q[a],Q[b],
+--  Q[c],Q[f[a]],Q[f[b]],Q[f[c]],R[a],R[b],R[c],R[f[a]],
+--  R[f[b]],R[f[c]]]
+\end{code}
+
+Se implementa en Haskell a continuación
 
 \begin{code}
 baseHerbrand :: Int -> Signatura -> BaseH
@@ -358,24 +393,21 @@ baseHerbrand n s@(_,_,rs) =
   where u = universoHerbrand n s
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
->>> let s1 = (["a","b","c"],[],[("P",1)])
->>> baseHerbrand 0 s1
-[P[a],P[b],P[c]]
->>> let s2 = (["a","b","c"],[],[("P",1),("Q",1),("R",1)])
->>> let s2 = (["a","b","c"],[("f",1)],[("P",1),("Q",1),("R",1)])
->>> baseHerbrand 0 s2
-[P[a],P[b],P[c],Q[a],Q[b],Q[c],R[a],R[b],R[c]]
->>> pp $ baseHerbrand 1 s2
-[P[a],P[b],P[c],P[f[a]],P[f[b]],P[f[c]],Q[a],Q[b],
- Q[c],Q[f[a]],Q[f[b]],Q[f[c]],R[a],R[b],R[c],R[f[a]],
- R[f[b]],R[f[c]]]
-\end{sesion}
 
 Se define la base de Herbrand de una fórmula \texttt{f} a nivel
 \texttt{n} mediante \texttt{(baseHerbrandForm n f)}.
+
+\index{\texttt{baseHerbrandForm}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "P" [Ter "f" [tx]]
+-- >>> f1
+-- P[f[x]]
+-- >>> baseHerbrandForm 2 f1
+-- [P[a],P[f[a]],P[f[f[a]]]]
+\end{code}
+
+Su definición es
 
 \begin{code}
 baseHerbrandForm :: Int -> Form -> BaseH
@@ -383,33 +415,25 @@ baseHerbrandForm n f =
   baseHerbrand n (signaturaForm f)
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = Atom "P" [Ter "f" [tx]]
->>> f1
-P[f[x]]
->>> baseHerbrandForm 2 f1
-[P[a],P[f[a]],P[f[f[a]]]]
-\end{sesion}
-
 Generalizamos la función anterior a una lista de fórmulas
 definiendo \texttt{(baseHerbrandForms n fs)}
+
+\index{\texttt{baseHerbrandForms}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "P" [Ter "f" [tx]]
+-- >>> let f2 = Atom "Q" [Ter "g" [b]]
+-- >>> baseHerbrandForms 1 [f1,f2]
+-- [P[b],P[f[b]],P[g[b]],Q[b],Q[f[b]],Q[g[b]]]
+\end{code}
+
+Su definición es
 
 \begin{code}
 baseHerbrandForms :: Int -> [Form] -> BaseH
 baseHerbrandForms n fs =
   baseHerbrandForm n (Conj fs)
 \end{code}
-
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = Atom "P" [Ter "f" [tx]]
->>> let f2 = Atom "Q" [Ter "g" [b]]
->>> baseHerbrandForms 1 [f1,f2]
-[P[b],P[f[b]],P[g[b]],Q[b],Q[f[b]],Q[g[b]]]
-\end{sesion}
 
 \section{Interpretacion de Herbrand}
 
@@ -446,6 +470,27 @@ type AtomosH = [Form]
 Se define la interpretación de Herbrand de un conjunto
 de átomos de Herbrand a través de \texttt{(interpretacionH fs)}
 
+\index{\texttt{interpretacionH}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Atom "P" [a]
+-- >>> let f2 = Atom "P" [Ter "f" [a,b]]
+-- >>> let fs = [f1,f2]
+-- >>> let (iR,iF) = interpretacionH fs
+-- >>> iF "f" [a,c]
+-- f[a,c]
+-- >>> iR "P" [a]
+-- True
+-- >>> iR "P" [b]
+-- False
+-- >>> iR "P" [Ter "f" [a,b]]
+-- True
+-- >>> iR "P" [Ter "f" [a,a]]
+-- False
+\end{code}
+
+Se implementa en Haskell
+
 \begin{code}
 interpretacionH :: AtomosH -> InterpretacionH
 interpretacionH fs = (iR,iF)
@@ -453,24 +498,6 @@ interpretacionH fs = (iR,iF)
         iR r ts   = Atom r ts `elem` fs
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = Atom "P" [a]
->>> let f2 = Atom "P" [Ter "f" [a,b]]
->>> let fs = [f1,f2]
->>> let (iR,iF) = interpretacionH fs
->>> iF "f" [a,c]
-f[a,c]
->>> iR "P" [a]
-True
->>> iR "P" [b]
-False
->>> iR "P" [Ter "f" [a,b]]
-True
->>> iR "P" [Ter "f" [a,a]]
-False
-\end{sesion}
 
 \begin{Prop}
   Una interpretación de Herbrand queda determinada por un subconjunto de
@@ -483,6 +510,7 @@ Para ello definimos la función \texttt{(valorH u i f)}; donde
 \texttt{u} representa el universo, \texttt{i} la interpretación,
 y \texttt{f} la fórmula.
 
+\index{\texttt{valorH}}
 \begin{code}
 valorH :: UniversoH -> InterpretacionH -> Form -> Bool
 valorH u i f =
@@ -504,6 +532,37 @@ Implementamos los subconjuntos del n-ésimo nivel de la base de
 Herbrand de la fórmula \texttt{f} que son modelos de \texttt{f} 
 con la función \texttt{(modelosHForm n f)}.
 
+\index{\texttt{modelosHForm}}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Disy [Atom "P" [a], Atom "P" [b]]
+-- >>> f1
+-- (P[a]⋁P[b])
+-- >>> modelosHForm 0 f1
+-- [[P[a]],[P[b]],[P[a],P[b]]]
+-- >>> let f2 = Impl (Atom "P" [a]) (Atom "P" [b])
+-- >>> f2
+-- (P[a]⟹P[b])
+-- >>> modelosHForm 0 f2
+-- [[],[P[b]],[P[a],P[b]]]
+-- >>> let f3 = Conj [Atom "P" [a], Atom "P" [b]]
+-- >>> f3
+-- (P[a]⋀P[b])
+-- >>> modelosHForm 0 f3
+-- [[P[a],P[b]]]
+-- >>> let f4 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
+-- >>> f4
+-- ∀x (P[x]⟹Q[f[x]])
+-- >>> modelosHForm 0 f4
+-- [[],[Q[a]]]
+-- >>> modelosHForm 1 f4
+-- [[],[Q[a]],[Q[f[a]]],[P[a],Q[f[a]]],[Q[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
+-- >>> length (modelosHForm 2 f4)
+-- 18
+\end{code}
+
+Lo definimos en Haskell
+
 \begin{code}
 modelosHForm :: Int -> Form -> [AtomosH]
 modelosHForm n f =
@@ -513,37 +572,24 @@ modelosHForm n f =
         bH = baseHerbrandForm n f
 \end{code}
 
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = Disy [Atom "P" [a], Atom "P" [b]]
->>> f1
-(P[a]⋁P[b])
->>> modelosHForm 0 f1
-[[P[a]],[P[b]],[P[a],P[b]]]
->>> let f2 = Impl (Atom "P" [a]) (Atom "P" [b])
->>> f2
-(P[a]⟹P[b])
->>> modelosHForm 0 f2
-[[],[P[b]],[P[a],P[b]]]
->>> let f3 = Conj [Atom "P" [a], Atom "P" [b]]
->>> f3
-(P[a]⋀P[b])
->>> modelosHForm 0 f3
-[[P[a],P[b]]]
->>> let f4 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
->>> f4
-∀x (P[x]⟹Q[f[x]])
->>> modelosHForm 0 f4
-[[],[Q[a]]]
->>> modelosHForm 1 f4
-[[],[Q[a]],[Q[f[a]]],[P[a],Q[f[a]]],[Q[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
->>> length (modelosHForm 2 f4)
-18
-\end{sesion}
-
 Generalizamos la definición anterior a una lista de fórmulas mediante
 la función \texttt{(modelosH n fs)}.
+
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
+-- >>> f1
+-- ∀x (P[x]⟹Q[f[x]])
+-- >>> let f2 = Ex x (Atom "P" [tx])
+-- >>> f2
+-- ∃x P[x]
+-- >>> modelosH 0 [f1,f2]
+-- []
+-- >>> modelosH 1 [f1,f2]
+-- [[P[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
+\end{code}
+
+Su definición es
 
 \begin{code}
 modelosH :: Int -> [Form] -> [AtomosH]
@@ -553,18 +599,3 @@ modelosH n fs =
   where uH = universoHerbrandForms n fs
         bH = baseHerbrandForms n fs
 \end{code}
-
-Por ejemplo,
-
-\begin{sesion}
->>> let f1 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
->>> f1
-∀x (P[x]⟹Q[f[x]])
->>> let f2 = Ex x (Atom "P" [tx])
->>> f2
-∃x P[x]
->>> modelosH 0 [f1,f2]
-[]
->>> modelosH 1 [f1,f2]
-[[P[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
-\end{sesion}
