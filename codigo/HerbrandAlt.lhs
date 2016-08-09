@@ -19,13 +19,7 @@ import LPH
 import PTLP
 \end{code}
 
-\comentario{Arreglar ejemplos}
 \section{Universo de Herbrand}
-
-\begin{Def}
-  El \textbf{universo de Herbrand} de $L$ es el conjunto de términos básicos de
-  $F$. Se reprenta por $\mathcal{UH}(L)$.
-\end{Def}
 
 \begin{Def}
   Una \textbf{signatura} es una terna formada por las constantes, símbolos funcionales
@@ -33,7 +27,9 @@ import PTLP
   como los de relación.
 \end{Def}
 
-Se define un tipo de dato para la signatura.
+Se define un tipo de dato para la signatura, cuya estrucura es
+
+$$ \texttt{( constantes, (funciones, aridad) , (relaciones, aridad) )} $$
 
 \begin{code}
 type Signatura = ([Nombre],[(Nombre,Int)],[(Nombre,Int)])
@@ -83,7 +79,7 @@ unionSignaturas = foldr unionSignatura ([], [], [])
 \end{code}
 
 Se define la función \texttt{(signaturaTerm t)} que determina la
-signatura del término t.
+signatura del término \texttt{t}.
 
 \index{\texttt{signaturaTerm}}
 \begin{code}
@@ -111,7 +107,8 @@ signaturaTerm (Ter f ts) = (cs,[(f,n)] `union` fs, rs)
       n          = length ts
 \end{code}
 
-Se define la signatura de una fórmula \texttt{f} mediante la función
+Una vez que podemos calcular la signatura de términos de una fórmula, 
+se define la signatura de una fórmula \texttt{f} mediante la función
 \texttt{(signaturaForm f)}.
 
 \index{\texttt{signaturaForm}}
@@ -188,6 +185,9 @@ signaturaForms fs =
   unionSignaturas (map signaturaForm fs)
 \end{code}
 
+El cálculo de la signatura de fórmulas y listas de ellas nos permite
+definir posteriormente el cálculo del universo de Herbrand. 
+
 \begin{Def}
   El \textbf{universo de Herbrand} de $L$ es el conjunto de términos básicos de
   $F$. Se reprenta por $\mathcal{UH}(L)$.
@@ -206,7 +206,7 @@ signaturaForms fs =
   $$H_{i+1}(L) = H_i(L)\cup \{f(t_1,\dots,t_n):f\in \mathcal{F}_n \text{ y } t_i\in H_i (L)\}$$
 \end{Prop}
 
-Definimos la función \texttt{universoHerbrand n s} que es el universo de
+Definimos la función \texttt{(universoHerbrand n s)} que es el universo de
 Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 
 \index{\texttt{universoHerbrand}}
@@ -217,7 +217,6 @@ Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 -- [a,b,c]
 -- >>> universoHerbrand 1 s1 
 -- [a,b,c]
-
 -- >>> let s2 = ([],[("f",1)],[])
 -- >>> universoHerbrand 0 s2 
 -- [a]
@@ -225,7 +224,6 @@ Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 -- [a,f[a]]
 -- >>> universoHerbrand 2 s2 
 -- [a,f[a],f[f[a]]]
- 
 -- >>> let s3 = (["a","b"],[("f",1),("g",1)],[])
 -- >>> universoHerbrand 0 s3 
 -- [a,b]
@@ -237,13 +235,12 @@ Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 -- >>> universoHerbrand 3 (["a"],[("f",1)],[("R",1)]) 
 -- [a,f[a],f[f[a]],f[f[f[a]]]]
 -- >>> pp $ universoHerbrand 3 (["a","b"],[("f",1),("g",1)],[]) 
--- a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
+-- [a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
 --  f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]],f[f[f[a]]],
 --  f[f[f[b]]],f[f[g[a]]],f[f[g[b]]],f[g[f[a]]],
 --  f[g[f[b]]],f[g[g[a]]],f[g[g[b]]],g[f[f[a]]],
 --  g[f[f[b]]],g[f[g[a]]],g[f[g[b]]],g[g[f[a]]],
---  g[g[f[b]]],g[g[g[a]]],g[g[g[b]]]]
- 
+--  g[g[f[b]]],g[g[g[a]]],g[g[g[b]]]] 
 -- >>> let s4 = (["a","b"],[("f",2)],[])
 -- >>> universoHerbrand 0 s4
 -- [a,b]
@@ -321,7 +318,7 @@ universoHerbrandForm n f =
 \end{code}
 
 Se generaliza la definición anterior a una lista de fórmulas
-mediante la función \texttt{universoHerbrandForms n fs}
+mediante la función \texttt{(universoHerbrandForms n fs)}
 
 \index{\texttt{universoHerbrandForms}}
 \begin{code}
@@ -603,5 +600,5 @@ modelosH n fs =
 La validación es
 \begin{code}
 -- codigo> doctest HerbrandAlt.lhs
--- Examples: 125  Tried: 125  Errors: 0  Failures: 0
+-- Examples: 139  Tried: 139  Errors: 0  Failures: 0
 \end{code}
