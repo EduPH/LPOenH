@@ -12,8 +12,6 @@ import PTLP
 
 \section{Universo de Herbrand}
 
-\comentario{Reescribir la sección de "Universo de Herbrand" usando Herbrand.hs}
-
 \begin{Def}
   El \textbf{universo de Herbrand} de $L$ es el conjunto de términos básicos de
   $F$. Se reprenta por $\mathcal{UH}(L)$.
@@ -259,8 +257,6 @@ length (univHerbrand 3 formula7)  ==  1446
 
 \section{Base de Herbrand}
 
-\comentario{Reescribir la sección de "Base de Herbrand" usando Herbrand.hs}
-
 \begin{Def}
   Una \textbf{fórmula básica} es una fórmula sin variables ni cuantificadores.
 \end{Def}
@@ -449,9 +445,6 @@ ghci> baseHerbrand 2 formula6
 
 \section{Interpretaciones de Herbrand}
 
-\comentario{Reescribir la sección de "Interpretaciones de Herbrand" usando
-  Herbrand.hs}
-
 \begin{Def}
   Una \textbf{interpretación de Herbrand} es una interpretación
   $\mathcal{I} = (\mathcal{U},I)$ tal que
@@ -463,8 +456,6 @@ ghci> baseHerbrand 2 formula6
 \end{Def}
 
 \section{Modelos de Herbrand}
-
-\comentario{Reescribir la sección de "Modelos de Herbrand" usando Herbrand.hs}
 
 \begin{Def}
   Un \textbf{modelo de Herbrand} de una fórmula $F$ es una interpretación de
@@ -553,8 +544,6 @@ False
 
 \section{Consistencia mediante modelos de Herbrand}
 
-\comentario{Reescribir la sección de "Consistencia mediante modelos de
-  Herbrand" usando Herbrand.hs}
 
 \begin{Prop}
   Sea $S$ un conjunto de fórmulas básicas. Son equivalentes:
@@ -598,9 +587,6 @@ True
 \end{sesion}
 
 \section{Extensiones de Herbrand}
-
-\comentario{Lo vamos a definir por cláusulas. 
-  Se necesita una definición de cláusulas previa. Decidir dónde}
 
 \begin{Def} 
 Sea $C=\left\{ L_1,\dot ,L_n \right\}$ una cláusula de $L$ y 

@@ -683,8 +683,6 @@ ghci> skolem formula5
 
 \section{Forma clausal}
 
-\comentario{Decidir si es buena ubicación para formas clausales}
-
 \begin{Def}
   Una \textbf{forma clausal} de una fórmula $F$ es un conjunto de cláusulas
   equivalente a $F$.
@@ -699,7 +697,7 @@ ghci> skolem formula5
 Por ejemplo una forma clausal de $\neg (p \wedge (q \rightarrow r))$
 es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$
 
-Se define los tipos de dato \texttt{Clausula} y \texttt{Clausulas},
+Se definen los tipos de dato \texttt{Clausula} y \texttt{Clausulas},
 para representar una cláusula o un conjunto de ellas respectivamente.
 \begin{code}
 
