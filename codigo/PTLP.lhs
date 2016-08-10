@@ -407,7 +407,7 @@ elimImpEquiv (Equiv f1 f2) =
   Conj [elimImpEquiv (Impl f1 f2),
         elimImpEquiv (Impl f2 f1)]
 elimImpEquiv (Impl f1 f2) =
-  Disy [Neg f1, f2]
+  Disy [Neg (elimImpEquiv f1), (elimImpEquiv f2)]
 elimImpEquiv (Neg f) =
   Neg (elimImpEquiv f)
 elimImpEquiv (Disy fs) =
@@ -477,6 +477,8 @@ interiorizaDisy (Ex x f) = Ex x (interiorizaDisy f)
 interiorizaDisy f = f
 \end{code}
 
+\comentario{Arreglar función interiorizaDisy}
+
 \begin{nota}
   Explicación de las funciones auxiliares
   \begin{itemize*}
@@ -499,8 +501,6 @@ formaNormalConjuntiva :: Form -> Form
 formaNormalConjuntiva = interiorizaDisy . interiorizaNeg . elimImpEquiv
 
 \end{code}
-\comentario{Definir función para extraer cuantificadores fuera
-            previamente}
 
 Por ejemplo
 
