@@ -515,18 +515,8 @@ True
 
 
 \begin{code}
-formaRectificada1 :: Variable -> Form -> Form
-formaRectificada1 v f = undefined
-
 formaRectificada :: Form -> Form
-formaRectificada (Ex x f) = Ex x (formaRectificada1 x f)
-formaRectificada (PTodo x f) = PTodo x (formaRectificada1 x f)
-formaRectificada p@(Atom str ts) = p
-formaRectificada (Conj fs) = Conj (map formaRectificada fs)
-formaRectificada (Disy fs) = Disy (map formaRectificada fs)
-formaRectificada (Impl f1 f2) = 
-    Impl (formaRectificada f1) (formaRectificada f2)
-formaRectificada (Neg f) = Neg (formaRectificada f)
+formaRectificada = undefined
 \end{code}
 
 \comentario{Definir forma rectificada}
