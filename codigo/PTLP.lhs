@@ -499,6 +499,8 @@ formaNormalConjuntiva :: Form -> Form
 formaNormalConjuntiva = interiorizaDisy . interiorizaNeg . elimImpEquiv
 
 \end{code}
+\comentario{Definir función para extraer cuantificadores fuera
+            previamente}
 
 Por ejemplo
 
@@ -772,7 +774,7 @@ ghci> formaClausal (Neg (Conj [p, Impl q r]))
 \end{sesion}
 
 \comentario{Solucionar excepción forma clausal con cuantificadores universal
-  y existencial}
+  y existencial internos}
 
 \section{Tableros semánticos}
 
