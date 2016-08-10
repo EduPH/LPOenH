@@ -354,6 +354,11 @@ unificadoresListas [tx] [tx]  ==  [[]]
   $$(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$$
 \end{Def}
 
+\begin{nota}
+La forma normal conjuntiva es propia de la lógica proposicional. Por ello las fórmulas
+aquí definidas sólo se aplicaran a fórmulas sin cuantificadores.
+\end{nota}
+
 Definimos la función \texttt{(enFormaNC f)} para determinar si una fórmula
 está en su forma normal conjuntiva.
 
@@ -414,27 +419,13 @@ elimImpEquiv (Disy fs) =
   Disy (map elimImpEquiv fs)
 elimImpEquiv (Conj fs) =
   Conj (map elimImpEquiv fs)
-elimImpEquiv (PTodo x f) =
-  PTodo x (elimImpEquiv f)
-elimImpEquiv (Ex x f) =
-  Ex x (elimImpEquiv f)
 \end{code}
 
-Empleamos las fórmulas 2, 3 y 4 ya definidas anteriormente como ejemplo:
+Por ejemplo,
 
 \begin{sesion}
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> elimImpEquiv formula2
-∀x ∀y (¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> elimImpEquiv formula3
-(¬R[x,y]⋁∃z (R[x,z]⋀R[z,y]))
-ghci> formula4
-∃x R[cero,x]
-ghci> elimImpEquiv formula4
-∃x R[cero,x]
+ghci> elimImpEquiv (Neg (Conj [p, Impl q r]))
+¬(p⋀(¬q⋁r))
 \end{sesion}
 
 Interiorizamos las negaciones mediante la función \texttt{(interiorizaNeg f)}.
@@ -453,8 +444,7 @@ interiorizaNeg (Neg (Neg f)) = interiorizaNeg f
 interiorizaNeg (Neg f) = Neg (interiorizaNeg f)
 interiorizaNeg (Disy fs) = Disy (map interiorizaNeg fs)
 interiorizaNeg (Conj fs) = Conj (map interiorizaNeg fs)
-interiorizaNeg (PTodo x f) = PTodo x (interiorizaNeg f)
-interiorizaNeg (Ex x f) = Ex x (interiorizaNeg f)
+
 \end{code}
 
 Definimos \texttt{(interiorizaDisy f)} para interiorizar las disyunciones
@@ -472,21 +462,16 @@ interiorizaDisy (Disy fs) =
       combina [] ys = []
       combina xs [] = []
       combina xs ys = [[x,y] | x <- xs, y <- ys]
-
-interiorizaDisy (PTodo x f) = PTodo x (interiorizaDisy f)
-interiorizaDisy (Ex x f) = Ex x (interiorizaDisy f)
 interiorizaDisy f = f
 \end{code}
-
-\comentario{Arreglar función interiorizaDisy}
 
 \begin{nota}
   Explicación de las funciones auxiliares
   \begin{itemize*}
   \item La función \texttt{aux} aplica la función \texttt{combina}
     las listas de las conjunciones.
-  \item La función \texttt{aux1} toma las listas de las conjunciones o
-    construye una lista de un literal.
+  \item La función \texttt{aux1} toma las listas de las conjunciones,
+    construye una lista de un literal o unifica disyunciones.
   \item La función \texttt{combina xs ys} elabora listas de dos elementos
     de las listas \texttt{xs} e \texttt{ys}.
   \end{itemize*}
@@ -527,6 +512,22 @@ True
   aparece libre y ligada y cada cuantificador se refiere a una variable
   diferente.
 \end{Def}
+
+
+\begin{code}
+formaRectificada1 :: Variable -> Form -> Form
+formaRectificada1 v f = undefined
+
+formaRectificada :: Form -> Form
+formaRectificada (Ex x f) = Ex x (formaRectificada1 x f)
+formaRectificada (PTodo x f) = PTodo x (formaRectificada1 x f)
+formaRectificada p@(Atom str ts) = p
+formaRectificada (Conj fs) = Conj (map formaRectificada fs)
+formaRectificada (Disy fs) = Disy (map formaRectificada fs)
+formaRectificada (Impl f1 f2) = 
+    Impl (formaRectificada f1) (formaRectificada f2)
+formaRectificada (Neg f) = Neg (formaRectificada f)
+\end{code}
 
 \comentario{Definir forma rectificada}
 
