@@ -468,6 +468,7 @@ interiorizaDisy (Disy fs) =
       aux (xs:xss) = map (combina xs) xss ++ aux xss
       aux1 p | literal p = [p]
       aux1 (Conj xs) = xs
+      aux1 (Disy xs) = xs
       combina [] ys = []
       combina xs [] = []
       combina xs ys = [[x,y] | x <- xs, y <- ys]
@@ -509,6 +510,8 @@ ghci> Neg (Conj [p, Impl q r])
 ¬(p⋀(q⟹r))
 ghci> formaNormalConjuntiva (Neg (Conj [p, Impl q r]))
 ((¬p⋁q)⋀(¬p⋁¬r))
+ghci> enFormaNC(formaNormalConjuntiva (Neg (Conj [p, Impl q r])))
+True
 \end{sesion}
 
 \begin{Def}
@@ -525,6 +528,8 @@ ghci> formaNormalConjuntiva (Neg (Conj [p, Impl q r]))
   diferente.
 \end{Def}
 
+\comentario{Definir forma rectificada}
+
 \subsection{Forma normal prenexa}
 
 \begin{Def}
@@ -532,6 +537,8 @@ ghci> formaNormalConjuntiva (Neg (Conj [p, Impl q r]))
   $Q_1x_1 \dots Q_nx_nG$ donde $Q_i \in \{\forall ,\exists \}$ y $G$ no tiene
   cuantificadores.
 \end{Def}
+
+\comentario{Definir forma normal prenexa}
 
 \subsection{Forma normal prenexa conjuntiva}
 \begin{Def}
@@ -766,15 +773,14 @@ formaClausal  = formNCAC . formaNormalConjuntiva
 
 \end{code}
 
+\comentario{Sustituir formaNormalConjuntiva por forma normal prenexa}
+
 Por ejemplo
 
 \begin{sesion}
 ghci> formaClausal (Neg (Conj [p, Impl q r]))
 {{¬p,q},{¬p,¬r}}
 \end{sesion}
-
-\comentario{Solucionar excepción forma clausal con cuantificadores universal
-  y existencial internos}
 
 \section{Tableros semánticos}
 
