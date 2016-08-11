@@ -453,22 +453,22 @@ Definimos \texttt{(interiorizaDisy f)} para interiorizar las disyunciones
 
 \begin{code}
 interiorizaDisy :: Form -> Form
-interiorizaDisy (Disy fs)  | all (literal) fs = Disy fs
-                           | otherwise =
-                               Conj (map (aux2) (map (Disy) (concat (aux [ aux1 f | f <- fs]))))
-                                   where
-                                     aux [] = []
-                                     aux (xs:xss) = map (combina xs) xss ++ aux xss
-                                     aux1 p | literal p = [p]
-                                     aux1 (Conj xs) = xs
-                                     aux1 (Disy xs) = xs
-                                     combina [] ys = []
-                                     combina xs [] = []
-                                     combina xs ys = [[x,y] | x <- xs, y <- ys]
-                                                     
-                                     aux2 f | enFormaNC f = f
-                                            | otherwise = interiorizaDisy f
-
+interiorizaDisy (Disy fs)  
+    | all (literal) fs = Disy fs
+    | otherwise =
+        Conj (map (aux2) (map (Disy) (concat (aux [ aux1 f | f <- fs]))))
+            where
+              aux [] = []
+              aux (xs:xss) = map (combina xs) xss ++ aux xss
+              aux1 p | literal p = [p]
+              aux1 (Conj xs) = xs
+              aux1 (Disy xs) = xs
+              combina [] ys = []
+              combina xs [] = []
+              combina xs ys = [[x,y] | x <- xs, y <- ys]
+              aux2 f | enFormaNC f = f
+                     | otherwise = interiorizaDisy f
+                                                          
 interiorizaDisy f = f
 \end{code}
 
@@ -510,7 +510,8 @@ conjuntivas. Definimos la función \texttt{(formaNormalConjuntiva f)}
 \begin{code}
 
 formaNormalConjuntiva :: Form -> Form
-formaNormalConjuntiva = unificaConjuncion . interiorizaDisy . interiorizaNeg . elimImpEquiv
+formaNormalConjuntiva = 
+    unificaConjuncion . interiorizaDisy . interiorizaNeg . elimImpEquiv
 
 \end{code}
 
