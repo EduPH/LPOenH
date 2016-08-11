@@ -487,7 +487,7 @@ interiorizaDisy f = f
   
 \end{nota}
 
-Debido a la representación que hemos elegido, puede darse conjunciones
+Debido a la representación que hemos elegido, pueden darse conjunciones
 de conjunciones, lo cual no nos interesa. Por ello, definimos \texttt{unificacionConjuncion}
 que extrae la conjunción al exterior.
 
@@ -502,6 +502,24 @@ unificaConjuncion (Conj fs) = Conj (concat (map (aux) (concat xs)))
       aux (Conj xs) = xs
       aux f = [f]
 \end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+ghci> Conj [p, Conj [p,q]]
+(p⋀(r⋀q))
+ghci> unificaConjuncion (Conj [p, Conj [r,q]])
+(p⋀(r⋀q))
+ghci> unificaConjuncion (Conj [p, Conj [r,q]]) == (Conj [p, Conj [r,q]])
+False
+ghci> unificaConjuncion (Conj [p, Conj [r,q]]) == (Conj [p,r,q])
+True
+\end{sesion}
+
+\begin{nota}
+  La representación ``visual'' por pantalla de una conjunción de conjunciones
+  y su unificación puede ser la misma, como en el ejemplo anterior.
+\end{nota}
 
 Así, hemos construido el algoritmo para el cálculo de formas normales
 conjuntivas. Definimos la función \texttt{(formaNormalConjuntiva f)}
@@ -552,8 +570,8 @@ True
 
 \begin{Def}
   Una fórmula $F$ está en forma \textbf{rectificada} si ninguna variable
-  aparece libre y ligada y cada cuantificador se refiere a una variable
-  diferente.
+  aparece, de manera simultánea, libre y ligada ,y cada cuantificador se 
+  refiere a una variable diferente.
 \end{Def}
 
 

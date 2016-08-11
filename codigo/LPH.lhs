@@ -437,10 +437,10 @@ instance Show Form where
     show (Neg f)       = '¬': show f
     show (Impl f1 f2)  = "(" ++ show f1 ++ "⟹" ++ show f2 ++ ")"
     show (Equiv f1 f2) = "(" ++ show f1 ++ "⟺" ++ show f2 ++ ")"
-    show (Conj [])     = "true"
+    show (Conj [])     = "verdadero"
     show (Conj [f])    = show f
     show (Conj (f:fs)) = "(" ++ show f ++ "⋀" ++ show (Conj fs) ++ ")" 
-    show (Disy [])     = "false"
+    show (Disy [])     = "falso"
     show (Disy [f])    = show f
     show (Disy (f:fs)) = "(" ++ show f ++ "⋁" ++ show (Disy fs) ++ ")"  
     show (PTodo v f)   = "∀" ++ show v ++ (' ': show f) 
