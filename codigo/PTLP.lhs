@@ -421,7 +421,16 @@ elimImpEquiv (Disy fs) =
   Disy (map elimImpEquiv fs)
 elimImpEquiv (Conj fs) =
   Conj (map elimImpEquiv fs)
+elimImpEquiv (Ex x f) = 
+    Ex x (elimImpEquiv f)
+elimImpEquiv (PTodo x f) = 
+    PTodo x (elimImpEquiv f)
 \end{code}
+
+\begin{nota}
+  Se aplica a fórmulas con cuantificadores pues la función será
+  empleada en la sección de la forma de skolem.
+\end{nota}
 
 Por ejemplo,
 
@@ -576,8 +585,14 @@ True
 
 
 \begin{code}
-formaRectificada :: Form -> Form
-formaRectificada = undefined
+sustAux :: Int -> Variable -> Form -> Form
+sustAux n v (PTodo var f) 
+    | var == v = PTodo (Variable "x" [n]) (sustitucionForm [(v, Var (Variable "x" [n]))] f)
+    | otherwise = (PTodo var f)
+sustAux n v (Ex var f)  
+    | var == v = Ex (Variable "x" [n]) (sustitucionForm [(v, Var (Variable "x" [n]))] f)
+    | otherwise = (Ex var f)
+
 \end{code}
 
 \comentario{Definir forma rectificada}
