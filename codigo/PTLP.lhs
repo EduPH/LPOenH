@@ -587,11 +587,28 @@ True
 \begin{code}
 sustAux :: Int -> Variable -> Form -> Form
 sustAux n v (PTodo var f) 
-    | var == v = PTodo (Variable "x" [n]) (sustitucionForm [(v, Var (Variable "x" [n]))] f)
-    | otherwise = (PTodo var f)
+    | var == v = PTodo (Variable "x" [n]) 
+                 (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
+    | otherwise = sustAux (n+1) var (PTodo var f)
 sustAux n v (Ex var f)  
-    | var == v = Ex (Variable "x" [n]) (sustitucionForm [(v, Var (Variable "x" [n]))] f)
-    | otherwise = (Ex var f)
+    | var == v = Ex (Variable "x" [n]) (sustAux n v f)
+    | otherwise = sustAux (n+1) var (PTodo var f)
+sustAux n v (Impl f1 f2) = 
+    Impl (sustAux n v f1) (sustAux (n+1) v f2)
+sustAux n v (Conj fs) = Conj (aux n fs)
+    where
+      aux n [] = []
+      aux n (f:fs) = (sustAux n v f): (aux (n+1) fs)
+sustAux n v (Disy fs) = Disy (aux n fs)
+    where
+      aux n [] = []
+      aux n (f:fs) = (sustAux n v f): (aux (n+1) fs)   
+sustAux n v (Neg f) = Neg (sustAux n v f)
+sustAux n v f = sustitucionForm [(v, Var (Variable "x" [n]))] f
+\end{code}
+
+\begin{code}
+
 
 \end{code}
 
