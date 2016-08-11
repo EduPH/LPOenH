@@ -365,10 +365,12 @@ está en su forma normal conjuntiva.
 \index{\texttt{enFormaNC}}
 \begin{code}
 enFormaNC :: Form -> Bool
+enFormaNC (Atom _ _) = True
 enFormaNC (Conj fs) = and [(literal f) || (esConj f) | f <- fs]
     where
       esConj (Disy fs) = all (literal) fs
       esConj _ = False
+enFormaNC _ = False
 \end{code}
 
 Por ejemplo
@@ -451,19 +453,25 @@ Definimos \texttt{(interiorizaDisy f)} para interiorizar las disyunciones
 
 \begin{code}
 interiorizaDisy :: Form -> Form
-interiorizaDisy (Disy fs) = 
-    Conj (map (Disy) (concat (aux [ aux1 f | f <- fs])))
-    where
-      aux [] = []
-      aux (xs:xss) = map (combina xs) xss ++ aux xss
-      aux1 p | literal p = [p]
-      aux1 (Conj xs) = xs
-      aux1 (Disy xs) = xs
-      combina [] ys = []
-      combina xs [] = []
-      combina xs ys = [[x,y] | x <- xs, y <- ys]
+interiorizaDisy (Disy fs)  | all (literal) fs = Disy fs
+                           | otherwise =
+                               Conj (map (aux2) (map (Disy) (concat (aux [ aux1 f | f <- fs]))))
+                                   where
+                                     aux [] = []
+                                     aux (xs:xss) = map (combina xs) xss ++ aux xss
+                                     aux1 p | literal p = [p]
+                                     aux1 (Conj xs) = xs
+                                     aux1 (Disy xs) = xs
+                                     combina [] ys = []
+                                     combina xs [] = []
+                                     combina xs ys = [[x,y] | x <- xs, y <- ys]
+                                                     
+                                     aux2 f | enFormaNC f = f
+                                            | otherwise = interiorizaDisy f
+
 interiorizaDisy f = f
 \end{code}
+
 
 \begin{nota}
   Explicación de las funciones auxiliares
@@ -474,17 +482,35 @@ interiorizaDisy f = f
     construye una lista de un literal o unifica disyunciones.
   \item La función \texttt{combina xs ys} elabora listas de dos elementos
     de las listas \texttt{xs} e \texttt{ys}.
+  \item La función \texttt{aux2} itera para interiorizar todas las disyunciones.
   \end{itemize*}
   
 \end{nota}
 
+Debido a la representación que hemos elegido, puede darse conjunciones
+de conjunciones, lo cual no nos interesa. Por ello, definimos \texttt{unificacionConjuncion}
+que extrae la conjunción al exterior.
+
+\index{\texttt{unificaConjuncion}}
+\begin{code}
+unificaConjuncion :: Form -> Form
+unificaConjuncion p@(Atom _ _) = p
+unificaConjuncion (Disy fs) = Disy fs
+unificaConjuncion (Conj fs) = Conj (concat (map (aux) (concat xs)))
+    where 
+      xs = [ aux f | f <- fs]
+      aux (Conj xs) = xs
+      aux f = [f]
+\end{code}
+
 Así, hemos construido el algoritmo para el cálculo de formas normales
 conjuntivas. Definimos la función \texttt{(formaNormalConjuntiva f)}
+
 
 \begin{code}
 
 formaNormalConjuntiva :: Form -> Form
-formaNormalConjuntiva = interiorizaDisy . interiorizaNeg . elimImpEquiv
+formaNormalConjuntiva = unificaConjuncion . interiorizaDisy . interiorizaNeg . elimImpEquiv
 
 \end{code}
 
@@ -495,7 +521,23 @@ ghci> Neg (Conj [p, Impl q r])
 ¬(p⋀(q⟹r))
 ghci> formaNormalConjuntiva (Neg (Conj [p, Impl q r]))
 ((¬p⋁q)⋀(¬p⋁¬r))
-ghci> enFormaNC(formaNormalConjuntiva (Neg (Conj [p, Impl q r])))
+ghci> enFormaNC (formaNormalConjuntiva (Neg (Conj [p, Impl q r])))
+True
+
+ghci> Neg (Conj [Disy [p,q],r])
+¬((p⋁q)⋀r)
+ghci> formaNormalConjuntiva (Neg (Conj [Disy [p,q],r]))
+((¬p⋁¬r)⋀(¬q⋁¬r))
+ghci> enFormaNC (formaNormalConjuntiva (Neg (Conj [Disy [p,q],r])))
+True
+
+ghci> (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r]))
+((p⋀q)⟹(((r⋁q)⋀¬p)⋁¬r))
+ghci> formaNormalConjuntiva 
+        (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r]))
+((¬p⋁r)⋀((¬p⋁q)⋀((¬p⋁¬p)⋀((¬p⋁¬r)⋀((¬q⋁r)⋀((¬q⋁q)⋀((¬q⋁¬p)⋀(¬q⋁¬r))))))))
+ghci> enFormaNC (formaNormalConjuntiva
+                 (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r])))
 True
 \end{sesion}
 
