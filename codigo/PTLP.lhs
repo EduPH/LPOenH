@@ -583,7 +583,11 @@ True
   refiere a una variable diferente.
 \end{Def}
 
+Para proceder a su implementación, definimos una función auxiliar
+previa que denotamos \texttt{(sustAux n v f)} que efectúa una
+sustitución de la variable \texttt{v}  por $x_n$.
 
+\index{\texttt{sustAux}}
 \begin{code}
 sustAux :: Int -> Variable -> Form -> Form
 sustAux n v (PTodo var f) 
@@ -591,28 +595,56 @@ sustAux n v (PTodo var f)
                  (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
     | otherwise = sustAux (n+1) var (PTodo var f)
 sustAux n v (Ex var f)  
-    | var == v = Ex (Variable "x" [n]) (sustAux n v f)
-    | otherwise = sustAux (n+1) var (PTodo var f)
+    | var == v = Ex (Variable "x" [n]) 
+                 (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
+    | otherwise = sustAux (n+1) var (Ex var f)
 sustAux n v (Impl f1 f2) = 
-    Impl (sustAux n v f1) (sustAux (n+1) v f2)
-sustAux n v (Conj fs) = Conj (aux n fs)
+    Impl (sustAux n v f1) (sustAux (n+k) v f2)
     where
-      aux n [] = []
-      aux n (f:fs) = (sustAux n v f): (aux (n+1) fs)
-sustAux n v (Disy fs) = Disy (aux n fs)
-    where
-      aux n [] = []
-      aux n (f:fs) = (sustAux n v f): (aux (n+1) fs)   
+      k = length (varEnForm f1)
+sustAux n v (Conj fs) = Conj (map (sustAux n v) fs)
+sustAux n v (Disy fs) = Disy (map (sustAux n v) fs)
 sustAux n v (Neg f) = Neg (sustAux n v f)
 sustAux n v f = sustitucionForm [(v, Var (Variable "x" [n]))] f
 \end{code}
 
+Añadimos una serie de ejemplos
+
+\begin{sesion}
+ghci> PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx,ty]))
+∀x (P[x]⟹Q[x,y])
+ghci> sustAux 0 x (PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx,ty])))
+∀x0 (P[x0]⟹Q[x0,y])
+\end{sesion}
+
+Definimos \texttt{(formaTectificada f)} que calcula la forma rectificada
+de la fórmula \texttt{f}.
+
+\index{\texttt{formaRectificada}}
 \begin{code}
-
-
+formaRectificada :: Form -> Form
+formaRectificada f@(PTodo x form) = sustAux 0 x f
+formaRectificada f@(Ex x form) = sustAux 0 x f
+formaRectificada (Impl f1 f2) = 
+    Impl (formaRectificada f1) (formaRectificada f2)
+formaRectificada (Conj fs) = Conj (map formaRectificada fs)
+formaRectificada (Disy fs) = Disy (map formaRectificada fs)
+formaRectificada (Neg f) = Neg (formaRectificada f)
+formaRectificada f = f
 \end{code}
 
-\comentario{Definir forma rectificada}
+Por ejemplo
+
+\begin{sesion}
+ghci> formula2
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> formaRectificada formula2
+∀x0 ∀x1 (R[x0,x1]⟹∃x4 (R[x0,x4]⋀R[x4,x1]))
+ghci> formula3
+(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> formaRectificada formula3
+(R[x,y]⟹∃x0 (R[x,x0]⋀R[x0,y]))
+\end{sesion}
 
 \subsection{Forma normal prenexa}
 
