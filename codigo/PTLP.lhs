@@ -591,12 +591,14 @@ sustitución de la variable \texttt{v}  por $x_n$.
 \begin{code}
 sustAux :: Int -> Variable -> Form -> Form
 sustAux n v (PTodo var f) 
-    | var == v = PTodo (Variable "x" [n]) 
-                 (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
+    | var == v = 
+        PTodo (Variable "x" [n]) 
+      (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
     | otherwise = sustAux (n+1) var (PTodo var f)
 sustAux n v (Ex var f)  
-    | var == v = Ex (Variable "x" [n]) 
-                 (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
+    | var == v = 
+        Ex (Variable "x" [n]) 
+      (sustAux n v (sustitucionForm [(v, Var (Variable "x" [n]))] f))
     | otherwise = sustAux (n+1) var (Ex var f)
 sustAux n v (Impl f1 f2) = 
     Impl (sustAux n v f1) (sustAux (n+k) v f2)
