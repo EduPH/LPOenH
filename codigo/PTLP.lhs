@@ -731,10 +731,37 @@ ghci> formaNormalPrenexa formula3
  
 
 \subsection{Forma normal prenexa conjuntiva}
+
 \begin{Def}
   Una fórmula $F$ está en \textbf{forma normal prenexa conjuntiva} si está en
   forma normal prenexa con $G$ en forma normal conjuntiva.
 \end{Def}
+
+La implementamos en \texttt{Haskell} mediante la función 
+\texttt{(formaNPConjuntiva f)}
+
+\index{\texttt{formaNPConjuntiva}}
+\begin{code}
+formaNPConjuntiva :: Form -> Form
+formaNPConjuntiva f = aux (formaNormalPrenexa f)
+    where
+      aux (PTodo x f) = PTodo x (aux f)
+      aux (Ex x f) = Ex x (aux f)
+      aux f = formaNormalConjuntiva f
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+ghci> formula2
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> formaNormalPrenexa formula2
+∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
+ghci> formula3
+(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+ghci> formaNormalPrenexa formula3
+∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
+\end{sesion}
 
 \subsection{Forma de Skolem}
 
