@@ -656,7 +656,79 @@ ghci> formaRectificada formula3
   cuantificadores.
 \end{Def}
 
-\comentario{Definir forma normal prenexa}
+Para la definición de la forma normal prenexa requerimos de dos funciones
+previas. Una que elimine los cuantificadores, \texttt{(eliminaCuant f)}, y otra
+que los recolecta en una lista ,\texttt{(recolectaCuant f)}.
+
+La definición de \texttt{eliminaCuant f} es
+
+\index{\texttt{eliminaCuant}}
+\begin{code}
+eliminaCuant :: Form -> Form
+eliminaCuant (Ex x f) = eliminaCuant f
+eliminaCuant (PTodo x f) = eliminaCuant f
+eliminaCuant (Conj fs) = Conj (map eliminaCuant fs)
+eliminaCuant (Disy fs) = Disy (map eliminaCuant fs)
+eliminaCuant (Neg f) = Neg (eliminaCuant f)
+eliminaCuant (Impl f1 f2) = Impl (eliminaCuant f1) (eliminaCuant f2)
+eliminaCuant p@(Atom _ _) = p
+\end{code}
+
+Algunos ejemplos
+
+\begin{sesion}
+ghci> eliminaCuant formula2
+(R[x,y]⟹(R[x,z]⋀R[z,y]))
+ghci> eliminaCuant formula3
+(R[x,y]⟹(R[x,z]⋀R[z,y]))
+\end{sesion}
+
+La implementación de \texttt{(recolectaCuant f)} es
+
+\index{\texttt{recolectaCuant}}
+\begin{code}
+recolectaCuant :: Form -> [Form]
+recolectaCuant (Ex x f) = (Ex x p): recolectaCuant f
+recolectaCuant (PTodo x f) = (PTodo x p): recolectaCuant f
+recolectaCuant (Conj fs) = concat (map recolectaCuant fs)
+recolectaCuant (Disy fs) = concat (map recolectaCuant fs)
+recolectaCuant (Neg f) = recolectaCuant f
+recolectaCuant (Impl f1 f2) = recolectaCuant f1 ++ recolectaCuant f2
+recolectaCuant p@(Atom _ _) = []
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+ghci> recolectaCuant formula2
+[∀x p,∀y p,∃z p]
+ghci> recolectaCuant formula3
+[∃z p]
+\end{sesion}
+
+Definimos la función \texttt{formaNormalPrenexa f} que calcula
+la forma normal prenexa de la fórmula \texttt{f}
+
+\index{\texttt{formaNormalPrenexa}}
+\begin{code}
+formaNormalPrenexa :: Form -> Form
+formaNormalPrenexa f = aplica cs (eliminaCuant (formaRectificada f))
+    where
+      aplica [] f = f
+      aplica ((PTodo x _):fs) f = aplica fs (PTodo x f)
+      aplica ((Ex x _):fs) f = aplica fs (Ex x f)
+      cs = reverse (recolectaCuant (formaRectificada f))
+\end{code}
+
+Por ejemplo,
+
+\begin{sesion}
+ghci> formaNormalPrenexa formula2
+∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
+ghci> formaNormalPrenexa formula3
+∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
+\end{sesion}  
+ 
 
 \subsection{Forma normal prenexa conjuntiva}
 \begin{Def}
