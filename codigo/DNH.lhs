@@ -375,6 +375,13 @@ elimDNeg :: Form -> Form
 elimDNeg (Neg (Neg f)) = f
 \end{code}
 
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> elimDNeg (Neg (Neg p))
+-- p
+\end{code}
+
 \item Regla de la introducción de la doble negación:
   $$\frac{F}{\neg \neg F} $$
   Se implementa en Haskell mediante la función \texttt{(introDNeg f)}
@@ -383,9 +390,18 @@ elimDNeg (Neg (Neg f)) = f
 introDNeg :: Form -> Form
 introDNeg f = Neg (Neg f)
 \end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> introDNeg p
+-- ¬¬p
+\end{code}
 \end{itemize*}
 
+
 \subsection{Reglas de eliminación del condicional}
+
 \begin{itemize*}
 \item Regla de la eliminación del condicional:
   $$\frac{F\quad F\rightarrow G}{G}$$
@@ -395,6 +411,13 @@ introDNeg f = Neg (Neg f)
 elimCond :: Form -> Form -> Form
 elimCond  f (Impl f1 f2) |f == f1 = f2
 elimCond  (Impl f1 f2) f |f == f1 = f2
+\end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> elimCond p (Impl p q)
+-- q
 \end{code}
 \end{itemize*}
 
@@ -409,7 +432,13 @@ elimCond  (Impl f1 f2) f |f == f1 = f2
 modusTollens :: Form -> Form -> Form
 modusTollens (Impl f1 f2) (Neg f) | f == f2 = Neg f1
 \end{code}
-  
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> modusTollens (Impl p q) (Neg q)
+-- ¬p
+\end{code}  
 \end{itemize*}
 
 \subsection{Regla de introducción del condicional}
