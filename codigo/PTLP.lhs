@@ -955,9 +955,8 @@ su forma clausal es
 
 \begin{sesion}
 ghci> Cs [C [Neg p,q], C [Neg p, Neg r]]
-{{¬p,q},{¬p,¬r}}
+$\left\{\left\{¬\texttt{p},\texttt{q}\right\},\left\{¬\texttt{p},¬\texttt{r}\right\}\right\}$
 \end{sesion}
-\comentario{Al compilar LaTex no aparece el símbolo }
 
 El algoritmo del cálculo de la forma clausal de una fórmula
 \texttt{F} es:
@@ -1003,9 +1002,10 @@ Por ejemplo
 ghci> Conj [p, Disy [q,r]]
 (p⋀(q⋁r))
 ghci> form3CAC (Conj [p, Disy [q,r]])
-{{p},{q,r}}
+$\left\{\left\{\texttt{p}\right\},\left\{\texttt{q},\texttt{r}\right\}\right\}$
 \end{sesion}
 
+\comentario{ símbolos de cláusulas no aparecen. Escrito en LaTex (Provisional)}
 Definimos \texttt{(formaClausal f)} que transforma \texttt{f}
 a su forma clausal.
 
@@ -1022,7 +1022,7 @@ Por ejemplo
 ghci> formaClausal (Neg (Conj [p, Impl q r]))
 {{¬p,q},{¬p,¬r}}
 \end{sesion}
-
+\comentario{Buscar alternativa para representación cláusulas}
 \section{Tableros semánticos}
 
 \begin{Def}
