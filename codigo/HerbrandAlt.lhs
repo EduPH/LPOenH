@@ -597,8 +597,10 @@ modelosH n fs =
         bH = baseHerbrandForms n fs
 \end{code}
 
+\ignora{
 La validación es
 \begin{code}
 -- codigo> doctest HerbrandAlt.lhs
 -- Examples: 139  Tried: 139  Errors: 0  Failures: 0
 \end{code}
+}

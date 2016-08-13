@@ -1,10 +1,12 @@
 \begin{code}
+{-# LANGUAGE DeriveGeneric #-}
 module PTLP where
 import LPH
 import Data.List
 import Test.QuickCheck -- Para ejemplos
 import Generadores     -- Para ejemplos
-
+import Text.PrettyPrint
+import Text.PrettyPrint.GenericPretty 
 \end{code}
 
 \section{Sustitución}
@@ -60,10 +62,13 @@ hacerApropiada (x:xs) | Var (fst x) /= snd x = x: hacerApropiada xs
 
 Por ejemplo,
 
-\begin{sesion}
-hacerApropiada [(x,tx)]         ==  []
-hacerApropiada [(x,tx),(x,ty)]  ==  [(x,y)]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> hacerApropiada [(x,tx)]         
+-- []
+-- >>> hacerApropiada [(x,tx),(x,ty)]
+-- [(x,y)]
+\end{code}
 
 Como la sustitución es una aplicación, podemos distinguir \texttt{dominio} y
 \texttt{recorrido}.
@@ -80,12 +85,17 @@ recorrido = nub . map snd
 
 Por ejemplo,
 
-\begin{sesion}
-dominio [(x,tx)]           ==  [x]
-dominio [(x,tx),(x,ty)]    ==  [x]
-recorrido [(x,tx)]         ==  [x]
-recorrido [(x,tx),(x,ty)]  ==  [x,y]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> dominio [(x,tx)]           
+-- [x]
+-- >>> dominio [(x,tx),(x,ty)]    
+-- [x]
+-- >>> recorrido [(x,tx)]         
+-- [x]
+-- >>> recorrido [(x,tx),(x,ty)]  
+-- [x,y]
+\end{code}
 
 
 Posteriormente, se define una función que hace la sustitución de una variable
@@ -133,10 +143,13 @@ susTerms = map . susTerm
 
 Por ejemplo,
 
-\begin{sesion}
-susTerm  [(x,ty)] tx              ==  y
-susTerms [(x,ty),(y,tx)] [tx,ty]  ==  [y,x]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> susTerm  [(x,ty)] tx                
+-- y
+-- >>> susTerms [(x,ty),(y,tx)] [tx,ty]  
+-- [y,x]
+\end{code}
 
 \begin{Def}
   $F[x_1/t_1,\dots , x_n/t_n]$ es la fórmula obtenida sustituyendo en $F$ las
@@ -204,12 +217,14 @@ sustitucionForm s (Ex v f) =
 \end{code}
 
 Por ejemplo,
-\begin{sesion}
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> sustitucionForm [(x,ty)] formula3
-(R[y,y]⟹∃z (R[y,z]⋀R[z,y]))
-\end{sesion}
+
+\begin{code}
+-- | Ejemplos
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> sustitucionForm [(x,ty)] formula3
+-- (R[y,y]⟹∃z (R[y,z]⋀R[z,y]))
+\end{code}
 
 Se puede generalizar a una lista de fórmulas mediante la funcion
 \texttt{(sustitucionForms s fs)}. La hemos necesitado en la definición de la
@@ -234,10 +249,13 @@ composicion s1 s2 =
 
 Por ejemplo,
 
-\begin{sesion}
-composicion [(x,tx)] [(y,ty)]  ==  [(x,x)]
-composicion [(x,tx)] [(x,ty)]  ==  [(x,y)]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> composicion [(x,tx)] [(y,ty)]  
+-- [(x,x)]
+-- >>> composicion [(x,tx)] [(x,ty)]  
+-- [(x,y)]
+\end{code}
 
 \begin{code}
 composicionConmutativa :: Sust -> Sust -> Bool
@@ -274,32 +292,32 @@ composicion [(y,ty)] [(x,tx)]  ==  [(y,y)]
 
 Un ejemplo de una sustitución que no es libre
 
-\begin{sesion}
-ghci> Ex x (Atom "R" [tx,ty])
-∃x R[x,y]
-ghci> variablesLibres (Ex x (Atom "R" [tx,ty]))
-[y]
-ghci> sustitucionForm [(y,tx)] (Ex x (Atom "R" [tx,ty]))
-∃x R[x,x]
-ghci> variablesLibres (sustitucionForm [(y,tx)] (Ex x (Atom "R" [tx,ty])))
-[]
-\end{sesion}
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = Ex x (Atom "R" [tx,ty])
+-- >>> f1
+-- ∃x R[x,y]
+-- >>> variablesLibres f1
+-- [y]
+-- >>> sustitucionForm [(y,tx)] f1
+-- ∃x R[x,x]
+-- >>> variablesLibres (sustitucionForm [(y,tx)] f1)
+-- []
+\end{code}
 
 Un ejemplo de una sustitución libre
 
-\begin{sesion}
-ghci> formula5
-(∀x P[x]⟹∀y Q[x,y])
-ghci> variablesLibres formula5
-[x]
-ghci> sustitucionForm [(x,tz)] formula5
-(∀x P[x]⟹∀y Q[z,y])
-ghci> variablesLibres (sustitucionForm [(x,tz)] formula5)
-[z]
-\end{sesion}
-
-\comentario{¿Una sustitución libre se puede caracterizar por la longitud de
-  la lista de variables libres antes y despues de la sustitución?}
+\begin{code}
+-- | Ejemplo
+-- >>> formula5
+-- (∀x P[x]⟹∀y Q[x,y])
+-- >>> variablesLibres formula5
+-- [x]
+-- >>> sustitucionForm [(x,tz)] formula5
+-- (∀x P[x]⟹∀y Q[z,y])
+-- >>> variablesLibres (sustitucionForm [(x,tz)] formula5)
+-- [z]
+\end{code}
 
 \section{Unificación}
 
@@ -375,11 +393,15 @@ enFormaNC _ = False
 
 Por ejemplo
 
-\begin{sesion}
-enFormaNC (Conj [p, Disy [q,r]])             == True
-enFormaNC (Conj [Impl p r, Disy [q, Neg r]]) == False
-enFormaNC (Conj [p, Disy [q, Neg r]])        == True
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> enFormaNC (Conj [p, Disy [q,r]])             
+-- True
+-- >>> enFormaNC (Conj [Impl p r, Disy [q, Neg r]]) 
+-- False
+-- >>> enFormaNC (Conj [p, Disy [q, Neg r]])        
+-- True
+\end{code}
 
 Aplicando a una fórmula $F$ el siguiente algoritmo se obtiene
 una forma normal conjuntiva de $F$.
@@ -434,10 +456,11 @@ elimImpEquiv (PTodo x f) =
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> elimImpEquiv (Neg (Conj [p, Impl q r]))
-¬(p⋀(¬q⋁r))
-\end{sesion}
+\begin{code}
+-- | Ejemplo
+-- >>> elimImpEquiv (Neg (Conj [p, Impl q r]))
+-- ¬(p⋀(¬q⋁r))
+\end{code}
 
 Interiorizamos las negaciones mediante la función \texttt{(interiorizaNeg f)}.
 
@@ -514,16 +537,18 @@ unificaConjuncion (Conj fs) = Conj (concat (map (aux) (concat xs)))
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> Conj [p, Conj [p,q]]
-(p⋀(r⋀q))
-ghci> unificaConjuncion (Conj [p, Conj [r,q]])
-(p⋀(r⋀q))
-ghci> unificaConjuncion (Conj [p, Conj [r,q]]) == (Conj [p, Conj [r,q]])
-False
-ghci> unificaConjuncion (Conj [p, Conj [r,q]]) == (Conj [p,r,q])
-True
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Conj [p, Conj [r,q]]
+-- >>> f1
+-- (p⋀(r⋀q))
+-- >>> unificaConjuncion f1
+-- (p⋀(r⋀q))
+-- >>> unificaConjuncion f1 == (Conj [p, Conj [r,q]])
+-- False
+-- >>> unificaConjuncion f1 == (Conj [p,r,q])
+-- True
+\end{code}
 
 \begin{nota}
   La representación ``visual'' por pantalla de una conjunción de conjunciones
@@ -544,30 +569,32 @@ formaNormalConjuntiva =
 
 Por ejemplo
 
-\begin{sesion}
-ghci> Neg (Conj [p, Impl q r])
-¬(p⋀(q⟹r))
-ghci> formaNormalConjuntiva (Neg (Conj [p, Impl q r]))
-((¬p⋁q)⋀(¬p⋁¬r))
-ghci> enFormaNC (formaNormalConjuntiva (Neg (Conj [p, Impl q r])))
-True
-
-ghci> Neg (Conj [Disy [p,q],r])
-¬((p⋁q)⋀r)
-ghci> formaNormalConjuntiva (Neg (Conj [Disy [p,q],r]))
-((¬p⋁¬r)⋀(¬q⋁¬r))
-ghci> enFormaNC (formaNormalConjuntiva (Neg (Conj [Disy [p,q],r])))
-True
-
-ghci> (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r]))
-((p⋀q)⟹(((r⋁q)⋀¬p)⋁¬r))
-ghci> formaNormalConjuntiva 
-        (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r]))
-((¬p⋁r)⋀((¬p⋁q)⋀((¬p⋁¬p)⋀((¬p⋁¬r)⋀((¬q⋁r)⋀((¬q⋁q)⋀((¬q⋁¬p)⋀(¬q⋁¬r))))))))
-ghci> enFormaNC (formaNormalConjuntiva
-                 (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r])))
-True
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Neg (Conj [p, Impl q r])
+-- >>> f1
+-- ¬(p⋀(q⟹r))
+-- >>> formaNormalConjuntiva f1
+-- ((¬p⋁q)⋀(¬p⋁¬r))
+-- >>> enFormaNC (formaNormalConjuntiva f1)
+-- True
+--
+-- >>> let f2 = Neg (Conj [Disy [p,q],r])
+-- >>> f2
+-- ¬((p⋁q)⋀r)
+-- >>> formaNormalConjuntiva f2
+-- ((¬p⋁¬r)⋀(¬q⋁¬r))
+-- >>> enFormaNC (formaNormalConjuntiva f2)
+-- True
+--
+-- >>> let f3 = (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r]))
+-- >>> f3
+-- ((p⋀q)⟹(((r⋁q)⋀¬p)⋁¬r))
+-- >>> formaNormalConjuntiva f3
+-- ((¬p⋁r)⋀((¬p⋁q)⋀((¬p⋁¬p)⋀((¬p⋁¬r)⋀((¬q⋁r)⋀((¬q⋁q)⋀((¬q⋁¬p)⋀(¬q⋁¬r))))))))
+-- >>> enFormaNC (formaNormalConjuntiva f3)
+-- True
+\end{code}
 
 \begin{Def}
   Una fórmula está en \textbf{forma normal disyuntiva} si es una disyunción de
@@ -610,14 +637,16 @@ sustAux n v (Neg f) = Neg (sustAux n v f)
 sustAux n v f = sustitucionForm [(v, Var (Variable "x" [n]))] f
 \end{code}
 
-Añadimos una serie de ejemplos
+Añadimos ejemplos
 
-\begin{sesion}
-ghci> PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx,ty]))
-∀x (P[x]⟹Q[x,y])
-ghci> sustAux 0 x (PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx,ty])))
-∀x0 (P[x0]⟹Q[x0,y])
-\end{sesion}
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx,ty]))
+-- >>> f1
+-- ∀x (P[x]⟹Q[x,y])
+-- >>> sustAux 0 x f1
+-- ∀x0 (P[x0]⟹Q[x0,y])
+\end{code}
 
 Definimos \texttt{(formaTectificada f)} que calcula la forma rectificada
 de la fórmula \texttt{f}.
@@ -637,16 +666,17 @@ formaRectificada f = f
 
 Por ejemplo
 
-\begin{sesion}
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> formaRectificada formula2
-∀x0 ∀x1 (R[x0,x1]⟹∃x4 (R[x0,x4]⋀R[x4,x1]))
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> formaRectificada formula3
-(R[x,y]⟹∃x0 (R[x,x0]⋀R[x0,y]))
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formaRectificada formula2
+-- ∀x0 ∀x1 (R[x0,x1]⟹∃x4 (R[x0,x4]⋀R[x4,x1]))
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formaRectificada formula3
+-- (R[x,y]⟹∃x0 (R[x,x0]⋀R[x0,y]))
+\end{code}
 
 \subsection{Forma normal prenexa}
 
@@ -676,12 +706,13 @@ eliminaCuant p@(Atom _ _) = p
 
 Algunos ejemplos
 
-\begin{sesion}
-ghci> eliminaCuant formula2
-(R[x,y]⟹(R[x,z]⋀R[z,y]))
-ghci> eliminaCuant formula3
-(R[x,y]⟹(R[x,z]⋀R[z,y]))
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> eliminaCuant formula2
+-- (R[x,y]⟹(R[x,z]⋀R[z,y]))
+-- >>> eliminaCuant formula3
+-- (R[x,y]⟹(R[x,z]⋀R[z,y]))
+\end{code}
 
 La implementación de \texttt{(recolectaCuant f)} es
 
@@ -699,12 +730,13 @@ recolectaCuant p@(Atom _ _) = []
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> recolectaCuant formula2
-[∀x p,∀y p,∃z p]
-ghci> recolectaCuant formula3
-[∃z p]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> recolectaCuant formula2
+-- [∀x p,∀y p,∃z p]
+-- >>> recolectaCuant formula3
+-- [∃z p]
+\end{code}
 
 Definimos la función \texttt{formaNormalPrenexa f} que calcula
 la forma normal prenexa de la fórmula \texttt{f}
@@ -722,12 +754,13 @@ formaNormalPrenexa f = aplica cs (eliminaCuant (formaRectificada f))
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> formaNormalPrenexa formula2
-∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
-ghci> formaNormalPrenexa formula3
-∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
-\end{sesion}  
+\begin{code}
+-- | Ejemplos
+-- >>> formaNormalPrenexa formula2
+-- ∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
+-- >>> formaNormalPrenexa formula3
+-- ∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
+\end{code}  
  
 
 \subsection{Forma normal prenexa conjuntiva}
@@ -752,16 +785,17 @@ formaNPConjuntiva f = aux (formaNormalPrenexa f)
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> formaNormalPrenexa formula2
-∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> formaNormalPrenexa formula3
-∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formaNormalPrenexa formula2
+-- ∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formaNormalPrenexa formula3
+-- ∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
+\end{code}
 
 \subsection{Forma de Skolem}
 
@@ -895,16 +929,17 @@ skolem  = sk . elimImpEquiv
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> skolem formula2
-∀x ∀y (¬R[x,y]⋁(R[x,sk0[x,y]]⋀R[sk0[x,y],y]))
-ghci> skolem formula3
-(¬R[x,y]⋁(R[x,sk0]⋀R[sk0,y]))
-ghci> skolem formula4
-R[cero,sk0]
-ghci> skolem formula5
-(¬P[sk0]⋁∀y Q[x,y])
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> skolem formula2
+-- ∀x ∀y (¬R[x,y]⋁(R[x,sk0[x,y]]⋀R[sk0[x,y],y]))
+-- >>> skolem formula3
+-- (¬R[x,y]⋁(R[x,sk0]⋀R[sk0,y]))
+-- >>> skolem formula4
+-- R[cero,sk0]
+-- >>> skolem formula5
+-- (¬P[sk0]⋁∀y Q[x,y])
+\end{code}
 
 
 \section{Forma clausal}
@@ -947,16 +982,18 @@ instance Show Clausulas where
 Por ejemplo de
 
 \begin{sesion}
-ghci> Neg (Conj [p,Impl q r])
-¬(p⋀(q⟹r))
+-- | Fórmula
+-- >>> Neg (Conj [p,Impl q r])
+-- ¬(p⋀(q⟹r))
 \end{sesion}
 
 su forma clausal es
 
-\begin{sesion}
-ghci> Cs [C [Neg p,q], C [Neg p, Neg r]]
-$\left\{\left\{¬\texttt{p},\texttt{q}\right\},\left\{¬\texttt{p},¬\texttt{r}\right\}\right\}$
-\end{sesion}
+\begin{code}
+-- | Forma clausal
+-- >>> Cs [C [Neg p,q], C [Neg p, Neg r]]
+-- {{¬p,q},{¬p,¬r}}
+\end{code}
 
 El algoritmo del cálculo de la forma clausal de una fórmula
 \texttt{F} es:
@@ -998,12 +1035,13 @@ form3CAC (Conj fs) = Cs (map disyAClau fs)
 
 Por ejemplo
 
-\begin{sesion}
-ghci> Conj [p, Disy [q,r]]
-(p⋀(q⋁r))
-ghci> form3CAC (Conj [p, Disy [q,r]])
-$\left\{\left\{\texttt{p}\right\},\left\{\texttt{q},\texttt{r}\right\}\right\}$
-\end{sesion}
+\begin{code}
+-- | Ejemplo
+-- >>> Conj [p, Disy [q,r]]
+-- (p⋀(q⋁r))
+-- >>> form3CAC (Conj [p, Disy [q,r]])
+-- {{p},{q,r}}
+\end{code}
 
 \comentario{ símbolos de cláusulas no aparecen. Escrito en LaTex (Provisional)}
 Definimos \texttt{(formaClausal f)} que transforma \texttt{f}
@@ -1012,17 +1050,18 @@ a su forma clausal.
 \begin{code}
 
 formaClausal :: Form -> Clausulas
-formaClausal  = formNCAC . skolem .formaNPConjuntiva
+formaClausal  = form3CAC . skolem .formaNPConjuntiva
 
 \end{code}
 
 Por ejemplo
 
-\begin{sesion}
-ghci> formaClausal (Neg (Conj [p, Impl q r]))
-{{¬p,q},{¬p,¬r}}
-\end{sesion}
-\comentario{Buscar alternativa para representación cláusulas}
+\begin{code}
+-- | Ejemplo
+-- >>> formaClausal (Neg (Conj [p, Impl q r]))
+-- {{¬p,q},{¬p,¬r}}
+\end{code}
+
 \section{Tableros semánticos}
 
 \begin{Def}
@@ -1253,12 +1292,12 @@ Para que la fórmula quede
 
 \begin{code}
 tab1 = Neg (Impl (Disy [p,q]) (Conj [p,q]))
+
+-- | Representación
+-- >>> tab1
+-- ¬((p⋁q)⟹(p⋀q))
 \end{code}
 
-\begin{sesion}
-ghci> tab1
-¬((p⋁q)⟹(p⋀q))
-\end{sesion}
 
 \begin{Def}
   Un tablero es \textbf{cerrado} si todas sus hojas son cerradas.
@@ -1292,12 +1331,11 @@ La fórmula del tablero se representa en Haskell
 
 \begin{code}
 tab2 = Conj [Impl p q, Impl q r, Neg (Impl p r)]
+-- | Representación
+-- >>> tab2
+-- ((p⟹q)⋀((q⟹r)⋀¬(p⟹r)))
 \end{code}
 
-\begin{sesion}
-ghci> tab2
-((p⟹q)⋀((q⟹r)⋀¬(p⟹r)))
-\end{sesion}
 
 \begin{Teo}
   Si una fórmula $F$ es consistente, entonces cualquier tablero de $F$ tendrá
@@ -1307,6 +1345,12 @@ ghci> tab2
 Nuestro objetivo es definir en Haskell un método para el cálculo de tableros
 semánticos. El contenido relativo a tableros semánticos se encuentra en el
 módulo \texttt{Tableros}.
+
+\ignora{ 
+  La validación es
+  codigo> doctest PTLP.lhs
+  Examples: 106  Tried: 106  Errors: 0  Failures: 0
+}
 
 \entrada{Tableros}
 
