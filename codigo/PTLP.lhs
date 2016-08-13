@@ -916,7 +916,7 @@ ghci> skolem formula5
 
 \begin{Prop}
   Si $(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$ es una forma
-  notmal conjuntiva de la fórmula $F$. Entonces, es una forma clausal de $F$ es
+  normal conjuntiva de la fórmula $F$. Entonces, es una forma clausal de $F$ es
   $\left\{ (p_1\vee \dots \vee p_n) , \dots , (q_1 \vee \dots \vee q_m) \right\}$
 \end{Prop}
 
@@ -959,13 +959,39 @@ ghci> Cs [C [Neg p,q], C [Neg p, Neg r]]
 \end{sesion}
 \comentario{Al compilar LaTex no aparece el símbolo }
 
-Dada una fórmula en su forma normal conjuntiva, podemos convertirla
-a su forma causal por medio de la función \texttt{(formNCAC f)}
+El algoritmo del cálculo de la forma clausal de una fórmula
+\texttt{F} es:
 
-\index{\texttt{formNCAC}}
+\begin{enumerate}
+\item Sea $F_1 = \exists y_1 \dots \exists y_n F$, donde $y_i$ con $i=1,\dots ,n$
+  son las variables libres de F.
+\item Sea $F_2$ una forma normal prenexa conjuntiva rectificada de $F_1$.
+\item Sea $F_3= \texttt{ Skolem }(F_2)$, que tiene la forma
+  $$\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
+\end{enumerate}
+
+Entonces, una forma clausal es
+
+$$ S=
+\left\{
+  \left\{ L_1, \dots ,L_n \right\}
+  ,\dots ,
+  \left\{ M_1, \dots ,M_m \right\}
+\right\} $$
+
+  
+Dada una fórmula que está en la forma del paso 3 del algoritmo, es decir
+ $$\texttt{ f } =\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
+, podemos convertirla
+a su forma causal por medio de la función \texttt{(form3AC f)}
+
+\index{\texttt{form3CAC}}
 \begin{code}
-formNCAC :: Form -> Clausulas
-formNCAC (Conj fs) = Cs (map disyAClau fs)
+form3CAC :: Form -> Clausulas
+form3CAC (PTodo x f) = form3CAC f
+form3CAC (Conj fs) = Cs (map disyAClau fs)
     where
       disyAClau p@(Atom _ _) = C [p]
       disyAClau (Disy fs) = C fs
@@ -976,21 +1002,19 @@ Por ejemplo
 \begin{sesion}
 ghci> Conj [p, Disy [q,r]]
 (p⋀(q⋁r))
-ghci> formNCAC (Conj [p, Disy [q,r]])
+ghci> form3CAC (Conj [p, Disy [q,r]])
 {{p},{q,r}}
 \end{sesion}
 
-Para definir \texttt{(formaClausal f)} que transforma \texttt{f}
+Definimos \texttt{(formaClausal f)} que transforma \texttt{f}
 a su forma clausal.
 
 \begin{code}
 
 formaClausal :: Form -> Clausulas
-formaClausal  = formNCAC . formaNormalConjuntiva
+formaClausal  = formNCAC . skolem .formaNPConjuntiva
 
 \end{code}
-
-\comentario{Sustituir formaNormalConjuntiva por forma normal prenexa}
 
 Por ejemplo
 
