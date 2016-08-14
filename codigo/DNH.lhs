@@ -328,43 +328,6 @@ r = Atom "r" []
 
 \subsection{Reglas de la conjunción}
 
-Debido a la representación que hemos elegido, pueden darse conjunciones
-de conjunciones, lo cual no nos interesa. Por ello, definimos \texttt{unificacionConjuncion}
-que extrae la conjunción al exterior.
-
-\index{\texttt{unificaConjuncion}}
-\begin{code}
-unificaConjuncion :: Form -> Form
-unificaConjuncion p@(Atom _ _) = p
-unificaConjuncion (Disy fs) = Disy fs
-unificaConjuncion (Conj fs) = Conj (concat (map (aux) (concat xs)))
-    where 
-      xs = [ aux f | f <- fs]
-      aux (Conj xs) = xs
-      aux f = [f]
-\end{code}
-
-Por ejemplo,
-
-\begin{code}
--- | Ejemplos
--- >>> let f1 = Conj [p, Conj [r,q]]
--- >>> f1
--- (p⋀(r⋀q))
--- >>> unificaConjuncion f1
--- (p⋀(r⋀q))
--- >>> unificaConjuncion f1 == (Conj [p, Conj [r,q]])
--- False
--- >>> unificaConjuncion f1 == (Conj [p,r,q])
--- True
-\end{code}
-
-\begin{nota}
-  La representación ``visual'' por pantalla de una conjunción de conjunciones
-  y su unificación puede ser la misma, como en el ejemplo anterior.
-\end{nota}
-
-
 \begin{itemize*}
 \item Regla de la introducción de la conjunción:
   $$\frac{F\quad G}{F\wedge G}$$
@@ -372,7 +335,9 @@ Por ejemplo,
   \index{\texttt{introConj}}
 \begin{code}
 introConj :: Form -> Form -> Form
-introConj f g = unificaConjuncion (Conj [f,g])
+introConj (Conj fs) g = Conj (fs++[g])
+introConj f (Conj gs) = Conj (f:gs)
+introConj f g = Conj [f,g]                                   
 \end{code}
 
 \item Ejemplo
