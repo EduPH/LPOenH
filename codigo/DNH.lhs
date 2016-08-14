@@ -328,6 +328,43 @@ r = Atom "r" []
 
 \subsection{Reglas de la conjunción}
 
+Debido a la representación que hemos elegido, pueden darse conjunciones
+de conjunciones, lo cual no nos interesa. Por ello, definimos \texttt{unificacionConjuncion}
+que extrae la conjunción al exterior.
+
+\index{\texttt{unificaConjuncion}}
+\begin{code}
+unificaConjuncion :: Form -> Form
+unificaConjuncion p@(Atom _ _) = p
+unificaConjuncion (Disy fs) = Disy fs
+unificaConjuncion (Conj fs) = Conj (concat (map (aux) (concat xs)))
+    where 
+      xs = [ aux f | f <- fs]
+      aux (Conj xs) = xs
+      aux f = [f]
+\end{code}
+
+Por ejemplo,
+
+\begin{code}
+-- | Ejemplos
+-- >>> let f1 = Conj [p, Conj [r,q]]
+-- >>> f1
+-- (p⋀(r⋀q))
+-- >>> unificaConjuncion f1
+-- (p⋀(r⋀q))
+-- >>> unificaConjuncion f1 == (Conj [p, Conj [r,q]])
+-- False
+-- >>> unificaConjuncion f1 == (Conj [p,r,q])
+-- True
+\end{code}
+
+\begin{nota}
+  La representación ``visual'' por pantalla de una conjunción de conjunciones
+  y su unificación puede ser la misma, como en el ejemplo anterior.
+\end{nota}
+
+
 \begin{itemize*}
 \item Regla de la introducción de la conjunción:
   $$\frac{F\quad G}{F\wedge G}$$
@@ -335,10 +372,18 @@ r = Atom "r" []
   \index{\texttt{introConj}}
 \begin{code}
 introConj :: Form -> Form -> Form
-introConj f g = Conj [f,g]
+introConj f g = unificaConjuncion (Conj [f,g])
 \end{code}
-\comentario{añadir la unificación de la conjunción aquí. Entonces se
-            añadirán ejemplos}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplos
+-- >>> introConj p q
+-- (p⋀q)
+-- >>> introConj (Conj [p,q]) r
+-- (p⋀(q⋀r))
+\end{code}
+
 
 \item Reglas de la eliminación de la introducción:
   $$\frac{F_1 \wedge \dots \wedge F_n}{F_1} \text{ y } \frac{F_1\wedge \dots \wedge F_n}{F_n} $$
@@ -445,6 +490,14 @@ modusTollens (Impl f1 f2) (Neg f) | f == f2 = Neg f1
 
 \begin{itemize*}
 \item Regla de introducción del condicional:
+$$\frac{}{G} $$ 
+\comentario{escribir expresión LaTex}
+Lo implementamos en Haskell mediante la función \texttt{(introCond f g)}
+
+\index{\texttt{introCond}}
+\begin{code}
+introCond :: Form -> Form -> Form
+introCond f g = Impl f g
+\end{code}
 \end{itemize*}
 
-\comentario{sección en proceso}
