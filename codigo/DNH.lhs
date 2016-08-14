@@ -466,3 +466,70 @@ introCond f g = Impl f g
 \end{code}
 \end{itemize*}
 
+\subsection{Reglas de la disyunción}
+
+\begin{itemize*}
+\item Reglas de la introducción de la disyunción:
+  $$ \frac{F}{F\vee G} \text{ y } \frac{G}{F \vee G} $$
+  Lo implementamos en Haskell mediante la función
+  \texttt{(introDisy f g)}
+
+\index{\texttt{introDisy}}
+\begin{code}
+introDisy :: Form -> Form -> Form
+introDisy (Disy fs) g = Disy (fs ++ [g])
+introDisy f (Disy gs) = Disy (f:gs)
+introDisy f g = Disy [f,g]
+\end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> introDisy (Disy [p,q]) r
+-- (p⋁(q⋁r))
+\end{code}
+
+\item Regla de la eliminación de la disyunción:
+\comentario{En proceso: elimDisy} 
+\end{itemize*}
+
+\subsection{Reglas de la negación}
+
+
+Definimos la contradicción como una fórmula
+
+\index{\texttt{contradiccion}}
+\begin{code}
+contradiccion :: Form
+contradiccion = Atom "⊥" []
+\end{code}
+
+\begin{itemize*}
+\item Regla de eliminación de lo falso:
+  $$ \frac{\perp}{F}$$
+  Lo implementamos en Haskell mediante la función \texttt{(elimFalso f g)}
+
+\index{\texttt{elimFalso}}
+\begin{code}
+elimFalso :: Form -> Form -> Form
+elimFalso f g | f == contradiccion = g
+              | g == contradiccion = f
+\end{code}
+
+\item Regla de eliminación de la negación;
+  $$ \frac{F\quad \neg F}{\perp} $$
+  Lo implementamos en Haskell mediante la función \texttt{(elimNeg f g)}
+
+\index{\texttt{elimNeg}}
+\begin{code}
+elimNeg :: Form -> Form -> Form
+elimNeg f g | f == (Neg g) || (Neg f) == g = contradiccion
+\end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo 
+-- >>> elimNeg (Neg p) p
+-- ⊥
+\end{code}
+\end{itemize*}
