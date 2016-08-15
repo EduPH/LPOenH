@@ -373,43 +373,6 @@ elimConjD (Conj fs) = last fs
 \end{code}
 \end{itemize*}
 
-\subsection{Reglas de la doble negación}
-
-\begin{itemize*}
-\item Regla de eliminación de la doble negación: 
-  $$\frac{\neg \neg F}{F}$$
-  Se implementa en Haskell mediante la función \texttt{(elimDNeg f)}
-\index{\texttt{elimDNeg}}
-\begin{code}
-elimDNeg :: Form -> Form
-elimDNeg (Neg (Neg f)) = f
-\end{code}
-
-\item Ejemplo
-\begin{code}
--- | Ejemplo
--- >>> elimDNeg (Neg (Neg p))
--- p
-\end{code}
-
-\item Regla de la introducción de la doble negación:
-  $$\frac{F}{\neg \neg F} $$
-  Se implementa en Haskell mediante la función \texttt{(introDNeg f)}
-\index{\texttt{introDNeg}}
-\begin{code}
-introDNeg :: Form -> Form
-introDNeg f = Neg (Neg f)
-\end{code}
-
-\item Ejemplo
-\begin{code}
--- | Ejemplo
--- >>> introDNeg p
--- ¬¬p
-\end{code}
-\end{itemize*}
-
-
 \subsection{Reglas de eliminación del condicional}
 
 \begin{itemize*}
@@ -429,26 +392,6 @@ elimCond  (Impl f1 f2) f |f == f1 = f2
 -- >>> elimCond p (Impl p q)
 -- q
 \end{code}
-\end{itemize*}
-
-\subsection{Regla derivada de Modus Tollens(MT)}
-
-\begin{itemize*}
-\item Regla derivada de modus Tollens:
-  $$\frac{F \rightarrow G\quad \neg G}{\neg F}$$
-  Lo implementamos en Haskell mediante la función \texttt{(modusTollens f g)}
-\index{\texttt{modusTollens}}
-\begin{code}
-modusTollens :: Form -> Form -> Form
-modusTollens (Impl f1 f2) (Neg f) | f == f2 = Neg f1
-\end{code}
-
-\item Ejemplo
-\begin{code}
--- | Ejemplo
--- >>> modusTollens (Impl p q) (Neg q)
--- ¬p
-\end{code}  
 \end{itemize*}
 
 \subsection{Regla de introducción del condicional}
@@ -533,3 +476,119 @@ elimNeg f g | f == (Neg g) || (Neg f) == g = contradiccion
 -- ⊥
 \end{code}
 \end{itemize*}
+
+\subsection{Reglas del bicondicional}
+\begin{itemize*}
+\item Regla de introducción del bicondicional:
+  $$\frac{F \rightarrow G\quad G\rightarrow F}{F\leftrightarrow F} $$
+  Lo implementamos en Haskell mediante la función \texttt{(introBicond f g)}
+\begin{code}
+introBicond :: Form -> Form -> Form
+introBicond (Impl f1 f2) (Impl g1 g2) | f1 == g2 && f2 == g1 = Equiv f1 f2
+\end{code}
+
+\item Ejemplo
+
+\begin{code}
+-- | Ejemplo
+-- >>> introBicond (Impl p q) (Impl q p)
+-- (p⟺q)
+\end{code}
+
+\item Reglas de la eliminación del bicondicional:
+  $$ \frac{F\leftrightarrow G}{F\rightarrow G} \text{ y }
+  \frac{F\leftrightarrow G}{G\rightarrow F}$$
+  Lo implementamos en Haskel mediante las funciones \texttt{(elimBicondI f g)}
+  y \texttt{(elimBicondD f g)}
+\begin{code}
+elimBicondI, elimBicondD :: Form -> Form
+elimBicondI (Equiv f g) = Impl f g
+elimBicondD (Equiv f g) = Impl g f
+\end{code}
+
+\end{itemize*}
+
+\subsection{Regla derivada de Modus Tollens(MT)}
+
+\begin{itemize*}
+\item Regla derivada de modus Tollens:
+  $$\frac{F \rightarrow G\quad \neg G}{\neg F}$$
+  Lo implementamos en Haskell mediante la función \texttt{(modusTollens f g)}
+\index{\texttt{modusTollens}}
+\begin{code}
+modusTollens :: Form -> Form -> Form
+modusTollens (Impl f1 f2) (Neg f) | f == f2 = Neg f1
+\end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> modusTollens (Impl p q) (Neg q)
+-- ¬p
+\end{code}  
+\end{itemize*}
+
+\subsection{Reglas de la doble negación}
+
+\begin{itemize*}
+\item Regla de eliminación de la doble negación: 
+  $$\frac{\neg \neg F}{F}$$
+  Se implementa en Haskell mediante la función \texttt{(elimDNeg f)}
+\index{\texttt{elimDNeg}}
+\begin{code}
+elimDNeg :: Form -> Form
+elimDNeg (Neg (Neg f)) = f
+\end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> elimDNeg (Neg (Neg p))
+-- p
+\end{code}
+
+\item Regla de la introducción de la doble negación:
+  $$\frac{F}{\neg \neg F} $$
+  Se implementa en Haskell mediante la función \texttt{(introDNeg f)}
+\index{\texttt{introDNeg}}
+\begin{code}
+introDNeg :: Form -> Form
+introDNeg f = Neg (Neg f)
+\end{code}
+
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> introDNeg p
+-- ¬¬p
+\end{code}
+\end{itemize*}
+
+\subsection{Regla de Reducción al absurdo}
+
+\begin{itemize*}
+\item Regla de reducción al absurdo:
+  $$\frac{}{F} $$
+\comentario{ Añadir expresión LaTex}
+Lo implementamos en Haskell mediante la función \texttt{(RedAbsurdo f)}
+
+\index{\texttt{redAbsurdo}}
+\begin{code}
+redAbsurdo :: Form -> Form
+redAbsurdo (Impl (Neg f) contradiccion) = f
+\end{code}
+\end{itemize*}
+
+\subsection{Ley del tercio excluido}
+
+\begin{itemize*}
+\item Ley del tercio excluido:
+ $$ \frac{}{F\vee \neg F} $$
+ Lo implementamos en Haskell mediante la función \texttt{(tercExcluido f)}
+\index{\texttt{tercExcluido}}
+\begin{code}
+tercExcluido :: Form -> Form
+tercExcluido f = Disy [f,Neg f]
+\end{code}
+\end{itemize*}
+\comentario{Revisar y añadir ejemplos}
