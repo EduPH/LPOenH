@@ -328,7 +328,7 @@ mediante la función \texttt{(universoHerbrandForms n fs)}
 -- >>> let f3 = Atom "S" [Ter "g" [a,b]]
 -- >>> universoHerbrandForms 1 [f1,f2,f3]
 -- [a,f[a],b,f[b],g[a,a],g[a,b],g[b,a],g[b,b]]
-\end{codeEJ}
+\end{codeEj}
 
 Siendo su definición
 
@@ -484,7 +484,7 @@ de átomos de Herbrand a través de \texttt{(interpretacionH fs)}
 -- True
 -- >>> iR "P" [Ter "f" [a,a]]
 -- False
-\end{codeEJ}
+\end{codeEj}
 
 Se implementa en Haskell
 
