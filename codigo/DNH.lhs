@@ -592,3 +592,36 @@ tercExcluido f = Disy [f,Neg f]
 \end{code}
 \end{itemize*}
 \comentario{Revisar y añadir ejemplos}
+
+\subsection{Ejemplos}
+
+\begin{itemize*}
+\item Ejemplo:  \framebox{$\neg q \rightarrow \neg p \vdash p \rightarrow \neg \neg q$}
+
+  \begin{enumerate}
+  \item $\neg q \rightarrow \neg p$
+  \item $p$
+  \item $\neg \neg p$
+  \item $\neg \neg q$
+  \item $p \rightarrow \neg \neg q$
+  \end{enumerate}
+
+\begin{code}
+-- | Ejemplo 1
+-- >>> let f1 = Impl (Neg q) (Neg p)
+-- >>> let f2 = p
+-- >>> let f3 = introDNeg p
+-- >>> let f4 = modusTollens f1 f3
+-- >>> let f5 = introCond f2 f4
+-- >>> f1
+-- (¬q⟹¬p)
+-- >>> f2
+-- p
+-- >>> f3
+-- ¬¬p
+-- >>> f4
+-- ¬¬q
+-- >>> f5
+-- (p⟹¬¬q)
+\end{code}
+\end{itemize*}
