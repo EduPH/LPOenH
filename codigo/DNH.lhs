@@ -371,6 +371,30 @@ elimConjD (Conj fs) = last fs
 -- >>> elimConjD f1
 -- q
 \end{code}
+
+\item Ejemplo: \framebox{$p\wedge q, r\vdash q \wedge r $}
+  \begin{enumerate}
+  \item $p\wedge q$
+  \item $r$
+  \item $q$
+  \item $q\wedge r$
+  \end{enumerate}
+  En Haskell sería
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = (Conj [p,q])
+-- >>> let f2 = r
+-- >>> let f3 = elimConjD f1
+-- >>> let f4 = introConj f2 f3
+-- >>> f1
+--  (p⋀q)
+-- >>> f2
+-- r
+-- >>> f3
+-- q
+-- >>> f4
+-- (r⋀q)
+\end{code}
 \end{itemize*}
 
 \subsection{Reglas de eliminación del condicional}
@@ -392,6 +416,40 @@ elimCond  (Impl f1 f2) f |f == f1 = f2
 -- >>> elimCond p (Impl p q)
 -- q
 \end{code}
+\item Ejemplo: $p,p\rightarrow q, p\rightarrow ( q \rightarrow r) \vdash r $
+  \begin{enumerate}
+  \item $p$
+  \item $p\rightarrow q$
+  \item $p\rightarrow (q\rightarrow r)$
+  \item $q$
+  \item $q\rightarrow r$
+  \item $r$
+  \end{enumerate}
+
+En Haskell sería
+
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = p
+-- >>> let f2 = Impl p q
+-- >>> let f3 = Impl p (Impl q r)
+-- >>> let f4 = elimCond f1 f2
+-- >>> let f5 = elimCond f1 f3
+-- >>> let f6 = elimCond f4 f5
+-- >>> f1
+-- p
+-- >>> f2
+-- (p⟹q)
+-- >>> f3
+-- (p⟹(q⟹r))
+-- >>> f4
+-- q
+-- >>> f5
+-- (q⟹r)
+-- >>> f6
+-- r
+\end{code}
+  
 \end{itemize*}
 
 \subsection{Regla de introducción del condicional}
@@ -484,7 +542,8 @@ elimNeg f g | f == (Neg g) || (Neg f) == g = contradiccion
   Lo implementamos en Haskell mediante la función \texttt{(introBicond f g)}
 \begin{code}
 introBicond :: Form -> Form -> Form
-introBicond (Impl f1 f2) (Impl g1 g2) | f1 == g2 && f2 == g1 = Equiv f1 f2
+introBicond (Impl f1 f2) (Impl g1 g2)
+    | f1 == g2 && f2 == g1 = Equiv f1 f2
 \end{code}
 
 \item Ejemplo
