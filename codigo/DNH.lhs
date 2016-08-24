@@ -465,6 +465,30 @@ Lo implementamos en Haskell mediante la función \texttt{(introCond f g)}
 introCond :: Form -> Form -> Form
 introCond f g = Impl f g
 \end{code}
+
+\item Ejemplo: \framebox{$p\rightarrow q \vdash \neg q \rightarrow \neg p$}
+  \begin{enumerate}
+  \item $p \rightarrow q$
+  \item $\neg q$
+  \item $\neg p$
+  \item $\neg q \rightarrow \neg p$
+  \end{enumerate}
+  
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = Impl p q
+-- >>> let f2 = Neg q
+-- >>> let f3 = modusTollens f1 f2
+-- >>> let f4 = introCond f2 f3
+-- >>> f1
+-- (p⟹q)
+-- >>> f2
+-- ¬q
+-- >>> f3
+-- ¬p
+-- >>> f4
+-- (¬q⟹¬p)
+\end{code}  
 \end{itemize*}
 
 \subsection{Reglas de la disyunción}
@@ -488,6 +512,33 @@ introDisy f g = Disy [f,g]
 -- | Ejemplo
 -- >>> introDisy (Disy [p,q]) r
 -- (p⋁(q⋁r))
+\end{code}
+\item Ejemplo: \framebox{$p\vee q \vdash q \vee p$}
+  \begin{enumerate}
+  \item $p\vee q$
+  \item $p$
+  \item $q\vee p$
+  \item $q$
+  \item $q\vee p$
+  \item $q \vee p$
+  \end{enumerate}
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = Disy [p,q]
+-- >>> let f2 = p
+-- >>> let f3 = introDisy f2 q
+-- >>> let f4 = q
+-- >>> let f5 = introDisy f4 p
+-- >>> f1
+-- (p⋁q)
+-- >>> f2
+-- p
+-- >>> f3
+-- (p⋁q)
+-- >>> f4
+-- q
+-- >>> f5
+-- (q⋁p)
 \end{code}
 
 \item Regla de la eliminación de la disyunción:
