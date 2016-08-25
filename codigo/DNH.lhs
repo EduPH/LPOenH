@@ -735,4 +735,69 @@ tercExcluido f = Disy [f,Neg f]
 \end{code}
 \end{itemize*}
 \comentario{Idea: Definir un tipo de dato para una demostración, que muestre
-el rezonamiento. Otra forma sería usar listas. Pendiente: Reflexionar}
+el rezonamiento. Otra forma sería usar listas. Pendiente:
+   Reflexionar. Abajo propuesta}
+
+\section{Definición de razonamientos}
+
+
+\begin{code}
+data Razonamiento = R Int Form
+
+instance Show Razonamiento where
+    show (R n f) = show n ++ ". "++ show f
+\end{code}
+
+Por ejemplo
+
+\begin{code}
+-- | Ejemplo 
+-- >>> R 1 p
+-- 1. p
+\end{code}
+
+
+\begin{code}
+data Razonamientos = Rz [Razonamiento]
+
+instance Show Razonamientos where
+    show (Rz [p]) = show p
+    show (Rz (p:ps)) = show p ++ "\n" ++ show (Rz ps)
+\end{code}
+
+\begin{code}
+-- | Ejemplo
+-- >>> Rz [R 1 p, R 2 q]
+-- 1. p
+-- 2. q
+\end{code}
+
+
+\begin{code}
+deduce :: Int -> Int -> (Form -> Form -> t) -> Razonamientos -> t
+deduce n1 n2 f (Rz rz) = f (aux (rz !! (n1-1))) (aux (rz !! (n2-1)))
+    where
+      aux (R n g) = g
+\end{code}
+
+\begin{code}
+deduccion :: Int -> Int -> (Form -> Form -> Form) 
+                 -> Razonamientos -> Razonamientos
+deduccion n1 n2 f (Rz rz) =  Rz (rz++[R ((length rz)+1) (deduce n1 n2 f (Rz  rz))])
+\end{code}
+
+\begin{code}
+-- | Ejemplo
+-- >>> deduccion 1 2 elimCond (Rz [R 1 p,R 2 (Impl p q)])
+-- 1. p
+-- 2. (p⟹q)
+-- 3. q
+\end{code}
+
+\begin{code}
+premisas :: [Form] -> Razonamientos
+premisas fs = Rz (aux 1 fs)
+    where
+      aux n [f] = [R n f]
+      aux n (f:fs) = (R n f): aux (n+1) fs
+\end{code}
