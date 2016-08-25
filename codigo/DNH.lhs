@@ -456,8 +456,7 @@ En Haskell sería
 
 \begin{itemize*}
 \item Regla de introducción del condicional:
-$$\frac{}{G} $$ 
-\comentario{escribir expresión LaTex}
+$$\frac{\begin{bmatrix}{F}\\{\vdots}\\{G}\end{bmatrix}}{G} $$ 
 Lo implementamos en Haskell mediante la función \texttt{(introCond f g)}
 
 \index{\texttt{introCond}}
@@ -468,10 +467,10 @@ introCond f g = Impl f g
 
 \item Ejemplo: \framebox{$p\rightarrow q \vdash \neg q \rightarrow \neg p$}
   \begin{enumerate}
-  \item $p \rightarrow q$
-  \item $\neg q$
-  \item $\neg p$
-  \item $\neg q \rightarrow \neg p$
+  \item $p \rightarrow q$ \hfill premisa
+  \item $\neg q$ \hfill supuesto
+  \item $\neg p$ \hfill Modus Tollens
+  \item $\neg q \rightarrow \neg p$ \hfill Introd. Condicional
   \end{enumerate}
   
 \begin{code}
@@ -735,3 +734,5 @@ tercExcluido f = Disy [f,Neg f]
 -- (p⟹¬¬q)
 \end{code}
 \end{itemize*}
+\comentario{Idea: Definir un tipo de dato para una demostración, que muestre
+el rezonamiento. Otra forma sería usar listas. Pendiente: Reflexionar}
