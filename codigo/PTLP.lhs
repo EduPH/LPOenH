@@ -736,7 +736,6 @@ Por ejemplo
 -- {{p},{q,r}}
 \end{code}
 
-\comentario{ símbolos de cláusulas no aparecen. Escrito en LaTex (Provisional)}
 Definimos \texttt{(formaClausal f)} que transforma \texttt{f}
 a su forma clausal.
 
