@@ -856,3 +856,30 @@ Por ejemplo
 -- 5. (q⟹r)
 -- 6. r
 \end{code}
+
+
+\comentario{Propuesta de tipo de dato que refleje las reglas aplicadas}
+
+\begin{code}
+
+data Deduccion = D Razonamiento String
+
+instance Show Deduccion where
+    show (D r str) = show r ++ "  " ++ str
+
+data Deducciones = Ds [Deduccion]
+
+instance Show Deducciones where
+    show (Ds [d]) = show d
+    show (Ds ((D (R n f) str):ds)) = 
+        show (R n f) ++ "  " ++ str ++ "\n" ++ show (Ds ds)
+\end{code}
+
+\begin{code}
+-- | Ejemplo
+-- >>> let p1 = R 1 p
+-- >>> let p2 = R 2 q
+-- >>> Ds [D p1 "Premisa", D p2 "Premisa"]
+-- 1. p  Premisa
+-- 2. q  Premisa
+\end{code}
