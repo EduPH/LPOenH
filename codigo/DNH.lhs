@@ -677,8 +677,7 @@ introDNeg f = Neg (Neg f)
 
 \begin{itemize*}
 \item Regla de reducción al absurdo:
-  $$\frac{}{F} $$
-\comentario{ Añadir expresión LaTex}
+  $$\frac{\begin{bmatrix}{\neg F}\\{\vdots}\\{\perp}\end{bmatrix}}{F} $$
 Lo implementamos en Haskell mediante la función \texttt{(RedAbsurdo f)}
 
 \index{\texttt{redAbsurdo}}
@@ -734,18 +733,22 @@ tercExcluido f = Disy [f,Neg f]
 -- (p⟹¬¬q)
 \end{code}
 \end{itemize*}
+
 \comentario{Idea: Definir un tipo de dato para una demostración, que muestre
 el rezonamiento. Otra forma sería usar listas. Pendiente:
    Reflexionar. Abajo propuesta}
 
 \section{Definición de razonamientos}
 
+En esta sección se propone una aplicación directa en Haskell de las
+reglas antes definidas, así como un tipo de dato que represente dicha aplicación.
 
+Para ello, definimos el tipo de dato \texttt{Razonamiento}
 \begin{code}
 data Razonamiento = R Int Form
 
 instance Show Razonamiento where
-    show (R n f) = show n ++ ". "++ show f
+    show (R n f) = show n ++ ". "++ show f 
 \end{code}
 
 Por ejemplo
@@ -756,6 +759,8 @@ Por ejemplo
 -- 1. p
 \end{code}
 
+Definimos el tipo de dato \texttt{Razonamientos} para definir
+una cadena de razonamiento.
 
 \begin{code}
 data Razonamientos = Rz [Razonamiento]
@@ -765,6 +770,8 @@ instance Show Razonamientos where
     show (Rz (p:ps)) = show p ++ "\n" ++ show (Rz ps)
 \end{code}
 
+Por ejemplo
+
 \begin{code}
 -- | Ejemplo
 -- >>> Rz [R 1 p, R 2 q]
@@ -772,19 +779,31 @@ instance Show Razonamientos where
 -- 2. q
 \end{code}
 
+Definimos la función \texttt{(deduce n1 n2 f r)} que aplica la regla
+\texttt{f} a las fórmulas en las posiciones \texttt{n1} y \texttt{n2}, con
+\texttt{r} la lista de razonamientos.
 
+\index{\texttt{deduce}}
 \begin{code}
 deduce :: Int -> Int -> (Form -> Form -> t) -> Razonamientos -> t
-deduce n1 n2 f (Rz rz) = f (aux (rz !! (n1-1))) (aux (rz !! (n2-1)))
+deduce n1 n2 f (Rz rz) = 
+    f (aux (rz !! (n1-1))) (aux (rz !! (n2-1)))
     where
       aux (R n g) = g
 \end{code}
 
+Se define \texttt{(deduccion n1 n2 f r)} que realiza la deducción aplicando una
+regla entre las fórmulas de \texttt{r} y la añade a \texttt{r}.
+
+\index{\texttt{deduccion}}
 \begin{code}
 deduccion :: Int -> Int -> (Form -> Form -> Form) 
                  -> Razonamientos -> Razonamientos
-deduccion n1 n2 f (Rz rz) =  Rz (rz++[R ((length rz)+1) (deduce n1 n2 f (Rz  rz))])
+deduccion n1 n2 f (Rz rz) =  
+    Rz (rz++[R ((length rz)+1) (deduce n1 n2 f (Rz  rz))])
 \end{code}
+
+Por ejemplo
 
 \begin{code}
 -- | Ejemplo
@@ -794,10 +813,46 @@ deduccion n1 n2 f (Rz rz) =  Rz (rz++[R ((length rz)+1) (deduce n1 n2 f (Rz  rz)
 -- 3. q
 \end{code}
 
+Se define la función \texttt{(premisas fs)} que construye las premisas iniciales a partir de
+una lista de fórmulas \texttt{fs}.
+
+\index{\texttt{premisas}}
 \begin{code}
 premisas :: [Form] -> Razonamientos
 premisas fs = Rz (aux 1 fs)
     where
       aux n [f] = [R n f]
       aux n (f:fs) = (R n f): aux (n+1) fs
+\end{code}
+
+Por ejemplo
+
+\begin{code}
+-- | Ejemplo
+-- >>> let premisa1 = premisas [p,Impl p q,Impl p (Impl q r)]
+-- >>> let deduccion1 = deduccion 1 2 elimCond premisa1
+-- >>> let deduccion2 = deduccion 1 3 elimCond deduccion1
+-- >>> let deduccion3 = deduccion 4 5 elimCond deduccion2
+-- >>> premisa1
+-- 1. p
+-- 2. (p⟹q)
+-- 3. (p⟹(q⟹r))
+-- >>> deduccion1
+-- 1. p
+-- 2. (p⟹q)
+-- 3. (p⟹(q⟹r))
+-- 4. q
+-- >>> deduccion2
+-- 1. p
+-- 2. (p⟹q)
+-- 3. (p⟹(q⟹r))
+-- 4. q
+-- 5. (q⟹r)
+-- >>> deduccion3
+-- 1. p
+-- 2. (p⟹q)
+-- 3. (p⟹(q⟹r))
+-- 4. q
+-- 5. (q⟹r)
+-- 6. r
 \end{code}
