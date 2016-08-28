@@ -746,7 +746,11 @@ reglas antes definidas, así como un tipo de dato que represente dicha aplicaci�
 Para ello, definimos el tipo de dato \texttt{Razonamiento}
 \begin{code}
 data Razonamiento = R Int Form
+\end{code}
 
+Para su representación por pantalla
+
+\begin{code}
 instance Show Razonamiento where
     show (R n f) = show n ++ ". "++ show f 
 \end{code}
@@ -757,6 +761,8 @@ Por ejemplo
 -- | Ejemplo 
 -- >>> R 1 p
 -- 1. p
+-- >>> R 1 (Impl p q)
+-- 1. (p⟹q)
 \end{code}
 
 Definimos el tipo de dato \texttt{Razonamientos} para definir
@@ -764,7 +770,11 @@ una cadena de razonamiento.
 
 \begin{code}
 data Razonamientos = Rz [Razonamiento]
+\end{code}
 
+Su representación por pantalla mediante \texttt{show}
+
+\begin{code}
 instance Show Razonamientos where
     show (Rz [p]) = show p
     show (Rz (p:ps)) = show p ++ "\n" ++ show (Rz ps)
@@ -790,6 +800,18 @@ deduce n1 n2 f (Rz rz) =
     f (aux (rz !! (n1-1))) (aux (rz !! (n2-1)))
     where
       aux (R n g) = g
+\end{code}
+
+Por ejemplo
+
+\begin{code}
+-- | Ejemplo
+-- >>> let r1 = Rz [R 1 p,R 2 (Impl p q)]
+-- >>> r1
+-- 1. p
+-- 2. (p⟹q)
+-- >>> deduce 1 2 elimCond r1
+-- q
 \end{code}
 
 Se define \texttt{(deduccion n1 n2 f r)} que realiza la deducción aplicando una
@@ -883,3 +905,4 @@ instance Show Deducciones where
 -- 1. p  Premisa
 -- 2. q  Premisa
 \end{code}
+
