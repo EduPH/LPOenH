@@ -806,3 +806,5 @@ formulaAbierta = not . null . variablesLibres
   codigo> doctest LPH
   Examples: 37  Tried: 37  Errors: 0  Failures: 0
 }
+
+\entrada{Map.lhs}
