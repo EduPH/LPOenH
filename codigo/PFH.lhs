@@ -390,3 +390,5 @@ abecedario, declarando el tipo de dato \texttt{Entidades} contenido en el módul
 En esta sección se introducirán y describirán funciones útiles en la generación
 de ejemplos en tipos de datos abstractos. Estos generadores son útiles
 para las comprobación de propiedades con QuickCheck
+
+\entrada{Map}
