@@ -344,9 +344,9 @@ A continuación se introducen las reglas de la deducción natural.
 \begin{code}
 introConj :: Form -> Form -> Form
 introConj (Conj fs) (Conj gs) = Conj (nub (fs++gs))
-introConj (Conj fs) g = Conj (fs++[g])
-introConj f (Conj gs) = Conj (f:gs)
-introConj f g = Conj [f,g]                                   
+introConj (Conj fs) g = Conj (nub (fs++[g]))
+introConj f (Conj gs) = Conj (nub (f:gs))
+introConj f g = Conj [f,g]      
 \end{code}
 
 \begin{nota}
@@ -373,9 +373,15 @@ introConj f g = Conj [f,g]
 \begin{code}
 elimConjI, elimConjD :: Form -> Form
 elimConjI (Conj fs) = head fs
+elimConjI _ = error "Entrada no valida para esta regla."
 elimConjD (Conj fs) = last fs
+elimConjD _ = error "Entrada no valida para esta regla."
 \end{code}
 
+\begin{nota}
+  La función \texttt{error} permite mostrar un mensaje en el caso de que
+  la regla sea aplicada a fórmulas que no son del tipo al que debe aplicarse.
+\end{nota}
 \item Ejemplo
 \begin{code}
 -- | Ejemplo
@@ -390,10 +396,10 @@ elimConjD (Conj fs) = last fs
 
 \item Ejemplo: \framebox{$p\wedge q, r\vdash q \wedge r $}
   \begin{enumerate}
-  \item $p\wedge q$
-  \item $r$
-  \item $q$
-  \item $q\wedge r$
+  \item $p\wedge q$ \hfill \texttt{Premisa}
+  \item $r$ \hfill \texttt{Premisa}
+  \item $q$ \hfill \texttt{elimConjD 1}
+  \item $q\wedge r$ \hfill \texttt{introConj 2 3}
   \end{enumerate}
   
 En Haskell sería
@@ -420,12 +426,13 @@ En Haskell sería
 \begin{itemize*}
 \item Regla de la eliminación del condicional:
   $$\frac{F\quad F\rightarrow G}{G}$$
-  Lo implementamos en haskell mediante la función \texttt{elimCond f g}
+  Lo implementamos en haskell mediante la función \texttt{(elimCond f g)}
 \index{\texttt{elimCond}}
 \begin{code}
 elimCond :: Form -> Form -> Form
 elimCond  f (Impl f1 f2) |f == f1 = f2
 elimCond  (Impl f1 f2) f |f == f1 = f2
+elimCond _ _ = error "Entrada no valida para esta regla."
 \end{code}
 
 \item Ejemplo
@@ -436,12 +443,12 @@ elimCond  (Impl f1 f2) f |f == f1 = f2
 \end{code}
 \item Ejemplo: $p,p\rightarrow q, p\rightarrow ( q \rightarrow r) \vdash r $
   \begin{enumerate}
-  \item $p$
-  \item $p\rightarrow q$
-  \item $p\rightarrow (q\rightarrow r)$
-  \item $q$
-  \item $q\rightarrow r$
-  \item $r$
+  \item $p$ \hfill \texttt{Premisa}
+  \item $p\rightarrow q$ \hfill \texttt{Premisa}
+  \item $p\rightarrow (q\rightarrow r)$ \hfill \texttt{Premisa}
+  \item $q$ \hfill \texttt{elimCond 1 2}
+  \item $q\rightarrow r$ \hfill \texttt{elimCond 1 3}
+  \item $r$ \hfill \texttt{elimCond 4 5}
   \end{enumerate}
 
 En Haskell sería
@@ -485,13 +492,15 @@ introCond f g = Impl f g
 
 \item Ejemplo: \framebox{$p\rightarrow q \vdash \neg q \rightarrow \neg p$}
   \begin{enumerate}
-  \item $p \rightarrow q$ \hfill premisa
-  \item $\neg q$ \hfill supuesto
-  \item $\neg p$ \hfill Modus Tollens
-  \item $\neg q \rightarrow \neg p$ \hfill Introd. Condicional
+  \item $p \rightarrow q$ \hfill \texttt{Premisa}
+  \item $\neg q$ \hfill \texttt{supuesto}
+  \item $\neg p$ \hfill \texttt{modusTollens 1 2}
+  \item $\neg q \rightarrow \neg p$ \hfill \texttt{introCond 2 3}
   \end{enumerate}
-  
-\begin{code}
+
+  Quedando en Haskell:
+
+  \begin{code}
 -- | Ejemplo
 -- >>> let f1 = Impl p q
 -- >>> let f2 = Neg q
@@ -519,8 +528,9 @@ introCond f g = Impl f g
 \index{\texttt{introDisy}}
 \begin{code}
 introDisy :: Form -> Form -> Form
-introDisy (Disy fs) g = Disy (fs ++ [g])
-introDisy f (Disy gs) = Disy (f:gs)
+introDisy (Disy fs) (Disy gs) = Disy (nub (fs++gs))
+introDisy (Disy fs) g = Disy (nub (fs ++ [g]))
+introDisy f (Disy gs) = Disy (nub (f:gs))
 introDisy f g = Disy [f,g]
 \end{code}
 
@@ -532,12 +542,12 @@ introDisy f g = Disy [f,g]
 \end{code}
 \item Ejemplo: \framebox{$p\vee q \vdash q \vee p$}
   \begin{enumerate}
-  \item $p\vee q$
-  \item $p$
-  \item $q\vee p$
-  \item $q$
-  \item $q\vee p$
-  \item $q \vee p$
+  \item $p\vee q$ \hfill \texttt{Premisa}
+  \item $p$ \hfill \texttt{supuesto}
+  \item $q\vee p$ \hfill \texttt{introDisy 2 q}
+  \item $q$ \hfill \texttt{supuesto}
+  \item $q\vee p$ \hfill \texttt{introDisy 4 q}
+  \item $q \vee p$ \hfill \texttt{elimDisy } $1,2 \rightarrow 3, 4 \rightarrow 5$ 
   \end{enumerate}
 \begin{code}
 -- | Ejemplo
@@ -556,16 +566,29 @@ introDisy f g = Disy [f,g]
 -- q
 -- >>> f5
 -- (q⋁p)
+-- >>> elimDisy f1 (Impl f2 f5) (Impl f4 f5)
+-- (q⋁p)
 \end{code}
 
 \item Regla de la eliminación de la disyunción:
-\comentario{En proceso: elimDisy} 
+  $$\frac{F \vee G \quad \begin{bmatrix}{F}\\{\vdots}\\{H}\end{bmatrix} \quad
+    \begin{bmatrix}{G}\\{\vdots}\\{H}\end{bmatrix}}{H} $$
+  Lo implementamos en Haskell mediante la función \texttt{elimDisy f1 f2 i1 i2}
+\index{\texttt{elimDisy}}
+\begin{code}
+elimDisy :: Form -> Form -> Form -> Form 
+elimDisy (Disy [f,g]) (Impl f1 i1) (Impl g1 i2) 
+    | f == f1 && g == g1 && i1 == i2 = i1
+    | g == f1 && f == g1 && i1 == i2 = i1
+    | otherwise = error "Entrada no valida para esta regla."
+\end{code}
 \end{itemize*}
 
 \subsection{Reglas de la negación}
 
-
-Definimos la contradicción como una fórmula
+\begin{itemize*}
+  
+\item Definimos la contradicción como una fórmula:
 
 \index{\texttt{contradiccion}}
 \begin{code}
@@ -573,7 +596,7 @@ contradiccion :: Form
 contradiccion = Atom "⊥" []
 \end{code}
 
-\begin{itemize*}
+
 \item Regla de eliminación de lo falso:
   $$ \frac{\perp}{F}$$
   Lo implementamos en Haskell mediante la función \texttt{(elimFalso f g)}
