@@ -596,7 +596,6 @@ contradiccion :: Form
 contradiccion = Atom "⊥" []
 \end{code}
 
-
 \item Regla de eliminación de lo falso:
   $$ \frac{\perp}{F}$$
   Lo implementamos en Haskell mediante la función \texttt{(elimFalso f g)}
@@ -623,6 +622,35 @@ elimNeg f g | f == (Neg g) || (Neg f) == g = contradiccion
 -- | Ejemplo 
 -- >>> elimNeg (Neg p) p
 -- ⊥
+\end{code}
+
+\item Ejemplo \framebox{$\neg \vee q \vdash \rightarrow q$}:
+
+\begin{enumerate}
+\item $\neg \vee q$ \hfill \texttt{Premisa}
+\item $p$ \hfill \texttt{supuesto}
+\item $\neg p$ \hfill \texttt{supuesto}
+\item $\perp$ \hfill \texttt{elimNeg 2 3}
+\item $q$ \hfill \texttt{elimFalso 4}
+\item $q$  \hfill \texttt{supuesto}
+\item $q$ \hfill \texttt{elimDisy} $1,3\rightarrow 5,6\rightarrow 6$
+\item $p\rightarrow q$ \hfill \texttt{introCond 2 7}
+\end{enumerate}
+
+En Haskell sería
+
+\begin{code}
+-- | Ejemplo
+-- >>> let f1 = Disy [Neg p, q]
+-- >>> let f2 = p
+-- >>> let f3 = Neg p
+-- >>> let f4 = elimNeg f2 f3
+-- >>> let f5 = elimFalso f4 q
+-- >>> let f6 = q
+-- >>> let f7 = elimDisy f1 (Impl f3 f5) (Impl f6 f6)
+-- >>> let f8 = introCond f2 f7
+-- >>> f8
+-- (p⟹q)
 \end{code}
 \end{itemize*}
 
