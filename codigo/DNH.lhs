@@ -318,7 +318,12 @@ Un ejemplo de una sustitución libre
 
 \section{Reglas de deducción natural}
 
-Se definen los átomos.
+La deducción natural está compuesta de una serie de reglas a través de las cuales,
+partiendo de una fórmula o conjunto de fórmulas, conseguimos deducir otra u otras
+fórmulas.
+
+Se definen los átomos \texttt{p},\texttt{q} y \texttt{r}, que nos servirán
+para la definición de las fórmulas en los ejemplos.
 
 \begin{code}
 p = Atom "p" []
@@ -326,19 +331,28 @@ q = Atom "q" []
 r = Atom "r" []
 \end{code}
 
+A continuación se introducen las reglas de la deducción natural.
+
 \subsection{Reglas de la conjunción}
 
 \begin{itemize*}
 \item Regla de la introducción de la conjunción:
   $$\frac{F\quad G}{F\wedge G}$$
   Se implementa en Haskell mediante la función \texttt{(introConj f g)}
-  \index{\texttt{introConj}}
+  
+\index{\texttt{introConj}}
 \begin{code}
 introConj :: Form -> Form -> Form
+introConj (Conj fs) (Conj gs) = Conj (nub (fs++gs))
 introConj (Conj fs) g = Conj (fs++[g])
 introConj f (Conj gs) = Conj (f:gs)
 introConj f g = Conj [f,g]                                   
 \end{code}
+
+\begin{nota}
+  En la función \texttt{introConj} se distinguen los casos en los que
+  alguna de sus argumentos sean conjunciones para su expresión como única conjunción.
+\end{nota}
 
 \item Ejemplo
 \begin{code}
@@ -370,6 +384,8 @@ elimConjD (Conj fs) = last fs
 -- p
 -- >>> elimConjD f1
 -- q
+-- >>> introConj (Conj [p,q]) (Conj [q,r])
+-- (p⋀(q⋀r))
 \end{code}
 
 \item Ejemplo: \framebox{$p\wedge q, r\vdash q \wedge r $}
@@ -379,7 +395,9 @@ elimConjD (Conj fs) = last fs
   \item $q$
   \item $q\wedge r$
   \end{enumerate}
-  En Haskell sería
+  
+En Haskell sería
+
 \begin{code}
 -- | Ejemplo
 -- >>> let f1 = (Conj [p,q])
