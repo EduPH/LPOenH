@@ -5,9 +5,14 @@ import Data.List
 
 \section{Introducción a Haskell}
 
-Para hacer una introducción intuitiva a Haskell, se proponen a
-una serie de funciones ejemplo.
-A continuación se muestra la definición de una función en Haskell. 
+En esta sección, se introducirán funciones básicas para la programación   
+en Haskell. Como método didáctico, se empleará la definición de   
+funciones ejemplos, así como la redefinición de funciones que Haskell
+ya tiene predefinidas, con el objetivo de que el lector aprenda 
+``\textit{a montar en bici, montando}''.
+
+A continuación se muestra la definición del que constituye nuestro 
+primer ejemplo. 
 \texttt{(cuadrado x)} es el cuadrado de \texttt{x}. Por ejemplo,
 \begin{sesion}
 ghci> cuadrado 3
@@ -15,6 +20,7 @@ ghci> cuadrado 3
 ghci> cuadrado 4
 16
 \end{sesion}
+
 La definición es
 \index{\texttt{cuadrado}}
 \begin{code}
@@ -57,11 +63,12 @@ divisiblePor x n =  x `rem` n == 0
 \end{code}
 
 Hasta ahora hemos trabajado con los tipos de datos \texttt{Int} y
-\texttt{Bool}; es decir, números y booleanos respectivamente. Pero también se
-puede trabajar con otro tipo de dato como son cadenas de caracteres, que son tipo
-\texttt{[Char]} o \texttt{String}. \texttt{(contieneLaLetra xs l)}
-identifica si una palabra contiene una cierta letra \texttt{l} dada. Por
-ejemplo,
+\texttt{Bool}; es decir, números enteros y booleanos respectivamente. 
+Pero también se puede trabajar con otros tipos de datos como son las cadenas 
+de caracteres, que son tipo
+\texttt{[Char]} o \texttt{String}.Definimos la función 
+\texttt{(contieneLaLetra xs l)} que identifica si una palabra contiene una 
+cierta letra \texttt{l} dada. Por ejemplo,
 
 \begin{sesion}
 ghci>  "descartes" `contieneLaLetra` 'e'
@@ -113,8 +120,8 @@ ghci> [x | x <- ["descartes","pitagoras","gauss"], x `contieneLaLetra` 'e']
   funciones ya definidas.
 \end{nota}
 
-Otro ejemplo que nos será importante es poder construir variaciones
-con repeticiones de una lista
+Otro ejemplo, de una mayor dificultad,es la construcción de variaciones
+con repeticiones de una lista. Se define \texttt{(variacionesR n xs)}
 
 \index{\texttt{variacionesR}}
 \begin{code}
@@ -124,6 +131,10 @@ variacionesR 0 _  = [[]]
 variacionesR k xs =
     [z:ys | z <- xs, ys <- variacionesR (k-1) xs]
 \end{code}
+
+\begin{nota}
+  La función \texttt{variacionesR} será util en capítulos posteriores.
+\end{nota}
 
 
 \subsection{Funciones map y filter}
