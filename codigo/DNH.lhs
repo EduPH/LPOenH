@@ -316,6 +316,11 @@ Un ejemplo de una sustitución libre
 -- [z]
 \end{code}
 
+\section{Sustitucion mediante diccionarios}
+
+En esta sección definiremos las sustituciones ,de una manera alternativa, mediante la librería \texttt{Data.Map}. 
+\entrada{SustitucionMap}
+
 \section{Reglas de deducción natural}
 
 La deducción natural está compuesta de una serie de reglas a través de las cuales,
@@ -351,7 +356,7 @@ introConj f g = Conj [f,g]
 
 \begin{nota}
   En la función \texttt{introConj} se distinguen los casos en los que
-  alguna de sus argumentos sean conjunciones para su expresión como única conjunción.
+  alguno de sus argumentos sean conjunciones para su expresión como única conjunción.
 \end{nota}
 
 \item Ejemplo

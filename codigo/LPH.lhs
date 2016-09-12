@@ -91,8 +91,7 @@ a2
 \end{sesion}
 
 \begin{Def}
-  Se dice que \texttt{F} es una \textbf{fórmula} si satisface la siguiente definición
-  inductiva
+  Se dice que \texttt{F} es una \textbf{fórmula} si satisface la siguiente definición inductiva
   \begin{enumerate}
   \item Las variables proposicionales son fórmulas atómicas.
   \item Si $F$ y $G$ son fórmulas, entonces $\neg F$, $(F \wedge G)$,
@@ -262,8 +261,7 @@ type InterpretacionR a = String -> [a] -> Bool
 \end{code}
 
 Definimos la función \texttt{(valor u i s form)} que calcula el valor de una
-fórmula en un universo \texttt{u}, con una interpretación \texttt{i}, respecto de la
-asignación \texttt{s}.
+fórmula en un universo \texttt{u}, con una interpretación \texttt{i}, respecto de la asignación \texttt{s}.
 
 \index{\texttt{valor}}
 \begin{code}
