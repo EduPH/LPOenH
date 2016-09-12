@@ -772,8 +772,14 @@ redAbsurdo (Impl (Neg f) contradiccion) = f
 tercExcluido :: Form -> Form
 tercExcluido f = Disy [f,Neg f]
 \end{code}
+\item Ejemplo
+\begin{code}
+-- | Ejemplo
+-- >>> tercExcluido p
+-- (p⋁¬p)
+\end{code}
 \end{itemize*}
-\comentario{Revisar y añadir ejemplos}
+
 
 \subsection{Ejemplos}
 
@@ -814,8 +820,7 @@ el rezonamiento. Otra forma sería usar listas. Pendiente:
 
 \section{Definición de razonamientos}
 
-En esta sección se propone una aplicación directa en Haskell de las
-reglas antes definidas, así como un tipo de dato que represente dicha aplicación.
+En esta sección se propone una aplicación directa en Haskell de las reglas antes definidas, así como un tipo de dato que represente dicha aplicación.
 
 Para ello, definimos el tipo de dato \texttt{Razonamiento}
 \begin{code}
@@ -863,9 +868,7 @@ Por ejemplo
 -- 2. q
 \end{code}
 
-Definimos la función \texttt{(deduce n1 n2 f r)} que aplica la regla
-\texttt{f} a las fórmulas en las posiciones \texttt{n1} y \texttt{n2}, con
-\texttt{r} la lista de razonamientos.
+Definimos la función \texttt{(deduce n1 n2 f r)} que aplica la regla \texttt{f} a las fórmulas en las posiciones \texttt{n1} y \texttt{n2}, con \texttt{r} la lista de razonamientos.
 
 \index{\texttt{deduce}}
 \begin{code}
@@ -909,8 +912,7 @@ Por ejemplo
 -- 3. q
 \end{code}
 
-Se define la función \texttt{(premisas fs)} que construye las premisas iniciales a partir de
-una lista de fórmulas \texttt{fs}.
+Se define la función \texttt{(premisas fs)} que construye las premisas iniciales a partir de una lista de fórmulas \texttt{fs}.
 
 \index{\texttt{premisas}}
 \begin{code}
@@ -979,4 +981,6 @@ instance Show Deducciones where
 -- 1. p  Premisa
 -- 2. q  Premisa
 \end{code}
+
+
 
