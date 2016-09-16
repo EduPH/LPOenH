@@ -41,13 +41,13 @@ Dada una signatura, se procede a definir la función \texttt{(unionSignatura s1 
 que une las signaturas \texttt{s1} y \texttt{s2}.
 
 \index{\texttt{unionSignatura}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let s1 = (["a"],[("f",1)],[])
 -- >>> let s2 = (["b","c"],[("f",1),("g",2)],[("R",2)])
 -- >>> unionSignatura s1 s2
 -- (["a","b","c"],[("f",1),("g",2)],[("R",2)])
-\end{codeEj}
+\end{code}
 
 Su definición es
 
@@ -64,14 +64,14 @@ Generalizamos la función anterior a la unión de una lista de signaturas
 mediante la función \texttt{(unionSignaturas ss)}.
 
 \index{\texttt{unionSignaturas}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let s1 = (["a"],[("f",1)],[])
 -- >>> let s2 = (["b","c"],[("f",1),("g",2)],[("R",2)])
 -- >>> let s3 = (["a","c"],[],[("P",1)])
 -- >>> unionSignaturas [s1,s2,s3]
 -- (["a","b","c"],[("f",1),("g",2)],[("R",2),("P",1)])
-\end{codeEj}
+\end{code}
 
 Su definición es
 
@@ -84,7 +84,7 @@ Se define la función \texttt{(signaturaTerm t)} que determina la
 signatura del término \texttt{t}.
 
 \index{\texttt{signaturaTerm}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> signaturaTerm tx
 -- ([],[],[])
@@ -95,7 +95,7 @@ signatura del término \texttt{t}.
 -- f[a,x,g[b,a]]
 -- >>> signaturaTerm t1
 -- (["a","b"],[("f",3),("g",2)],[])
-\end{codeEj}
+\end{code}
 
 Su definición es
 
@@ -114,7 +114,7 @@ se define la signatura de una fórmula \texttt{f} mediante la función
 \texttt{(signaturaForm f)}.
 
 \index{\texttt{signaturaForm}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "R" [a,tx,Ter "g" [b,a]]
 -- >>> f1
@@ -139,7 +139,7 @@ se define la signatura de una fórmula \texttt{f} mediante la función
 -- ∀x (R[a,x,g[b,a]]⋀(P[b]⋀(R[a,x,g[b,a]]⟹P[b])))
 -- >>> signaturaForm f5
 -- (["a","b"],[("g",2)],[("R",3),("P",1)])
-\end{codeEj}
+\end{code}
 
 Su definición es
 
@@ -170,14 +170,14 @@ Generalizamos la función anterior a una lista de fórmulas con la
 función \texttt{(signaturaForms fs)}.
 
 \index{\texttt{signaturaForms}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "R" [Ter "f" [tx]]
 -- >>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
 -- >>> let f3 = Atom "S" [Ter "g" [a,b]]
 -- >>> signaturaForms [f1,f2,f3]
 -- (["a","b"],[("f",2),("g",2)],[("R",1),("Q",2),("S",1)])
-\end{codeEj}
+\end{code}
 
 Su definición es 
 
@@ -212,7 +212,7 @@ Definimos la función \texttt{(universoHerbrand n s)} que es el universo de
 Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 
 \index{\texttt{universoHerbrand}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos 
 -- >>> let s1 = (["a","b","c"],[],[])
 -- >>> universoHerbrand 0 s1 
@@ -260,7 +260,7 @@ Herbrand de la signatura \texttt{s} a nivel \texttt{n}.
 --  f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
 --  f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
 --  f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
-\end{codeEj}
+\end{code}
 
 Su implementación es
 
@@ -280,7 +280,7 @@ Se define el universo de Herbrand de una fórmula \texttt{f} a nivel
 \texttt{n} mediante la función \texttt{(universoHerbrandForm n f)}.
 
 \index{\texttt{universoHerbrandForm}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "R" [a,b,c]
 -- >>> universoHerbrandForm 1 f1
@@ -309,7 +309,7 @@ Se define el universo de Herbrand de una fórmula \texttt{f} a nivel
 --  f[f[b,a],f[b,a]],f[f[b,a],f[b,b]],f[f[b,b],a],
 --  f[f[b,b],b],f[f[b,b],f[a,a]],f[f[b,b],f[a,b]],
 --  f[f[b,b],f[b,a]],f[f[b,b],f[b,b]]]
-\end{codeEj}
+\end{code}
 
 A continuación, su definición es
 
@@ -323,14 +323,14 @@ Se generaliza la definición anterior a una lista de fórmulas
 mediante la función \texttt{(universoHerbrandForms n fs)}
 
 \index{\texttt{universoHerbrandForms}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "R" [Ter "f" [tx]]
 -- >>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
 -- >>> let f3 = Atom "S" [Ter "g" [a,b]]
 -- >>> universoHerbrandForms 1 [f1,f2,f3]
 -- [a,f[a],b,f[b],g[a,a],g[a,b],g[b,a],g[b,b]]
-\end{codeEj}
+\end{code}
 
 Siendo su definición
 
@@ -367,7 +367,7 @@ Implementamos la base de herbrand a nivel \texttt{n} de la signatura
 \texttt{s} mediante la función \texttt{(baseHerbrand n s)}
 
 \index{\texttt{baseHerbrand}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let s1 = (["a","b","c"],[],[("P",1)])
 -- >>> baseHerbrand 0 s1
@@ -380,7 +380,7 @@ Implementamos la base de herbrand a nivel \texttt{n} de la signatura
 -- [P[a],P[b],P[c],P[f[a]],P[f[b]],P[f[c]],Q[a],Q[b],
 --  Q[c],Q[f[a]],Q[f[b]],Q[f[c]],R[a],R[b],R[c],R[f[a]],
 --  R[f[b]],R[f[c]]]
-\end{codeEj}
+\end{code}
 
 Se implementa en Haskell a continuación
 
@@ -397,14 +397,14 @@ Se define la base de Herbrand de una fórmula \texttt{f} a nivel
 \texttt{n} mediante \texttt{(baseHerbrandForm n f)}.
 
 \index{\texttt{baseHerbrandForm}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "P" [Ter "f" [tx]]
 -- >>> f1
 -- P[f[x]]
 -- >>> baseHerbrandForm 2 f1
 -- [P[a],P[f[a]],P[f[f[a]]]]
-\end{codeEj}
+\end{code}
 
 Su definición es
 
@@ -418,13 +418,13 @@ Generalizamos la función anterior a una lista de fórmulas
 definiendo \texttt{(baseHerbrandForms n fs)}
 
 \index{\texttt{baseHerbrandForms}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "P" [Ter "f" [tx]]
 -- >>> let f2 = Atom "Q" [Ter "g" [b]]
 -- >>> baseHerbrandForms 1 [f1,f2]
 -- [P[b],P[f[b]],P[g[b]],Q[b],Q[f[b]],Q[g[b]]]
-\end{codeEj}
+\end{code}
 
 Su definición es
 
@@ -470,7 +470,7 @@ Se define la interpretación de Herbrand de un conjunto
 de átomos de Herbrand a través de \texttt{(interpretacionH fs)}
 
 \index{\texttt{interpretacionH}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Atom "P" [a]
 -- >>> let f2 = Atom "P" [Ter "f" [a,b]]
@@ -486,7 +486,7 @@ de átomos de Herbrand a través de \texttt{(interpretacionH fs)}
 -- True
 -- >>> iR "P" [Ter "f" [a,a]]
 -- False
-\end{codeEj}
+\end{code}
 
 Se implementa en Haskell
 
@@ -532,7 +532,7 @@ Herbrand de la fórmula \texttt{f} que son modelos de \texttt{f}
 con la función \texttt{(modelosHForm n f)}.
 
 \index{\texttt{modelosHForm}}
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = Disy [Atom "P" [a], Atom "P" [b]]
 -- >>> f1
@@ -558,7 +558,7 @@ con la función \texttt{(modelosHForm n f)}.
 -- [[],[Q[a]],[Q[f[a]]],[P[a],Q[f[a]]],[Q[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
 -- >>> length (modelosHForm 2 f4)
 -- 18
-\end{codeEj}
+\end{code}
 
 Lo definimos en Haskell
 
@@ -574,7 +574,7 @@ modelosHForm n f =
 Generalizamos la definición anterior a una lista de fórmulas mediante
 la función \texttt{(modelosH n fs)}.
 
-\begin{codeEj}
+\begin{code}
 -- | Ejemplos
 -- >>> let f1 = PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [Ter "f" [tx]]))
 -- >>> f1
@@ -586,7 +586,8 @@ la función \texttt{(modelosH n fs)}.
 -- []
 -- >>> modelosH 1 [f1,f2]
 -- [[P[a],Q[f[a]]],[P[a],Q[a],Q[f[a]]]]
-\end{codeEj}
+\end{code}
+
 
 Su definición es
 
