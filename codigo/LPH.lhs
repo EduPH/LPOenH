@@ -17,24 +17,25 @@ import Text.PrettyPrint.GenericPretty
 \end{code}
 
 Los elementos básicos de las fórmulas en la lógica de primer orden, así como en
-la lógica proposicional son las variables.
+la lógica proposicional son las variables. Por ello, definimos un tipo   
+de dato para las variables. 
 
-Definimos un tipo de dato para las variables. Una variable estará compuesta
-por:
+Una variable estará compuesta por un nombre y un índice, es decir, nombraremos las
+variables como \texttt{x1,a1,...}
 
-Un \texttt{nombre}, que será una lista de caracteres.
+El tipo de dato para el \texttt{nombre} lo definimos como una lista de caracteres
 
 \begin{code}
 type Nombre = String
 \end{code}
 
-Un \texttt{índice}, lista de enteros.
+El tipo de dato para los \texttt{índices} lo definimos como lista de enteros.
 
 \begin{code}
 type Indice = [Int]
 \end{code}
 
-Quedando el tipo de dato \texttt{Variable}
+Quedando el tipo de dato compuesto \texttt{Variable} como
 
 \begin{code}
 data Variable = Variable Nombre Indice
@@ -168,6 +169,9 @@ simetrica = ParaTodo x (ParaTodo y ( Atomo "R" [x,y] `Implica`
   \end{enumerate}
 \end{Def}
 
+Para el manejo de estructuras del lenguaje, vamos a definir tipos de datos  para cada 
+uno de sus elementos. 
+
 Definimos el tipo de dato relativo al universo como una
 lista de elementos.
 
@@ -207,7 +211,8 @@ determinando si la fórmula es verdadera o falsa, bajo esa interpretación.
 \end{Def}
 
 A continuación, presentamos una tabla de valores de las distintas conectivas
-lógicas según las interpretaciones de \texttt{P} y \texttt{Q}. Falso lo
+lógicas según las interpretaciones de \texttt{P} y \texttt{Q}. \texttt{P} y \texttt{Q} tienen 
+dos posibles interpretaciones: Falso o verdadero. Falso lo
 representamos mediante el 0, y verdadero mediante el 1.
 
 \begin{center}
@@ -285,7 +290,8 @@ Empleando las entidades y los predicados definidos en los módulos
 \texttt{Dominio} y \texttt{Modelo}, establecemos un ejemplo del valor de una
 interpretación en una fórmula.
 
-Primero definimos la fórmula a interpretar y dos posibles interprestaciones
+Primero definimos la fórmula a interpretar, \texttt{formula1}, y dos posibles interpretaciones
+\texttt{interpretacion1} e \texttt{interpretacion2}.
 
 \begin{code}
 formula1 :: Formula
@@ -303,7 +309,7 @@ interpretacion2 _ _     = False
 \end{code}
 
 Tomando como universo todas las entidades, menos la que denotamos
-\texttt{Inespecífico}, se tienen los siguiente evaluaciones
+\texttt{Inespecífico}, se tienen las siguientes evaluaciones
 \begin{code}
 -- | Evaluaciones
 -- >>> valor (take 26 entidades) interpretacion1 asignacion formula1
@@ -330,7 +336,7 @@ consideraremos cualquier término.
 \end{Def}
 
 Definimos un tipo de dato para los términos que serán la base para la
-definición de fórmulas en lógica de primer orden que no están compuestas sólo
+definición de aquellas fórmulas de la lógica de primer orden que no están compuestas sólo
 por variables.
 
 \begin{code}
@@ -391,8 +397,8 @@ esVariable _       = False
 \end{code}
 
 Ahora, creamos el tipo de dato \texttt{Form} de manera análoga a como lo
-hicimos en la sección anterior considerando simplemente variables, pero en este
-caso considerando cualquier término.
+hicimos en la sección anterior , pero en este caso considerando cualquier 
+término.
 
 \begin{code}
 data Form = Atom Nombre [Termino]
@@ -423,11 +429,6 @@ Y procedemos análogamente a la sección enterior, definiendo la representación
 fórmulas por pantalla.
 
 \begin{code}
--- | Ejemplos
--- >>> formula2
--- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formula3
--- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 instance Show Form where
     show (Atom r [])   = r
     show (Atom r ts)   = r ++ show ts
@@ -449,8 +450,18 @@ instance Out Form where
   docPrec _ = doc
 \end{code}
 
-Para la interpretación de los símbolos funcionales se define un nuevo tipo de
-dato
+Quedando las fórmulas ejemplo antes definidas de la siguiente manera
+
+\begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+\end{code}
+
+Previamente hemos definido \texttt{InterpretacionR}, ahora para la interpretación de los símbolos 
+funcionales se define un nuevo tipo de dato, \texttt{InterpretacionF}.
 
 \begin{code}
 type InterpretacionF a = String -> [a] -> a
