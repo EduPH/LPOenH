@@ -1,4 +1,3 @@
-
 \begin{code}
 module SustDiccionario where
 import LPH
@@ -13,4 +12,4 @@ Debido a que muchas funciones de esta librería coinciden
 con funciones definidas en \texttt{prelude}, ésta se suele
 importar \texttt{qualified}.
 
-\comentario{no compatible con nuestra definición de término, hay que adaptarlo}
+\comentario{No compatible con nuestra definición de término, hay que adaptarlo}

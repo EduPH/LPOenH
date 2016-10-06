@@ -50,7 +50,7 @@ instance Show Variable where
   show (Variable nombre [])  = nombre
   show (Variable nombre [i]) = nombre ++ show i
   show (Variable nombre is)  = nombre ++ showInts is
-    where showInts []     = ""
+    where showInts []      = ""
           showInts [i]     = show i
           showInts (i:is') = show i ++ "_" ++ showInts is'
 
@@ -172,8 +172,7 @@ simetrica = ParaTodo x (ParaTodo y ( Atomo "R" [x,y] `Implica`
 Para el manejo de estructuras del lenguaje, vamos a definir tipos de datos  para cada 
 uno de sus elementos. 
 
-Definimos el tipo de dato relativo al universo como una
-lista de elementos.
+Definimos el tipo de dato relativo al universo como una lista de elementos.
 
 \begin{code}
 type Universo a = [a] 
@@ -266,7 +265,8 @@ type InterpretacionR a = String -> [a] -> Bool
 \end{code}
 
 Definimos la función \texttt{(valor u i s form)} que calcula el valor de una
-fórmula en un universo \texttt{u}, con una interpretación \texttt{i}, respecto de la asignación \texttt{s}.
+fórmula en un universo \texttt{u}, con una interpretación \texttt{i}, respecto
+de la asignación \texttt{s}.
 
 \index{\texttt{valor}}
 \begin{code}
@@ -467,8 +467,8 @@ funcionales se define un nuevo tipo de dato, \texttt{InterpretacionF}.
 type InterpretacionF a = String -> [a] -> a
 \end{code}
 
-Para interpretar las fórmulas, se necesita primero una
-interpretación del valor en los términos.
+Para interpretar las fórmulas, se necesita primero una interpretación del valor
+en los términos.
 
 \begin{Def}
   Dada una estructura $\mathcal{I}=(U,I)$ de $L$ y una asignación $A$ en

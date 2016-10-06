@@ -54,8 +54,10 @@ igual.
 hacerApropiada :: Sust -> Sust
 hacerApropiada [] = []
 hacerApropiada (x:xs) | Var (fst x) /= snd x = x: hacerApropiada xs
-                      | otherwise = hacerApropiada xs
+                      | otherwise            = hacerApropiada xs
 \end{code}
+
+\comentario{La definición de hacerApropiada por comprensión es más simple.}
 
 Por ejemplo,
 
@@ -86,16 +88,15 @@ Por ejemplo,
 -- | Ejemplos
 -- >>> dominio [(x,tx)]           
 -- [x]
--- >>> dominio [(x,tx),(x,ty)]    
--- [x]
+-- >>> dominio [(x,tx),(z,ty)]    
+-- [x,z]
 -- >>> recorrido [(x,tx)]         
 -- [x]
--- >>> recorrido [(x,tx),(x,ty)]  
+-- >>> recorrido [(x,tx),(z,ty)]  
 -- [x,y]
 \end{code}
 
-
-Posteriormente, se define una función que hace la sustitución de una variable
+Posteriormente, se define una función que aplica la sustitución a una variable
 concreta. La denotamos \texttt{(sustituyeVar sust var)}
 
 \begin{code}
@@ -318,7 +319,8 @@ Un ejemplo de una sustitución libre
 
 \section{Sustitucion mediante diccionarios}
 
-En esta sección definiremos las sustituciones ,de una manera alternativa, mediante la librería \texttt{Data.Map}. 
+En esta sección definiremos las sustituciones ,de una manera alternativa,
+mediante la librería \texttt{Data.Map}.
 \entrada{SustitucionMap}
 
 \section{Reglas de deducción natural}
@@ -349,9 +351,9 @@ A continuación se introducen las reglas de la deducción natural.
 \begin{code}
 introConj :: Form -> Form -> Form
 introConj (Conj fs) (Conj gs) = Conj (nub (fs++gs))
-introConj (Conj fs) g = Conj (nub (fs++[g]))
-introConj f (Conj gs) = Conj (nub (f:gs))
-introConj f g = Conj [f,g]      
+introConj (Conj fs) g         = Conj (nub (fs++[g]))
+introConj f (Conj gs)         = Conj (nub (f:gs))
+introConj f g                 = Conj [f,g]      
 \end{code}
 
 \begin{nota}
@@ -378,9 +380,9 @@ introConj f g = Conj [f,g]
 \begin{code}
 elimConjI, elimConjD :: Form -> Form
 elimConjI (Conj fs) = head fs
-elimConjI _ = error "Entrada no valida para esta regla."
+elimConjI _         = error "Entrada no valida para esta regla."
 elimConjD (Conj fs) = last fs
-elimConjD _ = error "Entrada no valida para esta regla."
+elimConjD _         = error "Entrada no valida para esta regla."
 \end{code}
 
 \begin{nota}
@@ -404,7 +406,7 @@ elimConjD _ = error "Entrada no valida para esta regla."
   \item $p\wedge q$ \hfill \texttt{Premisa}
   \item $r$ \hfill \texttt{Premisa}
   \item $q$ \hfill \texttt{elimConjD 1}
-  \item $q\wedge r$ \hfill \texttt{introConj 2 3}
+  \item $r \wedge q$ \hfill \texttt{introConj 2 3}
   \end{enumerate}
   
 En Haskell sería
@@ -431,13 +433,13 @@ En Haskell sería
 \begin{itemize*}
 \item Regla de la eliminación del condicional:
   $$\frac{F\quad F\rightarrow G}{G}$$
-  Lo implementamos en haskell mediante la función \texttt{(elimCond f g)}
+  Lo implementamos en Haskell mediante la función \texttt{(elimCond f g)}
 \index{\texttt{elimCond}}
 \begin{code}
 elimCond :: Form -> Form -> Form
-elimCond  f (Impl f1 f2) |f == f1 = f2
-elimCond  (Impl f1 f2) f |f == f1 = f2
-elimCond _ _ = error "Entrada no valida para esta regla."
+elimCond  f (Impl f1 f2) | f == f1 = f2
+elimCond  (Impl f1 f2) f | f == f1 = f2
+elimCond _ _                       = error "Entrada no valida para esta regla."
 \end{code}
 
 \item Ejemplo
@@ -486,7 +488,7 @@ En Haskell sería
 
 \begin{itemize*}
 \item Regla de introducción del condicional:
-$$\frac{\begin{bmatrix}{F}\\{\vdots}\\{G}\end{bmatrix}}{G} $$ 
+$$\frac{\begin{bmatrix}{F}\\{\vdots}\\{G}\end{bmatrix}}{F \to G} $$ 
 Lo implementamos en Haskell mediante la función \texttt{(introCond f g)}
 
 \index{\texttt{introCond}}

@@ -6,6 +6,7 @@
 ** [[./texto/Programacion_funcional_con_Haskell.tex][Programacion_funcional_con_Haskell.tex]]
   + [[./codigo/PFH.lhs][PFH.lhs]]
     + [[./codigo/Dominio.lhs][Dominio.lhs]]
+  + [[./codigo/Map.lhs][Librería Data.Map]].  
 
 ** [[./texto/Sintaxis_semantica_LPO.tex][Sintaxis_semantica_LPO.tex]]
   + [[./codigo/Modelo.lhs][Modelo.lhs]]
@@ -13,6 +14,7 @@
 
 ** [[./texto/Deduccion_natural_LPO.tex][Deduccion_natural_LPO.tex]]
   + [[./codigo/DNH.lhs][DNH.lhs]]
+  + [[./codigo/SustitucionMap.lhs][Sustituciones con diccionarios]].
 
 ** [[./texto/Prueba_de_teoremas_LP.tex][Prueba_de_teoremas_LP.tex]]
   + [[./codigo/PTLP.lhs][PTLP.lhs]]

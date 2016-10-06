@@ -103,8 +103,8 @@ Una lista por comprensión es parecido a su expresión como conjunto:
 
 $$\{ x | x \in A, P(x) \} $$
 
-Se puede leer de manera intuitiva como: "tomar aquellos $x$ del conjunto $A$
-tales que cumplen una cierta propiedad $P$". En Haskell se representa
+Se puede leer de manera intuitiva como: ``tomar aquellos $x$ del conjunto $A$
+tales que cumplen una cierta propiedad $P$''. En Haskell se representa
 $$[x | x \leftarrow \texttt{lista}, \texttt{ condiciones que debe cumplir} ]$$
 
 Algunos ejemplos son:
@@ -135,7 +135,6 @@ variacionesR k xs =
 \begin{nota}
   La función \texttt{variacionesR} será util en capítulos posteriores.
 \end{nota}
-
 
 \subsection{Funciones map y filter}
 
@@ -200,8 +199,8 @@ g x | x /= 0    = 5
   
 \subsection{n-uplas}
 
-Una n-upla es un elemento del tipo $(a_1,\dots,a_n)$ y existen una serie de funciones
-para el empleo de las dos-uplas $(a_1,a_2)$. Dichas funciones están predefinidas bajo
+Una $n$--upla es un elemento del tipo $(a_1,\dots,a_n)$ y existen una serie de funciones
+para el empleo de los pares $(a_1,a_2)$. Dichas funciones están predefinidas bajo
 los nombres \texttt{fst} y \texttt{snd}, y las redefinimos como \texttt{(primerElemento)}
 y \texttt{(segundoElemento)} respectivamente.
 \index{\texttt{primerElemento}}
@@ -209,6 +208,7 @@ y \texttt{(segundoElemento)} respectivamente.
 \begin{code}
 primerElemento :: (a,b) -> a
 primerElemento (x,_) = x
+
 segundoElemento :: (a,b) -> b
 segundoElemento (_,y) = y
 \end{code}
