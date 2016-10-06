@@ -24,3 +24,13 @@
   [[http://bit.ly/29ptd1t][conjuntos]], [[http://bit.ly/29okEHM][tablas]], [[http://bit.ly/29okq3e][árboles binarios de búsqueda]], [[http://bit.ly/29okjVy][montículos]], [[http://bit.ly/29okv72][polinomios]],
   [[http://bit.ly/29pt7GK][árboles binarios]], [[http://bit.ly/29ptIIO][relaciones binarias]] y [[http://bit.ly/29ok2BI][grafos]].
 
+* Sobre deducción natural en Haskell
++ [[http://web.cecs.pdx.edu/~sheard/course/LogicAndProgLang/index.html][Mathematical Logic and Programming Languages]]:
+  + [[http://web.cecs.pdx.edu/~sheard/course/LogicAndProgLang/notes/L03ProofSystems.pdf][Notes on Proof Systems]].
+  + [[http://bit.ly/2dhAJg9][Haskell code for the natural deduction checker]].
++ [[http://www.dcs.gla.ac.uk/~jtod/discrete-mathematics/][Discrete Mathematics Using a Computer]].
+
+* Sobre demostradores en Haskell
++ [[http://www.cs.pomona.edu/~kim/CSC181S16/docs/TOTP.pdf][Tutorial on Theorem Proving]] de Jan van Eijck
++ [[http://ecaustin.github.io/haskhol/papers/austin-thesis.pdf][HaskHOL: A Haskell Hosted Domain Specific Language for Higher-Order Logic
+  Theorem Proving]].
