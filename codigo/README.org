@@ -4,6 +4,6 @@ Este directorio contiene el código Haskell del proyecto. Su contenido es
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/LPH.lhs][LPH.lhs]] :: Sintaxis y semántica de la lógica de primer orden.
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/Generadores.lhs][Generadores.lhs]] :: Generadores de términos y fórmulas.
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/Dominio.lhs][Dominio.lhs]] :: Dominio de entidades.
-+ [[https://github.com/EduPH/LPOenH/blob/master/codigo/Modelo.lhs][Modelo.lhs]] :: Modelo botánio.
++ [[https://github.com/EduPH/LPOenH/blob/master/codigo/Modelo.lhs][Modelo.lhs]] :: Modelo botánico.
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/PTLP.lhs][PTLP.lhs]] :: Demostración de teoremas mediante tableros semánticos.
 
