@@ -8,23 +8,30 @@ import Text.PrettyPrint.GenericPretty
 
 Propuesta para la construcción de la deducción natural. La idea es          
 construir los tipos de datos necesarios para la representación de la          
-deducción natural a partir de un tipo de dato para las reglas
+deducción natural a partir de un tipo de dato para las reglas. Y otro
+tipo de dato llamado Deducción formado por una lista de premisas y cosas ya deducidas, y otra lista de supuestos, además de una lista de reglas. 
+
 \begin{code}
-data Regla = Premisa 
-            | IntroConj Form Form
-            | ElimConj Form Form
+data Reglas = IntroConj Form Form
+            | ElimConjI Form Form
+            | ElimConjD Form Form
+            | ElimDobleNeg Form
+            | IntroDobleNeg Form
+            | ElimImpl Form Form
+            | MT Form Form
+            | IntroImpl Form [Reglas]
+            | IntroDisyI Form Form
+            | IntroDisyD Form Form
+            | ElimDisy Form [Reglas] Form [Reglas]
+            | ElimNeg Form Form -- Falta elim. de lo falso
+            | IntroNeg  Form [Reglas]
+            | IntroEquiv Form Form
+            | ElimEquivI Form
+            | ElimEquivD Form 
+            
+data Deduccion = D [Form] [Form] [Reglas]
 
-data Instancia = I Form Regla
-data Razonamiento = Rs [Instancia]
+verifica :: Deduccion -> Bool
+verifica = undefined
 
-instance Show Regla where
-    show Premisa = "Premisa"
-    show (IntroConj f g) = "⋀i"++" ( " ++ show f ++" ) " ++ " ( " ++
-                           show f++ " )" -- Se intentará que en vez de
-                                         -- mostrar fórmulas completas,
-                                         -- simplemente muestre la
-                                         -- posición de las fórmulas que usa.
-
-instance Show Instancia where
-    show (I f r) = show f ++" . " ++ show r
 \end{code}
