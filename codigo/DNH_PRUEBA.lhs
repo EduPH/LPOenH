@@ -19,12 +19,12 @@ data Reglas = IntroConj Form Form
             | IntroDobleNeg Form
             | ElimImpl Form Form
             | MT Form Form
-            | IntroImpl Form [Reglas]
+            | IntroImpl [Reglas]
             | IntroDisyI Form Form
             | IntroDisyD Form Form
-            | ElimDisy Form [Reglas] Form [Reglas]
+            | ElimDisy [Reglas] 
             | ElimNeg Form Form -- Falta elim. de lo falso
-            | IntroNeg  Form [Reglas]
+            | IntroNeg [Reglas]
             | IntroEquiv Form Form
             | ElimEquivI Form
             | ElimEquivD Form 
