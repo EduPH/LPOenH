@@ -61,4 +61,21 @@ verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
         verifica (D pr (g:sp) rs)
     | otherwise = error "No se puede aplicar la regla"
 verifica (D pr sp ((MT f g):rs)) = undefined
+verifica (D pr sp ((IntroImpl f g):rs))
+    | elem f sp && elem g sp = (D ((Impl f g):pr) (quita [f,g] sp) rs)
+    | otherwise = error "No se puede aplicar la regla"
+
+quita [] ys = ys
+quita (x:xs) ys = quita xs (delete x ys)
+
+
+-- EN PROCESO
+instance Show Reglas where
+    show (IntroConj f g) = "⋀i. "++ (show f)++ " , "++ (show g)
+    show (ElimConjI f) = "⋀e. " ++ (show f)
+instance Show Deduccion where
+    show (D (p:pr) (s:sp) (r:rs)) = "Premisas  |  Supuestos  | Reglas"++
+                                    "\n"++ (show p) ++ "    " ++ (show s)
+                                          ++"   " ++ (show r) ++ "\n" ++
+                                                  show (D pr sp rs)
 \end{code} 
