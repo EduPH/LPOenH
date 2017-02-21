@@ -26,6 +26,7 @@ data Reglas = Suponer Form --
             | ElimDisy Form --
             | ElimNeg Form Form -- Falta elim. de lo falso
             | IntroNeg Form --
+            | ElimContrad Form 
             | IntroEquiv Form Form
             | ElimEquivI Form
             | ElimEquivD Form 
@@ -95,6 +96,10 @@ verifica (D pr sp ((ElimNeg f):rs))
     | elem f (pr++sp) && elem (Neg f) (pr++sp) = 
         verifica (D (contradiccion:pr) sp rs)
     | otherwise = error "No se puede aplicar ElimNeg"
+
+verifica (D pr sp ((ElimContrad f):rs))
+    | elem contradiccion (pr++sp) = verifica (D (f:pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimContrad"
 \end{code} 
 
 Funciones auxiliares (quita xs ys) y (pertenece xs ys)
