@@ -23,59 +23,68 @@ data Reglas = Suponer Form
             | IntroImpl Form Form
             | IntroDisyI Form Form
             | IntroDisyD Form Form
-            | ElimDisy [Reglas] 
+            | ElimDisy Form 
             | ElimNeg Form Form -- Falta elim. de lo falso
-            | IntroNeg [Reglas]
+            | IntroNeg Form
             | IntroEquiv Form Form
             | ElimEquivI Form
             | ElimEquivD Form 
             
 data Deduccion = D [Form] [Form] [Reglas]
 
-verifica :: Deduccion -> Deduccion
+verifica :: Deduccion -> Bool
+
+verifica (D pr [] []) = True
 verifica (D pr sp ((Suponer f):rs)) = verifica (D pr (f:sp) rs)
+
 verifica (D pr sp ((IntroConj f g):rs)) 
     | elem f pr = verifica (D ((Disy [f,g]):pr) sp rs)
     | elem f sp = verifica (D pr ((Disy [f,g]):sp) rs) 
     | otherwise = error "No se puede aplicar la regla"
-verifica (D pr sp ((ElimConjI f@(Conj fs)):rs)) 
-    | elem f pr = verifica (D ((Conj (tail fs)):pr) sp rs)
-    | elem f sp = verifica (D pr ((Conj (tail fs)):sp) rs)
-    | otherwise = error "No se puede aplicar la regla"
+
 verifica (D pr sp ((ElimConjD f@(Conj fs)):rs)) 
-    | elem f pr = verifica (D ((Conj (init fs)):pr) sp rs)
-    | elem f sp = verifica (D pr ((Conj (init fs)):sp) rs)
-    | otherwise = error "No se puede aplicar la regla"
-verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
-    | elem form pr = verifica (D (f:pr) sp rs)
-    | elem form sp = verifica (D pr (f:sp) rs)
-    | otherwise = error "No se puede aplicar la regla"
-verifica (D pr sp ((IntroDobleNeg f):rs)) 
-    | elem f pr = verifica (D ((Neg (Neg f)):pr) sp rs)
-    | elem f sp = verifica (D pr ((Neg (Neg f)):sp) rs)
-    | otherwise = error "No se puede aplicar la regla"
-verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
-    | elem form pr && elem f1 pr && f1==f2 = 
-        verifica (D (g:pr) sp rs)
-    | elem form sp && f1==f2 && elem f1 sp = 
-        verifica (D pr (g:sp) rs)
-    | otherwise = error "No se puede aplicar la regla"
-verifica (D pr sp ((MT f g):rs)) = undefined
-verifica (D pr sp ((IntroImpl f g):rs))
-    | elem f sp && elem g sp = (D ((Impl f g):pr) (quita [f,g] sp) rs)
+    | elem f pr || elem f sp = verifica (D ((Conj (init fs)):pr) sp rs)
     | otherwise = error "No se puede aplicar la regla"
 
+verifica (D pr sp ((ElimConjI f@(Conj fs)):rs)) 
+    | elem f pr || elem f sp = verifica (D ((Conj (tail fs)):pr) sp rs)
+    | otherwise = error "No se puede aplicar la regla"
+
+verifica (D pr sp ((ElimDisy (Disy [f,g])):rs)) 
+    | elem f sp && elem g sp && elem (Conj [f,g]) pr = 
+        verifica (D pr (quita [f,g] sp) rs)
+    | otherwise = error "No se puede aplicar la regla"
+
+verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
+    | elem form pr || elem form sp = verifica (D (f:pr) sp rs)
+    | otherwise = error "No se puede aplicar la regla"
+
+verifica (D pr sp ((IntroDobleNeg f):rs)) 
+    | elem f pr || elem f sp = verifica (D ((Neg (Neg f)):pr) sp rs)
+    | otherwise = error "No se puede aplicar la regla"
+
+verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
+    | c = verifica (D (g:pr) sp rs)
+    | otherwise = error "No se puede aplicar la regla"
+    where 
+      c = pertenece [f1,f2] (pr++sp) && f1 == f2
+
+verifica (D pr sp ((MT f g):rs)) = undefined
+
+verifica (D pr sp ((IntroImpl f g):rs))
+    | elem f sp && elem g pr = 
+        verifica (D ((Impl f g):pr) (delete f sp) rs)
+    | otherwise = error "No se puede aplicar la regla"
+
+\end{code} 
+
+Funciones auxiliares (quita xs ys) y (pertenece xs ys)
+
+\begin{code}
+quita :: [Form] -> [Form] -> [Form]
 quita [] ys = ys
 quita (x:xs) ys = quita xs (delete x ys)
 
-
--- EN PROCESO
-instance Show Reglas where
-    show (IntroConj f g) = "⋀i. "++ (show f)++ " , "++ (show g)
-    show (ElimConjI f) = "⋀e. " ++ (show f)
-instance Show Deduccion where
-    show (D (p:pr) (s:sp) (r:rs)) = "Premisas  |  Supuestos  | Reglas"++
-                                    "\n"++ (show p) ++ "    " ++ (show s)
-                                          ++"   " ++ (show r) ++ "\n" ++
-                                                  show (D pr sp rs)
-\end{code} 
+pertenece :: [Form] -> [Form] -> Bool
+pertenece xs ys = all (`elem` ys) xs
+\end{code}
