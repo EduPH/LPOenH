@@ -352,16 +352,17 @@ data Reglas = Suponer Form
             | IntroImpl Form Form 
             | IntroDisyI Form Form 
             | IntroDisyD Form Form 
-            | ElimDisy Form 
-            | ElimNeg Form  -- Falta elim. de lo falso
+            | ElimDisy Form Form
+            | ElimNeg Form  
             | IntroNeg Form 
             | ElimContrad Form 
             | IntroEquiv Form 
             | ElimEquivI Form
             | ElimEquivD Form 
+            | ElimFalso Form
 \end{code}
 
-Por lo tanto, cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos con una lista de ``cosas conocidas'' y ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
+Cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos con una lista de ``cosas conocidas'' y ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
 
 \begin{code}
 data Deduccion = D [Form] [Form] [Reglas]
@@ -385,6 +386,18 @@ pertenece :: [Form] -> [Form] -> Bool
 pertenece xs ys = all (`elem` ys) xs
 \end{code}
 
+Por ejemplo,
+
+\begin{code}
+-- | Ejemplos
+-- >>> quita [p,q] [p,q,contradiccion]
+-- [⊥]
+-- >>> pertenece [p,q] [p,q,contradiccion]
+-- True
+-- >>> pertenece [contradiccion,q] [p,contradiccion]
+-- False
+\end{code}
+
 En las posteriores subsecciones se va a definir la función \texttt{(verifica d)}, donde \texttt{d} será un elemento del tipo de dato \texttt{Deduccion}, y que pretende determinar si un proceso elaborado por deducción natural es correcto.
 
 \begin{code}
@@ -392,7 +405,7 @@ verifica :: Deduccion -> Bool
 \end{code}
 
 
-Los primeros casos en la función \texttt{verifica} serán el caso base, es decir, en el que determinaremos que el proceso deductivo es correcto, y la regla antes definida en el tipo de dato \texttt{Reglas} como \texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista de las suposiciones. Lo implementamos en la función
+Los primeros casos en la función \texttt{verifica} serán el básico, es decir, en el que determinaremos que el proceso deductivo es correcto, y la regla antes definida en el tipo de dato \texttt{Reglas} como \texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista de las suposiciones. Lo implementamos en la función
 \texttt{verifica}. 
 
 \begin{code}
@@ -405,7 +418,7 @@ verifica (D pr sp ((Suponer f):rs)) = verifica (D pr (f:sp) rs)
 \begin{itemize*}
 \item Regla de la introducción de la conjunción:
   $$\frac{F\quad G}{F\wedge G}$$
-
+Cuya implementación en la función \texttt{verifica} es:
 \begin{code}
 verifica (D pr sp ((IntroConj f g):rs)) 
     | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs) 
@@ -417,23 +430,18 @@ verifica (D pr sp ((IntroConj f g):rs))
   alguno de sus argumentos sean conjunciones para su expresión como única conjunción.
 \end{nota}
 
-\item Ejemplo
-\begin{code}
-
-\end{code}
-
 
 \item Reglas de la eliminación de la introducción:
   $$\frac{F_1 \wedge \dots \wedge F_n}{F_1} \text{ y } \frac{F_1\wedge \dots \wedge F_n}{F_n}. $$
-
+Que se implementan de la siguiente forma:
 
 \begin{code}
 verifica (D pr sp ((ElimConjD f@(Conj fs)):rs)) 
-    | elem f pr || elem f sp = verifica (D ((Conj (init fs)):pr) sp rs)
+    | elem f (pr++sp) = verifica (D ((Conj (init fs)):pr) sp rs)
     | otherwise = error "No se puede aplicar ElimConjD"
 
 verifica (D pr sp ((ElimConjI f@(Conj fs)):rs)) 
-    | elem f pr || elem f sp = verifica (D ((Conj (tail fs)):pr) sp rs)
+    | elem f (pr++sp) = verifica (D ((Conj (tail fs)):pr) sp rs)
     | otherwise = error "No se puede aplicar ElimConjI"
 \end{code}
 
@@ -441,24 +449,7 @@ verifica (D pr sp ((ElimConjI f@(Conj fs)):rs))
   La función \texttt{error} permite mostrar un mensaje en el caso de que
   la regla sea aplicada a fórmulas que no son del tipo al que debe aplicarse.
 \end{nota}
-\item Ejemplo
-\begin{code}
 
-\end{code}
-
-\item Ejemplo: \framebox{$p\wedge q, r\vdash q \wedge r $}
-  \begin{enumerate}
-  \item $p\wedge q$ \hfill \texttt{Premisa}
-  \item $r$ \hfill \texttt{Premisa}
-  \item $q$ \hfill \texttt{elimConjD 1}
-  \item $r \wedge q$ \hfill \texttt{introConj 2 3}
-  \end{enumerate}
-  
-En Haskell sería
-
-\begin{code}
-
-\end{code}
 \end{itemize*}
 
 \subsection{Reglas de eliminación del condicional}
@@ -475,26 +466,6 @@ verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
     where 
       c = pertenece [f1,f2] (pr++sp) && f1 == f2
 \end{code}
-
-\item Ejemplo
-\begin{code}
-
-\end{code}
-\item Ejemplo: $p,p\rightarrow q, p\rightarrow ( q \rightarrow r) \vdash r $
-  \begin{enumerate}
-  \item $p$ \hfill \texttt{Premisa}
-  \item $p\rightarrow q$ \hfill \texttt{Premisa}
-  \item $p\rightarrow (q\rightarrow r)$ \hfill \texttt{Premisa}
-  \item $q$ \hfill \texttt{elimCond 1 2}
-  \item $q\rightarrow r$ \hfill \texttt{elimCond 1 3}
-  \item $r$ \hfill \texttt{elimCond 4 5}
-  \end{enumerate}
-
-En Haskell sería
-
-\begin{code}
-
-\end{code}
   
 \end{itemize*}
 
@@ -503,7 +474,7 @@ En Haskell sería
 \begin{itemize*}
 \item Regla de introducción del condicional:
 $$\frac{\begin{bmatrix}{F}\\{\vdots}\\{G}\end{bmatrix}}{F \to G} $$ 
-Lo implementamos en Haskell mediante la función \texttt{(introCond f g)}
+
 
 \begin{code}
 verifica (D pr sp ((IntroImpl f g):rs))
@@ -512,19 +483,6 @@ verifica (D pr sp ((IntroImpl f g):rs))
     | otherwise = error "No se puede aplicar IntroImpl"
 \end{code}
 
-\item Ejemplo: \framebox{$p\rightarrow q \vdash \neg q \rightarrow \neg p$}
-  \begin{enumerate}
-  \item $p \rightarrow q$ \hfill \texttt{Premisa}
-  \item $\neg q$ \hfill \texttt{supuesto}
-  \item $\neg p$ \hfill \texttt{modusTollens 1 2}
-  \item $\neg q \rightarrow \neg p$ \hfill \texttt{introCond 2 3}
-  \end{enumerate}
-
-  Quedando en Haskell:
-
-\begin{code}
-
-\end{code}  
 \end{itemize*}
 
 \subsection{Reglas de la disyunción}
@@ -545,51 +503,36 @@ verifica (D pr sp ((IntroDisyI f g):rs))
     | otherwise = error "No se puede aplicar IntroDisyI"
 \end{code}
 
-\item Ejemplo
-\begin{code}
-
-\end{code}
-\item Ejemplo: \framebox{$p\vee q \vdash q \vee p$}
-  \begin{enumerate}
-  \item $p\vee q$ \hfill \texttt{Premisa}
-  \item $p$ \hfill \texttt{supuesto}
-  \item $q\vee p$ \hfill \texttt{introDisy 2 q}
-  \item $q$ \hfill \texttt{supuesto}
-  \item $q\vee p$ \hfill \texttt{introDisy 4 q}
-  \item $q \vee p$ \hfill \texttt{elimDisy } $1,2 \rightarrow 3, 4 \rightarrow 5$ 
-  \end{enumerate}
-\begin{code}
-
-\end{code}
 
 \item Regla de la eliminación de la disyunción:
   $$\frac{F \vee G \quad \begin{bmatrix}{F}\\{\vdots}\\{H}\end{bmatrix} \quad
     \begin{bmatrix}{G}\\{\vdots}\\{H}\end{bmatrix}}{H} $$
   
 \begin{code}
-verifica (D pr sp ((ElimDisy (Disy [f,g])):rs)) 
+verifica (D pr sp ((ElimDisy (Disy [f,g]) h):rs)) 
     | elem f sp && elem g sp && elem (Conj [f,g]) pr = 
-        verifica (D pr (quita [f,g] sp) rs)
+        verifica (D (h:pr) (quita [f,g] sp) rs)
     | otherwise = error "No se puede aplicar ElimDisy"
 \end{code}
+\comentario{Revisar ElimDisy}
 \end{itemize*}
 
 \subsection{Reglas de la negación}
 
 \begin{itemize*}
   
-
-
 \item Regla de eliminación de lo falso:
   $$ \frac{\perp}{F}$$
   Lo implementamos en Haskell mediante la función \texttt{(elimFalso f g)}
 
 
 \begin{code}
-
+verifica (D pr sp ((ElimFalso f):rs))
+    | elem contradiccion (pr++sp) = verifica (D (f:pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimFalso"
 \end{code}
 
-\item Regla de eliminación de la negación;
+\item Regla de eliminación de la negación
   $$ \frac{F\quad \neg F}{\perp} $$
 
 
@@ -600,29 +543,6 @@ verifica (D pr sp ((ElimNeg f):rs))
     | otherwise = error "No se puede aplicar ElimNeg"
 \end{code}
 
-\item Ejemplo
-\begin{code}
-
-\end{code}
-
-\item Ejemplo \framebox{$\neg \vee q \vdash \rightarrow q$}:
-
-\begin{enumerate}
-\item $\neg \vee q$ \hfill \texttt{Premisa}
-\item $p$ \hfill \texttt{supuesto}
-\item $\neg p$ \hfill \texttt{supuesto}
-\item $\perp$ \hfill \texttt{elimNeg 2 3}
-\item $q$ \hfill \texttt{elimFalso 4}
-\item $q$  \hfill \texttt{supuesto}
-\item $q$ \hfill \texttt{elimDisy} $1,3\rightarrow 5,6\rightarrow 6$
-\item $p\rightarrow q$ \hfill \texttt{introCond 2 7}
-\end{enumerate}
-
-En Haskell sería
-
-\begin{code}
-
-\end{code}
 \end{itemize*}
 
 \subsection{Reglas del bicondicional}
@@ -637,17 +557,11 @@ verifica (D pr sp ((IntroEquiv f1@(Impl f g)):rs))
     | otherwise = error "No se puede aplicar IntroEquiv"
 \end{code}
 
-\item Ejemplo
-
-\begin{code}
-
-\end{code}
 
 \item Reglas de la eliminación del bicondicional:
   $$ \frac{F\leftrightarrow G}{F\rightarrow G} \text{ y }
   \frac{F\leftrightarrow G}{G\rightarrow F}$$
  
-
 \begin{code}
 verifica (D pr sp ((ElimEquivI f1@(Equiv f g)):rs))
     | elem f1 (pr++sp) = 
@@ -666,8 +580,7 @@ verifica (D pr sp ((ElimEquivD f1@(Equiv f g)):rs))
 \begin{itemize*}
 \item Regla derivada de modus Tollens:
   $$\frac{F \rightarrow G\quad \neg G}{\neg F}$$
-  Lo implementamos en Haskell mediante la función \texttt{(modusTollens f g)}
-\index{\texttt{modusTollens}}
+ 
 \begin{code}
 
 \end{code}
