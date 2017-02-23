@@ -338,22 +338,78 @@ q = Atom "q" []
 r = Atom "r" []
 \end{code}
 
-A continuación se introducen las reglas de la deducción natural.
+A continuación se introducen los tipos de datos necesarios para la definición de las reglas de la deducción natural:
+
+\begin{code}
+data Reglas = Suponer Form 
+            | IntroConj Form Form 
+            | ElimConjI Form  
+            | ElimConjD Form  
+            | ElimDobleNeg Form 
+            | IntroDobleNeg Form 
+            | ElimImpl Form Form 
+            | MT Form Form
+            | IntroImpl Form Form 
+            | IntroDisyI Form Form 
+            | IntroDisyD Form Form 
+            | ElimDisy Form 
+            | ElimNeg Form  -- Falta elim. de lo falso
+            | IntroNeg Form 
+            | ElimContrad Form 
+            | IntroEquiv Form 
+            | ElimEquivI Form
+            | ElimEquivD Form 
+\end{code}
+
+Por lo tanto, cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos con una lista de ``cosas conocidas'' y ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
+
+\begin{code}
+data Deduccion = D [Form] [Form] [Reglas]
+\end{code}
+
+Finalmente, se define como un átomo el elemento \texttt{contradicción}, pues no será necesario en algunas reglas.
+
+\begin{code}
+contradiccion :: Form
+contradiccion = Atom "⊥" []
+\end{code}
+
+Implementamos en Haskell un par de funciones auxiliares \texttt{(quita xs ys)} que elimina todos los elementos \texttt{xs} de la lista \texttt{ys}, y \texttt{(pertenece xs ys)} que determina si una lista está contenida en la otra. 
+
+\begin{code}
+quita :: [Form] -> [Form] -> [Form]
+quita [] ys = ys
+quita (x:xs) ys = quita xs (delete x ys)
+
+pertenece :: [Form] -> [Form] -> Bool
+pertenece xs ys = all (`elem` ys) xs
+\end{code}
+
+En las posteriores subsecciones se va a definir la función \texttt{(verifica d)}, donde \texttt{d} será un elemento del tipo de dato \texttt{Deduccion}, y que pretende determinar si un proceso elaborado por deducción natural es correcto.
+
+\begin{code}
+verifica :: Deduccion -> Bool
+\end{code}
+
+
+Los primeros casos en la función \texttt{verifica} serán el caso base, es decir, en el que determinaremos que el proceso deductivo es correcto, y la regla antes definida en el tipo de dato \texttt{Reglas} como \texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista de las suposiciones. Lo implementamos en la función
+\texttt{verifica}. 
+
+\begin{code}
+verifica (D pr [] []) = True
+verifica (D pr sp ((Suponer f):rs)) = verifica (D pr (f:sp) rs)
+\end{code}
 
 \subsection{Reglas de la conjunción}
 
 \begin{itemize*}
 \item Regla de la introducción de la conjunción:
   $$\frac{F\quad G}{F\wedge G}$$
-  Se implementa en Haskell mediante la función \texttt{(introConj f g)}
-  
-\index{\texttt{introConj}}
+
 \begin{code}
-introConj :: Form -> Form -> Form
-introConj (Conj fs) (Conj gs) = Conj (nub (fs++gs))
-introConj (Conj fs) g         = Conj (nub (fs++[g]))
-introConj f (Conj gs)         = Conj (nub (f:gs))
-introConj f g                 = Conj [f,g]      
+verifica (D pr sp ((IntroConj f g):rs)) 
+    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs) 
+    | otherwise = error "No se puede aplicar IntroConj"   
 \end{code}
 
 \begin{nota}
@@ -363,26 +419,22 @@ introConj f g                 = Conj [f,g]
 
 \item Ejemplo
 \begin{code}
--- | Ejemplos
--- >>> introConj p q
--- (p⋀q)
--- >>> introConj (Conj [p,q]) r
--- (p⋀(q⋀r))
+
 \end{code}
 
 
 \item Reglas de la eliminación de la introducción:
-  $$\frac{F_1 \wedge \dots \wedge F_n}{F_1} \text{ y } \frac{F_1\wedge \dots \wedge F_n}{F_n} $$
-  Se implementa en Haskell mediante las funciones \texttt{(elimConjI f g)} y
-  \texttt{(elimConjD f g)}.
-\index{\texttt{elimConjI}}
-\index{\texttt{elimConjD}}
+  $$\frac{F_1 \wedge \dots \wedge F_n}{F_1} \text{ y } \frac{F_1\wedge \dots \wedge F_n}{F_n}. $$
+
+
 \begin{code}
-elimConjI, elimConjD :: Form -> Form
-elimConjI (Conj fs) = head fs
-elimConjI _         = error "Entrada no valida para esta regla."
-elimConjD (Conj fs) = last fs
-elimConjD _         = error "Entrada no valida para esta regla."
+verifica (D pr sp ((ElimConjD f@(Conj fs)):rs)) 
+    | elem f pr || elem f sp = verifica (D ((Conj (init fs)):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimConjD"
+
+verifica (D pr sp ((ElimConjI f@(Conj fs)):rs)) 
+    | elem f pr || elem f sp = verifica (D ((Conj (tail fs)):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimConjI"
 \end{code}
 
 \begin{nota}
@@ -391,14 +443,7 @@ elimConjD _         = error "Entrada no valida para esta regla."
 \end{nota}
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> let f1 = Conj [p,q]
--- >>> elimConjI f1
--- p
--- >>> elimConjD f1
--- q
--- >>> introConj (Conj [p,q]) (Conj [q,r])
--- (p⋀(q⋀r))
+
 \end{code}
 
 \item Ejemplo: \framebox{$p\wedge q, r\vdash q \wedge r $}
@@ -412,19 +457,7 @@ elimConjD _         = error "Entrada no valida para esta regla."
 En Haskell sería
 
 \begin{code}
--- | Ejemplo
--- >>> let f1 = (Conj [p,q])
--- >>> let f2 = r
--- >>> let f3 = elimConjD f1
--- >>> let f4 = introConj f2 f3
--- >>> f1
---  (p⋀q)
--- >>> f2
--- r
--- >>> f3
--- q
--- >>> f4
--- (r⋀q)
+
 \end{code}
 \end{itemize*}
 
@@ -433,20 +466,19 @@ En Haskell sería
 \begin{itemize*}
 \item Regla de la eliminación del condicional:
   $$\frac{F\quad F\rightarrow G}{G}$$
-  Lo implementamos en Haskell mediante la función \texttt{(elimCond f g)}
-\index{\texttt{elimCond}}
+  
+
 \begin{code}
-elimCond :: Form -> Form -> Form
-elimCond  f (Impl f1 f2) | f == f1 = f2
-elimCond  (Impl f1 f2) f | f == f1 = f2
-elimCond _ _                       = error "Entrada no valida para esta regla."
+verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
+    | c = verifica (D (g:pr) sp rs)
+    | otherwise = error "No se puede aplicar la ElimImpl"
+    where 
+      c = pertenece [f1,f2] (pr++sp) && f1 == f2
 \end{code}
 
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> elimCond p (Impl p q)
--- q
+
 \end{code}
 \item Ejemplo: $p,p\rightarrow q, p\rightarrow ( q \rightarrow r) \vdash r $
   \begin{enumerate}
@@ -461,25 +493,7 @@ elimCond _ _                       = error "Entrada no valida para esta regla."
 En Haskell sería
 
 \begin{code}
--- | Ejemplo
--- >>> let f1 = p
--- >>> let f2 = Impl p q
--- >>> let f3 = Impl p (Impl q r)
--- >>> let f4 = elimCond f1 f2
--- >>> let f5 = elimCond f1 f3
--- >>> let f6 = elimCond f4 f5
--- >>> f1
--- p
--- >>> f2
--- (p⟹q)
--- >>> f3
--- (p⟹(q⟹r))
--- >>> f4
--- q
--- >>> f5
--- (q⟹r)
--- >>> f6
--- r
+
 \end{code}
   
 \end{itemize*}
@@ -491,10 +505,11 @@ En Haskell sería
 $$\frac{\begin{bmatrix}{F}\\{\vdots}\\{G}\end{bmatrix}}{F \to G} $$ 
 Lo implementamos en Haskell mediante la función \texttt{(introCond f g)}
 
-\index{\texttt{introCond}}
 \begin{code}
-introCond :: Form -> Form -> Form
-introCond f g = Impl f g
+verifica (D pr sp ((IntroImpl f g):rs))
+    | elem f sp && elem g pr = 
+        verifica (D ((Impl f g):pr) (delete f sp) rs)
+    | otherwise = error "No se puede aplicar IntroImpl"
 \end{code}
 
 \item Ejemplo: \framebox{$p\rightarrow q \vdash \neg q \rightarrow \neg p$}
@@ -507,20 +522,8 @@ introCond f g = Impl f g
 
   Quedando en Haskell:
 
-  \begin{code}
--- | Ejemplo
--- >>> let f1 = Impl p q
--- >>> let f2 = Neg q
--- >>> let f3 = modusTollens f1 f2
--- >>> let f4 = introCond f2 f3
--- >>> f1
--- (p⟹q)
--- >>> f2
--- ¬q
--- >>> f3
--- ¬p
--- >>> f4
--- (¬q⟹¬p)
+\begin{code}
+
 \end{code}  
 \end{itemize*}
 
@@ -532,20 +535,19 @@ introCond f g = Impl f g
   Lo implementamos en Haskell mediante la función
   \texttt{(introDisy f g)}
 
-\index{\texttt{introDisy}}
 \begin{code}
-introDisy :: Form -> Form -> Form
-introDisy (Disy fs) (Disy gs) = Disy (nub (fs++gs))
-introDisy (Disy fs) g = Disy (nub (fs ++ [g]))
-introDisy f (Disy gs) = Disy (nub (f:gs))
-introDisy f g = Disy [f,g]
+verifica (D pr sp ((IntroDisyD f g):rs)) 
+    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
+    | otherwise = error "No se puede aplicar IntroDisyD"
+
+verifica (D pr sp ((IntroDisyI f g):rs)) 
+    | elem g (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
+    | otherwise = error "No se puede aplicar IntroDisyI"
 \end{code}
 
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> introDisy (Disy [p,q]) r
--- (p⋁(q⋁r))
+
 \end{code}
 \item Ejemplo: \framebox{$p\vee q \vdash q \vee p$}
   \begin{enumerate}
@@ -557,37 +559,18 @@ introDisy f g = Disy [f,g]
   \item $q \vee p$ \hfill \texttt{elimDisy } $1,2 \rightarrow 3, 4 \rightarrow 5$ 
   \end{enumerate}
 \begin{code}
--- | Ejemplo
--- >>> let f1 = Disy [p,q]
--- >>> let f2 = p
--- >>> let f3 = introDisy f2 q
--- >>> let f4 = q
--- >>> let f5 = introDisy f4 p
--- >>> f1
--- (p⋁q)
--- >>> f2
--- p
--- >>> f3
--- (p⋁q)
--- >>> f4
--- q
--- >>> f5
--- (q⋁p)
--- >>> elimDisy f1 (Impl f2 f5) (Impl f4 f5)
--- (q⋁p)
+
 \end{code}
 
 \item Regla de la eliminación de la disyunción:
   $$\frac{F \vee G \quad \begin{bmatrix}{F}\\{\vdots}\\{H}\end{bmatrix} \quad
     \begin{bmatrix}{G}\\{\vdots}\\{H}\end{bmatrix}}{H} $$
-  Lo implementamos en Haskell mediante la función \texttt{elimDisy f1 f2 i1 i2}
-\index{\texttt{elimDisy}}
+  
 \begin{code}
-elimDisy :: Form -> Form -> Form -> Form 
-elimDisy (Disy [f,g]) (Impl f1 i1) (Impl g1 i2) 
-    | f == f1 && g == g1 && i1 == i2 = i1
-    | g == f1 && f == g1 && i1 == i2 = i1
-    | otherwise = error "Entrada no valida para esta regla."
+verifica (D pr sp ((ElimDisy (Disy [f,g])):rs)) 
+    | elem f sp && elem g sp && elem (Conj [f,g]) pr = 
+        verifica (D pr (quita [f,g] sp) rs)
+    | otherwise = error "No se puede aplicar ElimDisy"
 \end{code}
 \end{itemize*}
 
@@ -595,40 +578,31 @@ elimDisy (Disy [f,g]) (Impl f1 i1) (Impl g1 i2)
 
 \begin{itemize*}
   
-\item Definimos la contradicción como una fórmula:
 
-\index{\texttt{contradiccion}}
-\begin{code}
-contradiccion :: Form
-contradiccion = Atom "⊥" []
-\end{code}
 
 \item Regla de eliminación de lo falso:
   $$ \frac{\perp}{F}$$
   Lo implementamos en Haskell mediante la función \texttt{(elimFalso f g)}
 
-\index{\texttt{elimFalso}}
+
 \begin{code}
-elimFalso :: Form -> Form -> Form
-elimFalso f g | f == contradiccion = g
-              | g == contradiccion = f
+
 \end{code}
 
 \item Regla de eliminación de la negación;
   $$ \frac{F\quad \neg F}{\perp} $$
-  Lo implementamos en Haskell mediante la función \texttt{(elimNeg f g)}
 
-\index{\texttt{elimNeg}}
+
 \begin{code}
-elimNeg :: Form -> Form -> Form
-elimNeg f g | f == (Neg g) || (Neg f) == g = contradiccion
+verifica (D pr sp ((ElimNeg f):rs))
+    | elem f (pr++sp) && elem (Neg f) (pr++sp) = 
+        verifica (D (contradiccion:pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimNeg"
 \end{code}
 
 \item Ejemplo
 \begin{code}
--- | Ejemplo 
--- >>> elimNeg (Neg p) p
--- ⊥
+
 \end{code}
 
 \item Ejemplo \framebox{$\neg \vee q \vdash \rightarrow q$}:
@@ -647,17 +621,7 @@ elimNeg f g | f == (Neg g) || (Neg f) == g = contradiccion
 En Haskell sería
 
 \begin{code}
--- | Ejemplo
--- >>> let f1 = Disy [Neg p, q]
--- >>> let f2 = p
--- >>> let f3 = Neg p
--- >>> let f4 = elimNeg f2 f3
--- >>> let f5 = elimFalso f4 q
--- >>> let f6 = q
--- >>> let f7 = elimDisy f1 (Impl f3 f5) (Impl f6 f6)
--- >>> let f8 = introCond f2 f7
--- >>> f8
--- (p⟹q)
+
 \end{code}
 \end{itemize*}
 
@@ -665,30 +629,34 @@ En Haskell sería
 \begin{itemize*}
 \item Regla de introducción del bicondicional:
   $$\frac{F \rightarrow G\quad G\rightarrow F}{F\leftrightarrow F} $$
-  Lo implementamos en Haskell mediante la función \texttt{(introBicond f g)}
+  
 \begin{code}
-introBicond :: Form -> Form -> Form
-introBicond (Impl f1 f2) (Impl g1 g2)
-    | f1 == g2 && f2 == g1 = Equiv f1 f2
+verifica (D pr sp ((IntroEquiv f1@(Impl f g)):rs))
+    | pertenece [f1,Impl g f] (pr++sp) = 
+        verifica (D ((Equiv f g):pr) sp rs)
+    | otherwise = error "No se puede aplicar IntroEquiv"
 \end{code}
 
 \item Ejemplo
 
 \begin{code}
--- | Ejemplo
--- >>> introBicond (Impl p q) (Impl q p)
--- (p⟺q)
+
 \end{code}
 
 \item Reglas de la eliminación del bicondicional:
   $$ \frac{F\leftrightarrow G}{F\rightarrow G} \text{ y }
   \frac{F\leftrightarrow G}{G\rightarrow F}$$
-  Lo implementamos en Haskel mediante las funciones \texttt{(elimBicondI f g)}
-  y \texttt{(elimBicondD f g)}
+ 
+
 \begin{code}
-elimBicondI, elimBicondD :: Form -> Form
-elimBicondI (Equiv f g) = Impl f g
-elimBicondD (Equiv f g) = Impl g f
+verifica (D pr sp ((ElimEquivI f1@(Equiv f g)):rs))
+    | elem f1 (pr++sp) = 
+        verifica (D ((Impl f g):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimEquivI"
+verifica (D pr sp ((ElimEquivD f1@(Equiv f g)):rs))
+    | elem f1 (pr++sp) = 
+        verifica (D ((Impl g f):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimEquivD"
 \end{code}
 
 \end{itemize*}
@@ -701,15 +669,12 @@ elimBicondD (Equiv f g) = Impl g f
   Lo implementamos en Haskell mediante la función \texttt{(modusTollens f g)}
 \index{\texttt{modusTollens}}
 \begin{code}
-modusTollens :: Form -> Form -> Form
-modusTollens (Impl f1 f2) (Neg f) | f == f2 = Neg f1
+
 \end{code}
 
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> modusTollens (Impl p q) (Neg q)
--- ¬p
+
 \end{code}  
 \end{itemize*}
 
@@ -718,18 +683,16 @@ modusTollens (Impl f1 f2) (Neg f) | f == f2 = Neg f1
 \begin{itemize*}
 \item Regla de eliminación de la doble negación: 
   $$\frac{\neg \neg F}{F}$$
-  Se implementa en Haskell mediante la función \texttt{(elimDNeg f)}
-\index{\texttt{elimDNeg}}
+
 \begin{code}
-elimDNeg :: Form -> Form
-elimDNeg (Neg (Neg f)) = f
+verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
+    | elem form pr || elem form sp = verifica (D (f:pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimDobleNeg"
 \end{code}
 
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> elimDNeg (Neg (Neg p))
--- p
+
 \end{code}
 
 \item Regla de la introducción de la doble negación:
@@ -737,15 +700,14 @@ elimDNeg (Neg (Neg f)) = f
   Se implementa en Haskell mediante la función \texttt{(introDNeg f)}
 \index{\texttt{introDNeg}}
 \begin{code}
-introDNeg :: Form -> Form
-introDNeg f = Neg (Neg f)
+verifica (D pr sp ((IntroDobleNeg f):rs)) 
+    | elem f pr || elem f sp = verifica (D ((Neg (Neg f)):pr) sp rs)
+    | otherwise = error "No se puede aplicar la IntroDobleNeg"
 \end{code}
 
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> introDNeg p
--- ¬¬p
+
 \end{code}
 \end{itemize*}
 
@@ -754,12 +716,9 @@ introDNeg f = Neg (Neg f)
 \begin{itemize*}
 \item Regla de reducción al absurdo:
   $$\frac{\begin{bmatrix}{\neg F}\\{\vdots}\\{\perp}\end{bmatrix}}{F} $$
-Lo implementamos en Haskell mediante la función \texttt{(RedAbsurdo f)}
 
-\index{\texttt{redAbsurdo}}
 \begin{code}
-redAbsurdo :: Form -> Form
-redAbsurdo (Impl (Neg f) contradiccion) = f
+
 \end{code}
 \end{itemize*}
 
@@ -768,17 +727,13 @@ redAbsurdo (Impl (Neg f) contradiccion) = f
 \begin{itemize*}
 \item Ley del tercio excluido:
  $$ \frac{}{F\vee \neg F} $$
- Lo implementamos en Haskell mediante la función \texttt{(tercExcluido f)}
-\index{\texttt{tercExcluido}}
+
 \begin{code}
-tercExcluido :: Form -> Form
-tercExcluido f = Disy [f,Neg f]
+
 \end{code}
 \item Ejemplo
 \begin{code}
--- | Ejemplo
--- >>> tercExcluido p
--- (p⋁¬p)
+
 \end{code}
 \end{itemize*}
 
@@ -797,192 +752,9 @@ tercExcluido f = Disy [f,Neg f]
   \end{enumerate}
 
 \begin{code}
--- | Ejemplo 1
--- >>> let f1 = Impl (Neg q) (Neg p)
--- >>> let f2 = p
--- >>> let f3 = introDNeg p
--- >>> let f4 = modusTollens f1 f3
--- >>> let f5 = introCond f2 f4
--- >>> f1
--- (¬q⟹¬p)
--- >>> f2
--- p
--- >>> f3
--- ¬¬p
--- >>> f4
--- ¬¬q
--- >>> f5
--- (p⟹¬¬q)
+
 \end{code}
 \end{itemize*}
-
-\comentario{Idea: Definir un tipo de dato para una demostración, que muestre
-el rezonamiento. Otra forma sería usar listas. Pendiente:
-   Reflexionar. Abajo propuesta}
-
-\section{Definición de razonamientos}
-
-En esta sección se propone una aplicación directa en Haskell de las reglas antes definidas, así como un tipo de dato que represente dicha aplicación.
-
-Para ello, definimos el tipo de dato \texttt{Razonamiento}
-\begin{code}
-data Razonamiento = R Int Form
-\end{code}
-
-Para su representación por pantalla
-
-\begin{code}
-instance Show Razonamiento where
-    show (R n f) = show n ++ ". "++ show f 
-\end{code}
-
-Por ejemplo
-
-\begin{code}
--- | Ejemplo 
--- >>> R 1 p
--- 1. p
--- >>> R 1 (Impl p q)
--- 1. (p⟹q)
-\end{code}
-
-Definimos el tipo de dato \texttt{Razonamientos} para definir
-una cadena de razonamiento.
-
-\begin{code}
-data Razonamientos = Rz [Razonamiento]
-\end{code}
-
-Su representación por pantalla mediante \texttt{show}
-
-\begin{code}
-instance Show Razonamientos where
-    show (Rz [p]) = show p
-    show (Rz (p:ps)) = show p ++ "\n" ++ show (Rz ps)
-\end{code}
-
-Por ejemplo
-
-\begin{code}
--- | Ejemplo
--- >>> Rz [R 1 p, R 2 q]
--- 1. p
--- 2. q
-\end{code}
-
-Definimos la función \texttt{(deduce n1 n2 f r)} que aplica la regla \texttt{f} a las fórmulas en las posiciones \texttt{n1} y \texttt{n2}, con \texttt{r} la lista de razonamientos.
-
-\index{\texttt{deduce}}
-\begin{code}
-deduce :: Int -> Int -> (Form -> Form -> t) -> Razonamientos -> t
-deduce n1 n2 f (Rz rz) = 
-    f (aux (rz !! (n1-1))) (aux (rz !! (n2-1)))
-    where
-      aux (R n g) = g
-\end{code}
-
-Por ejemplo
-
-\begin{code}
--- | Ejemplo
--- >>> let r1 = Rz [R 1 p,R 2 (Impl p q)]
--- >>> r1
--- 1. p
--- 2. (p⟹q)
--- >>> deduce 1 2 elimCond r1
--- q
-\end{code}
-
-Se define \texttt{(deduccion n1 n2 f r)} que realiza la deducción aplicando una
-regla entre las fórmulas de \texttt{r} y la añade a \texttt{r}.
-
-\index{\texttt{deduccion}}
-\begin{code}
-deduccion :: Int -> Int -> (Form -> Form -> Form) 
-                 -> Razonamientos -> Razonamientos
-deduccion n1 n2 f (Rz rz) =  
-    Rz (rz++[R ((length rz)+1) (deduce n1 n2 f (Rz  rz))])
-\end{code}
-
-Por ejemplo
-
-\begin{code}
--- | Ejemplo
--- >>> deduccion 1 2 elimCond (Rz [R 1 p,R 2 (Impl p q)])
--- 1. p
--- 2. (p⟹q)
--- 3. q
-\end{code}
-
-Se define la función \texttt{(premisas fs)} que construye las premisas iniciales a partir de una lista de fórmulas \texttt{fs}.
-
-\index{\texttt{premisas}}
-\begin{code}
-premisas :: [Form] -> Razonamientos
-premisas fs = Rz (aux 1 fs)
-    where
-      aux n [f] = [R n f]
-      aux n (f:fs) = (R n f): aux (n+1) fs
-\end{code}
-
-Por ejemplo
-
-\begin{code}
--- | Ejemplo
--- >>> let premisa1 = premisas [p,Impl p q,Impl p (Impl q r)]
--- >>> let deduccion1 = deduccion 1 2 elimCond premisa1
--- >>> let deduccion2 = deduccion 1 3 elimCond deduccion1
--- >>> let deduccion3 = deduccion 4 5 elimCond deduccion2
--- >>> premisa1
--- 1. p
--- 2. (p⟹q)
--- 3. (p⟹(q⟹r))
--- >>> deduccion1
--- 1. p
--- 2. (p⟹q)
--- 3. (p⟹(q⟹r))
--- 4. q
--- >>> deduccion2
--- 1. p
--- 2. (p⟹q)
--- 3. (p⟹(q⟹r))
--- 4. q
--- 5. (q⟹r)
--- >>> deduccion3
--- 1. p
--- 2. (p⟹q)
--- 3. (p⟹(q⟹r))
--- 4. q
--- 5. (q⟹r)
--- 6. r
-\end{code}
-
-
-\comentario{Propuesta de tipo de dato que refleje las reglas aplicadas}
-
-\begin{code}
-
-data Deduccion = D Razonamiento String
-
-instance Show Deduccion where
-    show (D r str) = show r ++ "  " ++ str
-
-data Deducciones = Ds [Deduccion]
-
-instance Show Deducciones where
-    show (Ds [d]) = show d
-    show (Ds ((D (R n f) str):ds)) = 
-        show (R n f) ++ "  " ++ str ++ "\n" ++ show (Ds ds)
-\end{code}
-
-\begin{code}
--- | Ejemplo
--- >>> let p1 = R 1 p
--- >>> let p2 = R 2 q
--- >>> Ds [D p1 "Premisa", D p2 "Premisa"]
--- 1. p  Premisa
--- 2. q  Premisa
-\end{code}
 
 
 

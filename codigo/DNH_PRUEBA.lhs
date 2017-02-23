@@ -12,22 +12,22 @@ deducción natural a partir de un tipo de dato para las reglas. Y otro
 tipo de dato llamado Deducción formado por una lista de premisas y cosas ya deducidas, y otra lista de supuestos, además de una lista de reglas. 
 
 \begin{code}
-data Reglas = Suponer Form --
-            | IntroConj Form Form --
-            | ElimConjI Form  --
-            | ElimConjD Form  --
-            | ElimDobleNeg Form --
-            | IntroDobleNeg Form --
-            | ElimImpl Form Form --
+data Reglas = Suponer Form 
+            | IntroConj Form Form 
+            | ElimConjI Form  
+            | ElimConjD Form  
+            | ElimDobleNeg Form 
+            | IntroDobleNeg Form 
+            | ElimImpl Form Form 
             | MT Form Form
-            | IntroImpl Form Form --
-            | IntroDisyI Form Form --
-            | IntroDisyD Form Form --
-            | ElimDisy Form --
-            | ElimNeg Form Form -- Falta elim. de lo falso
-            | IntroNeg Form --
+            | IntroImpl Form Form 
+            | IntroDisyI Form Form 
+            | IntroDisyD Form Form 
+            | ElimDisy Form 
+            | ElimNeg Form  -- Falta elim. de lo falso
+            | IntroNeg Form 
             | ElimContrad Form 
-            | IntroEquiv Form Form
+            | IntroEquiv Form 
             | ElimEquivI Form
             | ElimEquivD Form 
             
@@ -96,10 +96,21 @@ verifica (D pr sp ((ElimNeg f):rs))
     | elem f (pr++sp) && elem (Neg f) (pr++sp) = 
         verifica (D (contradiccion:pr) sp rs)
     | otherwise = error "No se puede aplicar ElimNeg"
-
 verifica (D pr sp ((ElimContrad f):rs))
     | elem contradiccion (pr++sp) = verifica (D (f:pr) sp rs)
     | otherwise = error "No se puede aplicar ElimContrad"
+verifica (D pr sp ((IntroEquiv f1@(Impl f g)):rs))
+    | pertenece [f1,Impl g f] (pr++sp) = 
+        verifica (D ((Equiv f g):pr) sp rs)
+    | otherwise = error "No se puede aplicar IntroEquiv"
+verifica (D pr sp ((ElimEquivI f1@(Equiv f g)):rs))
+    | elem f1 (pr++sp) = 
+        verifica (D ((Impl f g):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimEquivI"
+verifica (D pr sp ((ElimEquivD f1@(Equiv f g)):rs))
+    | elem f1 (pr++sp) = 
+        verifica (D ((Impl g f):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimEquivD"
 \end{code} 
 
 Funciones auxiliares (quita xs ys) y (pertenece xs ys)
