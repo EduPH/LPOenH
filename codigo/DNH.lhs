@@ -364,12 +364,14 @@ data Reglas = Suponer Form
             | ElimFalso Form
             | RedAbsurdo Form
             | TercioExcl Form
+              deriving Show
 \end{code}
 
 Cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos con una lista de ``cosas conocidas'' y ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
 
 \begin{code}
 data Deduccion = D [Form] [Form] [Reglas]
+                 deriving Show
 \end{code}
 
 Finalmente, se define como un átomo el elemento \texttt{contradicción}, pues nos será necesario en la definición de algunas reglas.
@@ -416,6 +418,7 @@ Los primeros casos en la función \texttt{verifica} serán el básico, es decir,
 
 \begin{code}
 verifica (D pr [] []) = True
+verifica (D pr sp []) = error "Quedan supuestos"
 verifica (D pr sp ((Suponer f):rs)) = verifica (D pr (f:sp) rs)
 \end{code}
 
@@ -659,7 +662,13 @@ verifica (D pr sp ((TercioExcl f):rs)) =
   \end{enumerate}
 
 \begin{code}
-
+-- | Ejemplos
+-- >>> let rs = [Suponer p,IntroDobleNeg p, MT (Impl (Neg q) (Neg p))
+-- (Neg (Neg p)), IntroImpl p (Neg (Neg q))]
+-- >>> rs
+-- [Suponer p,IntroDobleNeg p,MT (¬q⟹¬p) ¬¬p,IntroImpl p ¬¬q]
+-- >>> verifica (D [Impl (Neg q) (Neg p)] [] rs)
+-- True
 \end{code}
 \end{itemize*}
 
