@@ -50,6 +50,7 @@ Para que la sustitución sea correcta, debe ser lo que denominaremos como
 apropiada. Para ello eliminamos aquellas sustituciones que dejan la variable
 igual.
 
+\index{\texttt{hacerApropiada}}
 \begin{code}
 hacerApropiada :: Sust -> Sust
 hacerApropiada [] = []
@@ -99,6 +100,7 @@ Por ejemplo,
 Posteriormente, se define una función que aplica la sustitución a una variable
 concreta. La denotamos \texttt{(sustituyeVar sust var)}
 
+\index{\texttt{sustituyeVar}}
 \begin{code}
 sustituyeVar :: Sust -> Variable -> Termino
 sustituyeVar [] y                      = Var y
@@ -360,6 +362,8 @@ data Reglas = Suponer Form
             | ElimEquivI Form
             | ElimEquivD Form 
             | ElimFalso Form
+            | RedAbsurdo Form
+            | TercioExcl Form
 \end{code}
 
 Cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos con una lista de ``cosas conocidas'' y ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
@@ -368,22 +372,25 @@ Cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos
 data Deduccion = D [Form] [Form] [Reglas]
 \end{code}
 
-Finalmente, se define como un átomo el elemento \texttt{contradicción}, pues no será necesario en algunas reglas.
+Finalmente, se define como un átomo el elemento \texttt{contradicción}, pues nos será necesario en la definición de algunas reglas.
 
+\index{\texttt{contradiccion}}
 \begin{code}
 contradiccion :: Form
 contradiccion = Atom "⊥" []
 \end{code}
 
-Implementamos en Haskell un par de funciones auxiliares \texttt{(quita xs ys)} que elimina todos los elementos \texttt{xs} de la lista \texttt{ys}, y \texttt{(pertenece xs ys)} que determina si una lista está contenida en la otra. 
+Implementamos en Haskell un par de funciones auxiliares \texttt{(quita xs ys)} que elimina todos los elementos \texttt{xs} de la lista \texttt{ys}, y \texttt{(elemMap xs ys)} que determina si una lista está contenida en la otra. 
 
+\index{\texttt{quita}}
+\index{\texttt{elemMap}}
 \begin{code}
 quita :: [Form] -> [Form] -> [Form]
 quita [] ys = ys
 quita (x:xs) ys = quita xs (delete x ys)
 
-pertenece :: [Form] -> [Form] -> Bool
-pertenece xs ys = all (`elem` ys) xs
+elemMap :: [Form] -> [Form] -> Bool
+elemMap xs ys = all (`elem` ys) xs
 \end{code}
 
 Por ejemplo,
@@ -392,9 +399,9 @@ Por ejemplo,
 -- | Ejemplos
 -- >>> quita [p,q] [p,q,contradiccion]
 -- [⊥]
--- >>> pertenece [p,q] [p,q,contradiccion]
+-- >>> elemMap [p,q] [p,q,contradiccion]
 -- True
--- >>> pertenece [contradiccion,q] [p,contradiccion]
+-- >>> elemMap [contradiccion,q] [p,contradiccion]
 -- False
 \end{code}
 
@@ -405,8 +412,7 @@ verifica :: Deduccion -> Bool
 \end{code}
 
 
-Los primeros casos en la función \texttt{verifica} serán el básico, es decir, en el que determinaremos que el proceso deductivo es correcto, y la regla antes definida en el tipo de dato \texttt{Reglas} como \texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista de las suposiciones. Lo implementamos en la función
-\texttt{verifica}. 
+Los primeros casos en la función \texttt{verifica} serán el básico, es decir, en el que determinaremos que el proceso deductivo es correcto, y la regla antes definida en el tipo de dato \texttt{Reglas} como \texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista de las suposiciones. Lo implementamos en la función \texttt{verifica}. 
 
 \begin{code}
 verifica (D pr [] []) = True
@@ -421,28 +427,24 @@ verifica (D pr sp ((Suponer f):rs)) = verifica (D pr (f:sp) rs)
 Cuya implementación en la función \texttt{verifica} es:
 \begin{code}
 verifica (D pr sp ((IntroConj f g):rs)) 
-    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs) 
+    | elemMap [f,g] (pr++sp) = 
+        verifica (D ((Conj [f,g]):pr) sp rs) 
     | otherwise = error "No se puede aplicar IntroConj"   
 \end{code}
 
-\begin{nota}
-  En la función \texttt{introConj} se distinguen los casos en los que
-  alguno de sus argumentos sean conjunciones para su expresión como única conjunción.
-\end{nota}
 
-
-\item Reglas de la eliminación de la introducción:
+\item Regla de la eliminación de la conjunción:
   $$\frac{F_1 \wedge \dots \wedge F_n}{F_1} \text{ y } \frac{F_1\wedge \dots \wedge F_n}{F_n}. $$
 Que se implementan de la siguiente forma:
 
 \begin{code}
-verifica (D pr sp ((ElimConjD f@(Conj fs)):rs)) 
-    | elem f (pr++sp) = verifica (D ((Conj (init fs)):pr) sp rs)
-    | otherwise = error "No se puede aplicar ElimConjD"
-
-verifica (D pr sp ((ElimConjI f@(Conj fs)):rs)) 
-    | elem f (pr++sp) = verifica (D ((Conj (tail fs)):pr) sp rs)
+verifica (D pr sp ((ElimConjI f@(Conj (f1:fs))):rs)) 
+    | elem f (pr++sp) = verifica (D (f1:pr) sp rs)
     | otherwise = error "No se puede aplicar ElimConjI"
+
+verifica (D pr sp ((ElimConjD f@(Conj fs)):rs)) 
+    | elem f (pr++sp) = verifica (D ((last fs):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimConjD"
 \end{code}
 
 \begin{nota}
@@ -464,7 +466,7 @@ verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
     | c = verifica (D (g:pr) sp rs)
     | otherwise = error "No se puede aplicar la ElimImpl"
     where 
-      c = pertenece [f1,f2] (pr++sp) && f1 == f2
+      c = elemMap [f1,form] (pr++sp) && f1 == f2
 \end{code}
   
 \end{itemize*}
@@ -490,17 +492,16 @@ verifica (D pr sp ((IntroImpl f g):rs))
 \begin{itemize*}
 \item Reglas de la introducción de la disyunción:
   $$ \frac{F}{F\vee G} \text{ y } \frac{G}{F \vee G} $$
-  Lo implementamos en Haskell mediante la función
-  \texttt{(introDisy f g)}
+  
 
 \begin{code}
-verifica (D pr sp ((IntroDisyD f g):rs)) 
-    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
-    | otherwise = error "No se puede aplicar IntroDisyD"
-
 verifica (D pr sp ((IntroDisyI f g):rs)) 
-    | elem g (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
+    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
     | otherwise = error "No se puede aplicar IntroDisyI"
+
+verifica (D pr sp ((IntroDisyD f g):rs)) 
+    | elem g (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
+    | otherwise = error "No se puede aplicar IntroDisyD"
 \end{code}
 
 
@@ -510,11 +511,15 @@ verifica (D pr sp ((IntroDisyI f g):rs))
   
 \begin{code}
 verifica (D pr sp ((ElimDisy (Disy [f,g]) h):rs)) 
-    | elem f sp && elem g sp && elem (Conj [f,g]) pr = 
-        verifica (D (h:pr) (quita [f,g] sp) rs)
+    | c = verifica (D (h:pr) (quita [f,g] sp) rs)
     | otherwise = error "No se puede aplicar ElimDisy"
+    where
+      c= elemMap [f,g] sp 
+         && elem (Conj [f,g]) pr 
+         && elem h pr 
+         && elem h (delete h pr)
 \end{code}
-\comentario{Revisar ElimDisy}
+
 \end{itemize*}
 
 \subsection{Reglas de la negación}
@@ -523,12 +528,10 @@ verifica (D pr sp ((ElimDisy (Disy [f,g]) h):rs))
   
 \item Regla de eliminación de lo falso:
   $$ \frac{\perp}{F}$$
-  Lo implementamos en Haskell mediante la función \texttt{(elimFalso f g)}
-
 
 \begin{code}
 verifica (D pr sp ((ElimFalso f):rs))
-    | elem contradiccion (pr++sp) = verifica (D (f:pr) sp rs)
+    | elem contradiccion pr = verifica (D (f:pr) sp rs)
     | otherwise = error "No se puede aplicar ElimFalso"
 \end{code}
 
@@ -548,11 +551,11 @@ verifica (D pr sp ((ElimNeg f):rs))
 \subsection{Reglas del bicondicional}
 \begin{itemize*}
 \item Regla de introducción del bicondicional:
-  $$\frac{F \rightarrow G\quad G\rightarrow F}{F\leftrightarrow F} $$
+  $$\frac{F \rightarrow G\quad G\rightarrow F}{F\leftrightarrow G} $$
   
 \begin{code}
 verifica (D pr sp ((IntroEquiv f1@(Impl f g)):rs))
-    | pertenece [f1,Impl g f] (pr++sp) = 
+    | elemMap [f1,Impl g f] (pr++sp) = 
         verifica (D ((Equiv f g):pr) sp rs)
     | otherwise = error "No se puede aplicar IntroEquiv"
 \end{code}
@@ -582,13 +585,13 @@ verifica (D pr sp ((ElimEquivD f1@(Equiv f g)):rs))
   $$\frac{F \rightarrow G\quad \neg G}{\neg F}$$
  
 \begin{code}
+verifica (D pr sp ((MT f1@(Impl f g) (Neg g1)):rs))
+    | elemMap [f1,Neg g1] (pr++sp) && g == g1 = 
+        verifica (D ((Neg f):pr) sp rs)
+    | otherwise = error "No se puede aplicar MT"
 
 \end{code}
 
-\item Ejemplo
-\begin{code}
-
-\end{code}  
 \end{itemize*}
 
 \subsection{Reglas de la doble negación}
@@ -603,25 +606,15 @@ verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
     | otherwise = error "No se puede aplicar ElimDobleNeg"
 \end{code}
 
-\item Ejemplo
-\begin{code}
-
-\end{code}
-
 \item Regla de la introducción de la doble negación:
   $$\frac{F}{\neg \neg F} $$
-  Se implementa en Haskell mediante la función \texttt{(introDNeg f)}
-\index{\texttt{introDNeg}}
+ 
 \begin{code}
 verifica (D pr sp ((IntroDobleNeg f):rs)) 
     | elem f pr || elem f sp = verifica (D ((Neg (Neg f)):pr) sp rs)
     | otherwise = error "No se puede aplicar la IntroDobleNeg"
 \end{code}
 
-\item Ejemplo
-\begin{code}
-
-\end{code}
 \end{itemize*}
 
 \subsection{Regla de Reducción al absurdo}
@@ -631,10 +624,13 @@ verifica (D pr sp ((IntroDobleNeg f):rs))
   $$\frac{\begin{bmatrix}{\neg F}\\{\vdots}\\{\perp}\end{bmatrix}}{F} $$
 
 \begin{code}
-
+verifica (D pr sp ((RedAbsurdo (Neg f)):rs)) 
+         | elem (Neg f) sp && elem contradiccion pr =
+             verifica (D (f:pr) sp rs)
+         | otherwise = error "No se puede aplicar RedAbsurdo"
 \end{code}
 \end{itemize*}
-
+\comentario{Qué sucede si hemos incluido contradicción previamente?}
 \subsection{Ley del tercio excluido}
 
 \begin{itemize*}
@@ -642,12 +638,10 @@ verifica (D pr sp ((IntroDobleNeg f):rs))
  $$ \frac{}{F\vee \neg F} $$
 
 \begin{code}
-
+verifica (D pr sp ((TercioExcl f):rs)) =
+    verifica (D ((Disy [f,Neg f]):pr) sp rs)
 \end{code}
-\item Ejemplo
-\begin{code}
 
-\end{code}
 \end{itemize*}
 
 
