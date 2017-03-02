@@ -654,11 +654,11 @@ verifica (D pr sp ((TercioExcl f):rs)) =
 \item Ejemplo:  \framebox{$\neg q \rightarrow \neg p \vdash p \rightarrow \neg \neg q$}
 
   \begin{enumerate}
-  \item $\neg q \rightarrow \neg p$
-  \item $p$
-  \item $\neg \neg p$
-  \item $\neg \neg q$
-  \item $p \rightarrow \neg \neg q$
+  \item $\neg q \rightarrow \neg p$ 
+  \item $p$                         
+  \item $\neg \neg p$               
+  \item $\neg \neg q$               
+  \item $p \rightarrow \neg \neg q$ 
   \end{enumerate}
 
 \begin{code}
