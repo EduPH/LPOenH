@@ -121,7 +121,7 @@ sustituyeVar ((x,x'):xs) y | x == y    = x'
     \begin{array}{ll}
       c,                       & \text{si $t$ es una constante $c$} \\
       S(x),                    & \text{si $t$ es una variable $x$} \\
-      f(S(t_1),\dots, S(t_n)), & \text{si $T$ es $f(t_1,\dots ,t_n)$} 
+      f(S(t_1),\dots, S(t_n)), & \text{si $t$ es $f(t_1,\dots ,t_n)$} 
     \end{array} \right.
   \end{equation*}
 \end{Def}
@@ -364,6 +364,8 @@ data Reglas = Suponer Form
             | ElimFalso Form
             | RedAbsurdo Form
             | TercioExcl Form
+            | ElimUniv Form Sust
+            | IntroUniv Sust Form
               deriving Show
 \end{code}
 
@@ -472,11 +474,7 @@ verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
       c = elemMap [f1,form] (pr++sp) && f1 == f2
 \end{code}
   
-\end{itemize*}
 
-\subsection{Regla de introducción del condicional}
-
-\begin{itemize*}
 \item Regla de introducción del condicional:
 $$\frac{\begin{bmatrix}{F}\\{\vdots}\\{G}\end{bmatrix}}{F \to G} $$ 
 
@@ -648,6 +646,31 @@ verifica (D pr sp ((TercioExcl f):rs)) =
 \end{itemize*}
 
 
+\subsection{Reglas del cuantificador universal}
+
+\begin{itemize*}
+\item Regla de eliminación del cuantificador universal:
+$$\frac{\forall x F}{F[x/t]}\text{ donde } [x/t] \text{ es libre para }F$$
+
+\begin{code}
+verifica (D pr sp ((ElimUniv f@(PTodo v g) s@([(v',t)])):rs)) 
+    | elem f (pr++sp) && (v==v') && elem v (variablesLibres f) = 
+        verifica (D ((sustitucionForm s g):pr) sp rs)
+    | otherwise = error "No se puede aplicar ElimUniv"
+\end{code}
+
+\item Regla de la introducción del cuantificador universal: 
+$$\frac{\begin{bmatrix}{x_0}\\{\vdots}\\{F[x/x_0]}\end{bmatrix}}{\forall x F} $$
+donde $x_0$ es una variable nueva, que no aparece fuera de la caja.
+\begin{code}
+verifica (D pr sp ((IntroUniv s@([(v,t)]) f):rs))
+    | elem (Atom [] [t]) sp && elem f (pr++sp) = 
+        verifica (D ((sustitucionForm s f):pr) (delete (Atom [] [t]) sp) rs)
+    | otherwise = error "No se puede aplicar IntroUniv"
+\end{code}
+\end{itemize*}
+
+\subsection{Reglas del cuantificador existencial}
 \subsection{Ejemplos}
 
 \begin{itemize*}
