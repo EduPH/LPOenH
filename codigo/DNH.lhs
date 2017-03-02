@@ -671,6 +671,14 @@ verifica (D pr sp ((IntroUniv s@([(v,t)]) f):rs))
 \end{itemize*}
 
 \subsection{Reglas del cuantificador existencial}
+\begin{itemize*}
+\item Regla de introducción del cuantificador existencial:
+$$\frac{F[x/t]}{\exists x F} \text{ donde } [x/t] \text{ es libre para } F$$
+\begin{code}
+  
+\end{code}
+\end{itemize*}
+
 \subsection{Ejemplos}
 
 \begin{itemize*}
