@@ -2,26 +2,6 @@
 
 En este capítulo trataremos la correspondencia de Curry-Howard, también llamada isomorfismo o equivalencia de Curry-Howard. Debe su nombre a que establece una correspondencia entre las pruebas en la lógica y los tipos de datos en la programación. 
 
-En concreto, de forma informal la correspondencia de Curry-Howard establece que:
-\begin{itemize*}
-\item Los tipos de datos corresponden a proposiciones.
-\item Los valores corresponden a pruebas lógicas. 
-\end{itemize*}
 
-A continuación, presentemos una tabla resumen, aunque luego hablaremos de cada entrada de la tabla con más detenimiento con las correspondencias entre elementos de lógica y la programación en Haskell. 
-
-
- \begin{center}
-   \begin{tabular}{| l | l |}
-     \hline
-      Pruebas            & Programas \\ \hline
-      Fórmulas            & Tipos \\ \hline
-      $P\Rightarrow Q$          & \texttt{f:: P->Q} \\ \hline
-      $a\wedge b$     &  \texttt{(a,b)} \\ \hline
-      $a\vee b$ & \texttt{Either a b}\\ \hline
-      $T$    & \texttt{()} \\ \hline
-     $F$ & \texttt{absurd} \\ \hline
-   \end{tabular}
- \end{center}
 
 \entrada{CHC}
