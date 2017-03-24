@@ -53,12 +53,9 @@ igual.
 \index{\texttt{hacerApropiada}}
 \begin{code}
 hacerApropiada :: Sust -> Sust
-hacerApropiada [] = []
-hacerApropiada (x:xs) | Var (fst x) /= snd x = x: hacerApropiada xs
-                      | otherwise            = hacerApropiada xs
+hacerApropiada xs = [x | x <- xs, Var (fst x) /= snd x]
 \end{code}
 
-\comentario{La definición de hacerApropiada por comprensión es más simple.}
 
 Por ejemplo,
 
@@ -665,7 +662,8 @@ donde $x_0$ es una variable nueva, que no aparece fuera de la caja.
 \begin{code}
 verifica (D pr sp ((IntroUniv s@([(v,t)]) f):rs))
     | elem (Atom [] [t]) sp && elem f (pr++sp) = 
-        verifica (D ((sustitucionForm s f):pr) (delete (Atom [] [t]) sp) rs)
+        verifica (D ((sustitucionForm s f):pr) 
+                  (delete (Atom [] [t]) sp) rs)
     | otherwise = error "No se puede aplicar IntroUniv"
 \end{code}
 \end{itemize*}
