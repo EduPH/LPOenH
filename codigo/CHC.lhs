@@ -43,7 +43,7 @@ Mostremos en una tabla, aunque posteriormente tratemos con ejemplos y más deten
  \end{center}
 
  Por ejemplo, si tenemos la proposición lógica
- $$\forall a\in P. a \Rightarrow a$$
+ $$\forall a\in P. a \quad \rightarrow a$$
 
  En Haskell, dicha proposición equivale al tipo de programa 
 
@@ -61,5 +61,5 @@ Mostremos en una tabla, aunque posteriormente tratemos con ejemplos y más deten
  \end{code}
 
  Que con cierta reflexión, no es más que la proposición lógica que afirma que
- $$\forall a,b,c.\quad  (b\Rightarrow c)\Rightarrow (a\Rightarrow b) \Rightarrow (a\Rightarrow c) $$
+ $$\forall a,b,c.\quad  (b\rightarrow c)\rightarrow (a\rightarrow b) \rightarrow (a\rightarrow c) $$
 
