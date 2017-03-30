@@ -325,11 +325,10 @@ mediante la librería \texttt{Data.Map}.
 \section{Reglas de deducción natural}
 
 La deducción natural está compuesta de una serie de reglas a través de las cuales,
-partiendo de una fórmula o conjunto de fórmulas, conseguimos deducir otra u otras
+partiendo de una fórmula o un conjunto de ellas, conseguimos deducir otra u otras
 fórmulas.
 
-Se definen los átomos \texttt{p},\texttt{q} y \texttt{r}, que nos servirán
-para la definición de las fórmulas en los ejemplos.
+Se definen los átomos \texttt{p},\texttt{q} y \texttt{r} para comodidad en los ejemplos.
 
 \begin{code}
 p = Atom "p" []
@@ -340,27 +339,35 @@ r = Atom "r" []
 A continuación se introducen los tipos de datos necesarios para la definición de las reglas de la deducción natural:
 
 \begin{code}
-data Reglas = Suponer Form 
+data Reglas = Suponer Form
+            -- Reglas de la conjunción:
             | IntroConj Form Form 
             | ElimConjI Form  
             | ElimConjD Form  
+            -- Reglas de la negación:
             | ElimDobleNeg Form 
             | IntroDobleNeg Form 
-            | ElimImpl Form Form 
+            | ElimNeg Form  
+            | IntroNeg Form
+            | ElimFalso Form
+            -- Reglas del condicional:
+            | ElimImpl Form Form
+            | IntroImpl Form Form
+            -- Modus Tollens:
             | MT Form Form
-            | IntroImpl Form Form 
+            -- Reglas de la disyunción:
             | IntroDisyI Form Form 
             | IntroDisyD Form Form 
-            | ElimDisy Form Form
-            | ElimNeg Form  
-            | IntroNeg Form 
-            | ElimContrad Form 
+            | ElimDisy Form Form 
+            -- Reglas de la bicondicional:
             | IntroEquiv Form 
             | ElimEquivI Form
             | ElimEquivD Form 
-            | ElimFalso Form
+            -- Reducción al absurdo:
             | RedAbsurdo Form
+            -- Regla del tercio excluido:
             | TercioExcl Form
+            -- Reglas del cuantificador existencial y universal:
             | ElimUniv Form Sust
             | IntroUniv Sust Form
               deriving Show
@@ -493,11 +500,13 @@ verifica (D pr sp ((IntroImpl f g):rs))
 
 \begin{code}
 verifica (D pr sp ((IntroDisyI f g):rs)) 
-    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) (delete f sp) rs)
+    | elem f (pr++sp) = 
+        verifica (D ((Disy [f,g]):pr) (delete f sp) rs)
     | otherwise = error "No se puede aplicar IntroDisyI"
 
 verifica (D pr sp ((IntroDisyD f g):rs)) 
-    | elem g (pr++sp) = verifica (D ((Disy [f,g]):pr) (delete g sp) rs)
+    | elem g (pr++sp) = 
+        verifica (D ((Disy [f,g]):pr) (delete g sp) rs)
     | otherwise = error "No se puede aplicar IntroDisyD"
 \end{code}
 
@@ -528,7 +537,8 @@ verifica (D pr sp ((ElimDisy (Disy [f,g]) h):rs))
 
 \begin{code}
 verifica (D pr sp ((ElimFalso f):rs))
-    | elem contradiccion pr = verifica (D (f:pr) sp rs)
+    | elem contradiccion pr = 
+        verifica (D (f:(delete contradiccion pr)) sp rs)
     | otherwise = error "No se puede aplicar ElimFalso"
 \end{code}
 
@@ -608,7 +618,8 @@ verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
  
 \begin{code}
 verifica (D pr sp ((IntroDobleNeg f):rs)) 
-    | elem f (pr++sp) = verifica (D ((Neg (Neg f)):pr) (delete f sp) rs)
+    | elem f (pr++sp) = 
+        verifica (D ((Neg (Neg f)):pr) (delete f sp) rs)
     | otherwise = error "No se puede aplicar la IntroDobleNeg"
 \end{code}
 
@@ -623,11 +634,13 @@ verifica (D pr sp ((IntroDobleNeg f):rs))
 \begin{code}
 verifica (D pr sp ((RedAbsurdo (Neg f)):rs)) 
          | elem (Neg f) sp && elem contradiccion pr =
-             verifica (D (f:pr) (delete (Neg f) sp) rs)
+             verifica (D (f:(delete contradiccion pr)) 
+                            (delete (Neg f) sp) rs)
          | otherwise = error "No se puede aplicar RedAbsurdo"
 \end{code}
 \end{itemize*}
-\comentario{Qué sucede si hemos incluido contradicción previamente?}
+
+
 \subsection{Ley del tercio excluido}
 
 \begin{itemize*}
