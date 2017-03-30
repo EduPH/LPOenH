@@ -95,7 +95,7 @@ Por ejemplo,
 \end{code}
 
 Posteriormente, se define una función que aplica la sustitución a una variable
-concreta. La denotamos \texttt{(sustituyeVar sust var)}
+concreta. La denotamos \texttt{(sustituyeVar sust var)}.
 
 \index{\texttt{sustituyeVar}}
 \begin{code}
@@ -123,8 +123,8 @@ sustituyeVar ((x,x'):xs) y | x == y    = x'
   \end{equation*}
 \end{Def}
 
-Ahora aplicando una recursión entre funciones, podemos hacer sustituciones
-basándonos en los términos, mediante las funciones \texttt{(susTerm xs t)} y
+Ahora, aplicando recursión entre funciones, podemos hacer sustituciones
+basándonos en los términos mediante las funciones \texttt{(susTerm xs t)} y
 \texttt{(susTerms sust ts)}.
 
 \index{\texttt{susTerm}}
@@ -366,7 +366,7 @@ data Reglas = Suponer Form
               deriving Show
 \end{code}
 
-Cuando elaboramos una deducción a partir de una serie de premisas, trabajaremos con una lista de ``cosas conocidas'' y ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
+Cuando elaboramos una deducción a partir de una serie de premisas trabajaremos con una lista de ``cosas conocidas'' y otra de ``cosas supuestas''. Para ello definimos el tipo de dato \texttt{Deduccion} de la siguiente forma:
 
 \begin{code}
 data Deduccion = D [Form] [Form] [Reglas]
@@ -430,7 +430,7 @@ Cuya implementación en la función \texttt{verifica} es:
 \begin{code}
 verifica (D pr sp ((IntroConj f g):rs)) 
     | elemMap [f,g] (pr++sp) = 
-        verifica (D ((Conj [f,g]):pr) sp rs) 
+        verifica (D ((Conj [f,g]):pr) (quita [f,g] sp) rs) 
     | otherwise = error "No se puede aplicar IntroConj"   
 \end{code}
 
@@ -441,17 +441,16 @@ Que se implementan de la siguiente forma:
 
 \begin{code}
 verifica (D pr sp ((ElimConjI f@(Conj (f1:fs))):rs)) 
-    | elem f (pr++sp) = verifica (D (f1:pr) sp rs)
+    | elem f (pr++sp) = verifica (D (f1:pr) (delete f sp) rs)
     | otherwise = error "No se puede aplicar ElimConjI"
 
 verifica (D pr sp ((ElimConjD f@(Conj fs)):rs)) 
-    | elem f (pr++sp) = verifica (D ((last fs):pr) sp rs)
+    | elem f (pr++sp) = verifica (D ((last fs):pr) (delete f sp) rs)
     | otherwise = error "No se puede aplicar ElimConjD"
 \end{code}
 
 \begin{nota}
-  La función \texttt{error} permite mostrar un mensaje en el caso de que
-  la regla sea aplicada a fórmulas que no son del tipo al que debe aplicarse.
+  La función \texttt{error} permite mostrar un mensaje por pantalla, en el que podemos aclarar la razón del error. 
 \end{nota}
 
 \end{itemize*}
@@ -465,7 +464,7 @@ verifica (D pr sp ((ElimConjD f@(Conj fs)):rs))
 
 \begin{code}
 verifica (D pr sp ((ElimImpl f1 form@(Impl f2 g)):rs))
-    | c = verifica (D (g:pr) sp rs)
+    | c = verifica (D (g:pr) (quita [f1,form] sp) rs)
     | otherwise = error "No se puede aplicar la ElimImpl"
     where 
       c = elemMap [f1,form] (pr++sp) && f1 == f2
@@ -494,11 +493,11 @@ verifica (D pr sp ((IntroImpl f g):rs))
 
 \begin{code}
 verifica (D pr sp ((IntroDisyI f g):rs)) 
-    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
+    | elem f (pr++sp) = verifica (D ((Disy [f,g]):pr) (delete f sp) rs)
     | otherwise = error "No se puede aplicar IntroDisyI"
 
 verifica (D pr sp ((IntroDisyD f g):rs)) 
-    | elem g (pr++sp) = verifica (D ((Disy [f,g]):pr) sp rs)
+    | elem g (pr++sp) = verifica (D ((Disy [f,g]):pr) (delete g sp) rs)
     | otherwise = error "No se puede aplicar IntroDisyD"
 \end{code}
 
@@ -540,7 +539,7 @@ verifica (D pr sp ((ElimFalso f):rs))
 \begin{code}
 verifica (D pr sp ((ElimNeg f):rs))
     | elem f (pr++sp) && elem (Neg f) (pr++sp) = 
-        verifica (D (contradiccion:pr) sp rs)
+        verifica (D (contradiccion:pr) (quita [f,Neg f] sp) rs)
     | otherwise = error "No se puede aplicar ElimNeg"
 \end{code}
 
@@ -554,7 +553,7 @@ verifica (D pr sp ((ElimNeg f):rs))
 \begin{code}
 verifica (D pr sp ((IntroEquiv f1@(Impl f g)):rs))
     | elemMap [f1,Impl g f] (pr++sp) = 
-        verifica (D ((Equiv f g):pr) sp rs)
+        verifica (D ((Equiv f g):pr) (quita [f1,Impl g f] sp) rs)
     | otherwise = error "No se puede aplicar IntroEquiv"
 \end{code}
 
@@ -566,11 +565,11 @@ verifica (D pr sp ((IntroEquiv f1@(Impl f g)):rs))
 \begin{code}
 verifica (D pr sp ((ElimEquivI f1@(Equiv f g)):rs))
     | elem f1 (pr++sp) = 
-        verifica (D ((Impl f g):pr) sp rs)
+        verifica (D ((Impl f g):pr) (delete f1 sp) rs)
     | otherwise = error "No se puede aplicar ElimEquivI"
 verifica (D pr sp ((ElimEquivD f1@(Equiv f g)):rs))
     | elem f1 (pr++sp) = 
-        verifica (D ((Impl g f):pr) sp rs)
+        verifica (D ((Impl g f):pr) (delete f1 sp) rs)
     | otherwise = error "No se puede aplicar ElimEquivD"
 \end{code}
 
@@ -585,7 +584,7 @@ verifica (D pr sp ((ElimEquivD f1@(Equiv f g)):rs))
 \begin{code}
 verifica (D pr sp ((MT f1@(Impl f g) (Neg g1)):rs))
     | elemMap [f1,Neg g1] (pr++sp) && g == g1 = 
-        verifica (D ((Neg f):pr) sp rs)
+        verifica (D ((Neg f):pr) (quita [f1,Neg g1] sp) rs)
     | otherwise = error "No se puede aplicar MT"
 
 \end{code}
@@ -600,7 +599,7 @@ verifica (D pr sp ((MT f1@(Impl f g) (Neg g1)):rs))
 
 \begin{code}
 verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
-    | elem form pr || elem form sp = verifica (D (f:pr) sp rs)
+    | elem form (pr++sp) = verifica (D (f:pr) (delete form sp) rs)
     | otherwise = error "No se puede aplicar ElimDobleNeg"
 \end{code}
 
@@ -609,7 +608,7 @@ verifica (D pr sp ((ElimDobleNeg form@(Neg (Neg f))):rs))
  
 \begin{code}
 verifica (D pr sp ((IntroDobleNeg f):rs)) 
-    | elem f pr || elem f sp = verifica (D ((Neg (Neg f)):pr) sp rs)
+    | elem f (pr++sp) = verifica (D ((Neg (Neg f)):pr) (delete f sp) rs)
     | otherwise = error "No se puede aplicar la IntroDobleNeg"
 \end{code}
 
@@ -624,7 +623,7 @@ verifica (D pr sp ((IntroDobleNeg f):rs))
 \begin{code}
 verifica (D pr sp ((RedAbsurdo (Neg f)):rs)) 
          | elem (Neg f) sp && elem contradiccion pr =
-             verifica (D (f:pr) sp rs)
+             verifica (D (f:pr) (delete (Neg f) sp) rs)
          | otherwise = error "No se puede aplicar RedAbsurdo"
 \end{code}
 \end{itemize*}
