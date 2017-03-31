@@ -1,0 +1,8 @@
+#+TITLE: Bibliografía informal
+
+* Bibliografía
+** Curry Howard
+ + https://wiki.haskell.org/Curry-Howard-Lambek_correspondence
+ + http://www.haskellforall.com/2017/02/the-curry-howard-correspondence-between.html
+ + https://en.wikibooks.org/wiki/Haskell/The_Curry%E2%80%93Howard_isomorphism
+ + https://github.com/libreim/curryHoward/blob/master/CurryHoward.pdf

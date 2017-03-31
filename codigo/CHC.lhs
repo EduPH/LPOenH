@@ -1,4 +1,5 @@
-Comencemos un módulo en Haskell, donde escribiremos nuestros ejemplos y construiremos distintas correspondencias entre lógica y programación. 
+Comencemos un módulo en Haskell, donde escribiremos nuestros ejemplos.
+
 \begin{code}
 module CHC where
 import LPH 
@@ -41,25 +42,41 @@ Mostremos en una tabla, aunque posteriormente tratemos con ejemplos y más deten
      Modus ponens        & Aplicación de funciones \\ \hline
    \end{tabular}
  \end{center}
-
+ Veamos en el siguiente ejemplo el isomorfismo de Curry-Howard, así como la interpretación que se infiere de ella.
  Por ejemplo, si tenemos la proposición lógica
- $$\forall a\in P.\quad a \rightarrow a$$
-
+ $$ a \rightarrow a$$
+ 
  En Haskell, dicha proposición equivale al tipo de programa 
 
  \begin{center}
    \texttt{f :: a -> a}
  \end{center}
 
- Y la prueba de dicha proposición lógica equivale a la existencia de una función con dicho tipo, en este caso, la función identidad \texttt{(id :: a -> a)}.
+ Dicho tipo de dato se puede traducir como que si el tipo \texttt{a} ``está habitado'' entonces, como es evidente, \texttt{a} también lo está. Y la prueba de dicha proposición lógica equivale a la existencia de una función con dicho tipo, en este caso la función identidad \texttt{(id :: a -> a)}. Otro ejemplo sencillo puede ser la función \texttt{show}, cuyo tipo de dato si preguntamos a Haskell es
 
-\vspace{3mm}
- Pensemos ahora en dirección contraria. Si tenemos la función composición \texttt{(.)} ,y preguntamos a Haskell por su tipo de dato, obtenemos:
- \begin{code}
+\begin{code}
+-- >>> :t show
+-- show :: Show a => a -> String   
+\end{code}
+
+Que no es más que la proposición lógica $(\forall a\in P. \quad a \rightarrow b)$.En este caso, $a$ es cualquier tipo que tenga la propiedad $P$, $P$ es la clase de los datos que se pueden mostrar y $b$ es el tipo de dato \texttt{String}.
+
+ \vspace{3mm}
+ Pensemos ahora en dirección contraria. Si tenemos la función composición \texttt{(.)} y preguntamos a Haskell por su tipo de dato obtenemos lo siguiente:
+\begin{code}
 -- >>> :t (.)
 -- (.) :: (b -> c) -> (a -> b) -> a -> c
- \end{code}
+\end{code}
 
- Que con cierta reflexión, no es más que la proposición lógica que afirma que
- $$\forall a,b,c.\quad  (b\rightarrow c)\rightarrow (a\rightarrow b) \rightarrow (a\rightarrow c) $$
+ Que con una ligera reflexión, no es más que la proposición lógica que afirma que
+ $$\forall a,b,c\in P. \quad(b\rightarrow c)\rightarrow (a\rightarrow b) \rightarrow (a\rightarrow c) $$
+
+ 
+ Saquemos una serie de conclusiones de los ejemplos y, posteriormente, tratemos los distintas entradas de la tabla anterior en secciones separadas.
+
+\begin{itemize}
+\item Dada una proposición lógica podemos inferir un tipo de dato equivalente a ella.
+\item Demostrar un teorema es equivalente a encontrar una función del tipo de dato adecuado.
+\comentario{Referencia a clases en Haskell}
+\end{itemize}
 

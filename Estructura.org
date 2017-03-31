@@ -26,5 +26,6 @@
 ** [[./texto/Resolucion.tex][Resolucion.tex]]
   + [[./codigo/RES.lhs][RES.lhs]]
 
+** [[./texto/Curry_Howard.tex][Curry_Howard.tex]]
+  + [[./codigo/CHC.lhs][CHC.lhs]]
 ** [[./texto/TrabajoGitHub.tex][TrabajoGitHub.tex]]
-  
