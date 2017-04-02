@@ -159,4 +159,32 @@ Ahora, como acostumbramos, veamos algunos ejemplos de las funciones definidas.
 -- [[(p,0),(r,0)],[(p,0),(r,1)],[(p,1),(r,0)],[(p,1),(r,1)]]
 -- >>> esConsistente c
 -- True
+-- >>> let c' = Cs [C [p],C [Neg p,q],C [Neg q]]
+-- >>> c'
+-- {{p},{¬p,q},{¬q}}
+-- >>> esConsistente c'
+-- False
+\end{code}
+
+\begin{Def}
+  $S\models C$ si para todo modelo $I$ de $S$, $I(C)=1$. 
+\end{Def}
+
+Para su implementación en Haskell definimos la lista de las interpretaciones que son modelo de un conjunto de cláusulas mediante la función \texttt{(modelosDe cs)}
+
+\index{\texttt{modelosDe}}
+
+\begin{code}
+modelosDe :: Clausulas -> [InterpretacionC]
+modelosDe cs = [i | i <- is, i `esModeloDe` cs]
+    where
+      is = interPosibles cs
+\end{code}
+
+Caracterizamos cuando una cláusula es consecuencia de un conjunto de cláusulas mediante la función \texttt{(c `esConsecuenciaDe` cs)}
+
+\index{\texttt{esConsecuenciaDe}}
+\begin{code}
+esConsecuenciaDe :: Clausula -> Clausulas ->  Bool
+esConsecuenciaDe c cs = and [i `esModeloDe` (Cs [c]) |i <-  modelosDe cs]
 \end{code}
