@@ -1,5 +1,6 @@
 \begin{code}
 module RES where
+import Data.List
 import LPH
 import DNH
 import PTLP
@@ -77,4 +78,33 @@ Veamos algunos ejemplos que nos ilustren lo definido hasta ahora:
 -- 1
 -- >>> valorCs c [(p,1),(r,1)]
 -- 0
+\end{code}
+
+\begin{Def}
+  Una interpretación $I$ es \textbf{modelo} de un conjunto de cláusulas $S$ si $I(S)=1$. 
+\end{Def}
+
+Caracterizamos el concepto de modelo de un conjunto de cláusulas mediante la función \texttt{(is `esModeloDe` cs)}
+
+\index{\texttt{esModeloDe}}
+\begin{code}
+esModeloDe :: InterpretacionC -> Clausulas -> Bool
+esModeloDe is cs = valorCs cs is  == 1
+\end{code}
+
+\begin{code}
+-- | Ejemplo
+-- >>> let c = Cs [C [Neg p,p],C [Neg p,Neg r]]
+-- >>> let is = [(p,1),(r,0)]
+-- >>> is `esModeloDe` c
+-- True
+\end{code}
+
+\begin{Def}
+  Un conjunto de cláusulas es \textbf{consistente} si tiene modelos e \textbf{inconsistente}, en caso contrario. 
+\end{Def}
+
+\begin{code}
+interPosibles :: Clausulas -> [InterpretacionC]
+interPosibles cs = undefined
 \end{code}
