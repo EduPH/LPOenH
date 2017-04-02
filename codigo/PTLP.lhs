@@ -303,7 +303,7 @@ Por ejemplo
   refiere a una variable diferente.
 \end{Def}
 
-Para proceder a su implementación, definimos una función auxiliar
+Para proceder a su implementación definimos una función auxiliar
 previa que denotamos \texttt{(sustAux n v f)} que efectúa una
 sustitución de la variable \texttt{v}  por $x_n$.
 
@@ -341,7 +341,7 @@ Añadimos ejemplos
 -- ∀x0 (P[x0]⟹Q[x0,y])
 \end{code}
 
-Definimos \texttt{(formaTectificada f)} que calcula la forma rectificada
+Definimos \texttt{(formaRectificada f)} que calcula la forma rectificada
 de la fórmula \texttt{f}.
 
 \index{\texttt{formaRectificada}}
@@ -636,7 +636,12 @@ Por ejemplo,
 
 
 \section{Forma clausal}
-
+\begin{Def}
+  Un \textbf{literal} es un átomo o la negación de un átomo.
+\end{Def}
+\begin{Def}
+  Una \textbf{cláusula} es un conjunto finito de literales.
+\end{Def}
 \begin{Def}
   Una \textbf{forma clausal} de una fórmula $F$ es un conjunto de cláusulas
   equivalente a $F$.
