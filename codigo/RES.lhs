@@ -109,7 +109,7 @@ esModeloDe is cs = valorCs cs is  == 1
 
 Definamos una serie de funciones necesarias para determinar si un conjunto de cláusulas es consistente.
 
-Primero definimos la función \texttt{(atomosC c)} y \texttt{(atomosCs cs)} que obtienen una lista de los átomos que aparecen en la cláusula o conjuntos de cláusulas \texttt{c} y \texttt{cs}, respectivamente.
+Primero definimos las funciones \texttt{(atomosC c)} y \texttt{(atomosCs cs)} que obtienen una lista de los átomos que aparecen en la cláusula o conjuntos de cláusulas \texttt{c} y \texttt{cs}, respectivamente.
 
 \index{\texttt{atomosC}}
 
