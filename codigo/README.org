@@ -6,4 +6,6 @@ Este directorio contiene el código Haskell del proyecto. Su contenido es
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/Dominio.lhs][Dominio.lhs]] :: Dominio de entidades.
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/Modelo.lhs][Modelo.lhs]] :: Modelo botánico.
 + [[https://github.com/EduPH/LPOenH/blob/master/codigo/PTLP.lhs][PTLP.lhs]] :: Demostración de teoremas mediante tableros semánticos.
-
++ [[https://github.com/EduPH/LPOenH/blob/master/codigo/DNH.lhs][DNH.lhs]] :: Deducción natural en Haskell.
++ [[https://github.com/EduPH/LPOenH/blob/master/codigo/HerbrandAlt.lhs][HerbrandAlt.lhs]] :: Universo de Herbrand.
++ [[https://github.com/EduPH/LPOenH/blob/master/codigo/RES.lhs][RES.lhs]] :: Resolución de la lógica de primer orden en Haskell.
