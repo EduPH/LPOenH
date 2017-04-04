@@ -215,7 +215,8 @@ Implementamos la función \texttt{(res c1 c2 l)} que calcula la resolvente de \t
 \begin{code}
 res :: Clausula -> Clausula -> Form -> Clausula
 res (C fs) (C gs) l | p = C (nub (delete (Neg l) ((delete l (fs++gs)))))
-                    | otherwise = error "l no pertenece a alguna de las cláusulas"
+                    | otherwise = 
+                        error "l no pertenece a alguna de las cláusulas"
                     where
                       p = ((elem l fs) && (elem (Neg l) gs)) ||
                           ((elem l gs) && (elem (Neg l) fs))
@@ -244,7 +245,7 @@ ress :: Clausula -> Clausula -> [[Form]]
 ress (C []) (C gs) = []
 ress (C ((Neg f):fs)) (C gs) | elem f gs = [f,Neg f]:(ress (C fs) (C
                                                                    gs))
-                                 | otherwise = ress (C fs) (C gs)
+                             | otherwise = ress (C fs) (C gs)
 ress (C (f:fs)) (C gs) | elem (Neg f) gs = [f,Neg f]:(ress (C fs) (C
                                                                    gs))
                        | otherwise = ress (C fs) (C gs)
