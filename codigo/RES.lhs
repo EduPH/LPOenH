@@ -188,3 +188,74 @@ Caracterizamos cuando una cláusula es consecuencia de un conjunto de cláusulas
 esConsecuenciaDe :: Clausula -> Clausulas ->  Bool
 esConsecuenciaDe c cs = and [i `esModeloDe` (Cs [c]) |i <-  modelosDe cs]
 \end{code}
+
+\begin{Prop}
+Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
+\begin{itemize}
+\item $\{ F_1,\dots,F_n\}$ es consistente si y sólo si $S_1\cup \dots S_n$ es consistente.
+\item Si $S$ es una forma clausal de $\neg G$, entonces son equivalentes:
+  \begin{enumerate}
+  \item $\{F_1,\dots,F_n\} \models G$.
+  \item $\{F_1,\dots,F_n,\neg G\}$ es inconsistente.
+  \item $S_1\cup \dots \cup S_n \cup S$ es inconsistente. 
+  \end{enumerate}
+\end{itemize}
+\end{Prop}
+
+\section{Demostraciones por resolución}
+
+\begin{Def}
+  Sean $C_1$ una cláusula, $L$ un literal de $C_1$ y $C_2$ una cláusula que contiene el complementario de $L$. La \textbf{resolvente de $C_1$ y $C_2$ respecto de $L$} es 
+  $$Res_L(C_1,C_2)=(C_1 \backslash \{L\})\cup (C_2\backslash \{L^c\}) $$
+\end{Def}
+
+Implementamos la función \texttt{(res c1 c2 l)} que calcula la resolvente de \texttt{c1} y \texttt{c2} respecto del literal \texttt{l}. 
+
+\index{\texttt{res}}
+\begin{code}
+res :: Clausula -> Clausula -> Form -> Clausula
+res (C fs) (C gs) l | p = C (nub (delete (Neg l) ((delete l (fs++gs)))))
+                    | otherwise = error "l no pertenece a alguna de las cláusulas"
+                    where
+                      p = ((elem l fs) && (elem (Neg l) gs)) ||
+                          ((elem l gs) && (elem (Neg l) fs))
+\end{code}
+\begin{nota}
+  Consideraremos que \texttt{l} siempre será un átomo.
+\end{nota}
+
+\begin{code}
+-- | Ejemplos 
+-- >>> res (C [p,q]) (C [Neg q,r]) q
+-- {p,r}
+-- >>> res (C [p]) (C [Neg p]) p
+-- []
+\end{code}
+
+
+\begin{Def}
+  Sean $C_1$ y $C_2$ cláusulas, se define $Res(C_1,C_2)$ como el conjunto de las resolventes entre $C_1$ y $C_2$. 
+\end{Def}
+
+Se define la función \texttt{ress c1 c2} que calcula el conjunto de las resolventes de las cláusulas \texttt{c1} y \texttt{c2}.
+
+\begin{code}
+ress :: Clausula -> Clausula -> [[Form]]
+ress (C []) (C gs) = []
+ress (C ((Neg f):fs)) (C gs) | elem f gs = [f,Neg f]:(ress (C fs) (C
+                                                                   gs))
+                                 | otherwise = ress (C fs) (C gs)
+ress (C (f:fs)) (C gs) | elem (Neg f) gs = [f,Neg f]:(ress (C fs) (C
+                                                                   gs))
+                       | otherwise = ress (C fs) (C gs)
+\end{code}
+
+Algunos ejemplos
+
+\begin{code}
+-- | Ejemplos
+-- >>> ress (C [p,q,Neg r]) (C [Neg q,r]) 
+-- [[q,¬q],[r,¬r]]
+-- >>> ress (C [p]) (C [Neg q,r]) 
+-- []
+\end{code}
