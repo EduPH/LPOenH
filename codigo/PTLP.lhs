@@ -371,11 +371,11 @@ Por ejemplo
 -- | Ejemplos
 -- >>> formula2
 -- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formaRectificada formula2
+-- >>> formRec formula2
 -- ∀x0 ∀x1 (R[x0,x1]⟹∃x4 (R[x0,x4]⋀R[x4,x1]))
 -- >>> formula3
 -- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formaRectificada formula3
+-- >>> formRec formula3
 -- (R[x,y]⟹∃x0 (R[x,x0]⋀R[x0,y]))
 \end{code}
 
