@@ -735,13 +735,14 @@ a su forma causal por medio de la función \texttt{(form3AC f)}
 \index{\texttt{form3CAC}}
 \begin{code}
 form3CAC :: Form -> Clausulas
+form3CAC (Disy fs) = Cs [C fs]
+form3CAC p@(Atom _ _) = Cs [C [p]]
 form3CAC (PTodo x f) = form3CAC f
 form3CAC (Conj fs) = Cs (map disyAClau fs)
     where
       disyAClau p@(Atom _ _) = C [p]
       disyAClau (Disy fs) = C fs
 \end{code}
-\comentario{Hay que corregir la forma clausal para ejemplos como (PTodo x (Disy [Atom "P" [tx], Ex y (Atom "Q" [ty])]))}
 
 Por ejemplo
 
