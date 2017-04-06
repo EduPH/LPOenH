@@ -704,13 +704,13 @@ $$\frac{F[x/t]}{\exists x F} \text{ donde } [x/t] \text{ es libre para } F$$
 
 \begin{code}
 -- | Ejemplos
--- >>> let rs = [Suponer p,IntroDobleNeg p, MT (Impl (Neg q) (Neg p))
--- (Neg (Neg p)), IntroImpl p (Neg (Neg q))]
+-- >>> let rs = [Suponer p,IntroDobleNeg p, MT (Impl (Neg q) (Neg p)) (Neg (Neg p)), IntroImpl p (Neg (Neg q))]
 -- >>> rs
 -- [Suponer p,IntroDobleNeg p,MT (¬q⟹¬p) ¬¬p,IntroImpl p ¬¬q]
 -- >>> verifica (D [Impl (Neg q) (Neg p)] [] rs)
 -- True
 \end{code}
+\comentario{Revisar ejemplo, da error en la última regla}
 \end{itemize*}
 
 

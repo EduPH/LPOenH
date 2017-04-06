@@ -371,11 +371,11 @@ Por ejemplo
 -- | Ejemplos
 -- >>> formula2
 -- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formRec formula2
+-- >>> formRec 0 formula2
 -- ∀x0 ∀x1 (R[x0,x1]⟹∃x4 (R[x0,x4]⋀R[x4,x1]))
 -- >>> formula3
 -- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formRec formula3
+-- >>> formRec 0 formula3
 -- (R[x,y]⟹∃x0 (R[x,x0]⋀R[x0,y]))
 \end{code}
 
@@ -445,7 +445,7 @@ la forma normal prenexa de la fórmula \texttt{f}
 \index{\texttt{formaNormalPrenexa}}
 \begin{code}
 formaNormalPrenexa :: Form -> Form
-formaNormalPrenexa f = aplica cs (eliminaCuant (formaRectificada f))
+formaNormalPrenexa f = aplica cs (eliminaCuant (formRec 0 f))
     where
       aplica [] f = f
       aplica ((PTodo x _):fs) f = aplica fs (PTodo x f)
@@ -778,7 +778,7 @@ Por ejemplo
 -- >>> formaClausal (Neg (Conj [p, Impl q r]))
 -- {{¬p,q},{¬p,¬r}}
 -- >>> formaClausal (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
--- {{P[sk0[x0]],Q[sk0[x0]]}}
+-- {{P[x0],Q[sk0[x0]]}}
 \end{code}
 
 \section{Tableros semánticos}
