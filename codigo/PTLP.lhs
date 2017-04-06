@@ -279,7 +279,6 @@ Por ejemplo
 -- ((¬p⋁¬r)⋀(¬q⋁¬r))
 -- >>> enFormaNC (formaNormalConjuntiva f2)
 -- True
---
 -- >>> let f3 = (Impl (Conj [p,q]) (Disy [Conj [Disy [r,q],Neg p], Neg r]))
 -- >>> f3
 -- ((p⋀q)⟹(((r⋁q)⋀¬p)⋁¬r))
@@ -355,8 +354,10 @@ formaRectificada (Conj fs) = Conj (map formaRectificada fs)
 formaRectificada (Disy fs) = Disy (map formaRectificada fs)
 formaRectificada (Neg f) = Neg (formaRectificada f)
 formaRectificada f = f
+
+formRec f = undefined
 \end{code}
-\comentario{Localizado error, no se puede definir asi para Conj y Disy pues uniformiza las variables}
+\comentario{Localizado error, mala definición de formaRectificada}
 Por ejemplo
 
 \begin{code}
