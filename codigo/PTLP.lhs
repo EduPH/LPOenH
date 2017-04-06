@@ -340,24 +340,31 @@ Añadimos ejemplos
 -- ∀x0 (P[x0]⟹Q[x0,y])
 \end{code}
 
-Definimos \texttt{(formaRectificada f)} que calcula la forma rectificada
-de la fórmula \texttt{f}.
+Definimos \texttt{(formRec n f)} que calcula la forma rectificada
+de la fórmula \texttt{f} empezando a renombrar las variables desde el índice \texttt{n}.
 
-\index{\texttt{formaRectificada}}
+\index{\texttt{formRec}}
 \begin{code}
-formaRectificada :: Form -> Form
-formaRectificada f@(PTodo x form) = sustAux 0 x f
-formaRectificada f@(Ex x form) = sustAux 0 x f
-formaRectificada (Impl f1 f2) = 
-    Impl (formaRectificada f1) (formaRectificada f2)
-formaRectificada (Conj fs) = Conj (map formaRectificada fs)
-formaRectificada (Disy fs) = Disy (map formaRectificada fs)
-formaRectificada (Neg f) = Neg (formaRectificada f)
-formaRectificada f = f
 
-formRec f = undefined
+formRec :: Int -> Form -> Form
+formRec n (PTodo v form) = sustAux n v (PTodo v (formRec (n+1) form))
+formRec n (Ex v form) = sustAux n v (Ex v (formRec (n+1) form))
+formRec n (Impl f1 f2) = Impl (formRec n f1) (formRec (n+k) f2)
+    where
+      k = length (recolectaCuant f1)
+formRec n (Conj fs) = Conj [formRec (n+(k f fs)) f | f <- fs]
+    where
+      k f fs = length (concat (map (recolectaCuant) (takeWhile (/=f)
+                                                               fs)))
+formRec n (Disy fs) = Disy [formRec (n+(k f fs)) f | f <- fs]
+    where
+      k f fs = length (concat (map (recolectaCuant) (takeWhile (/=f)
+                                                               fs)))
+formRec n (Neg f) = Neg (formRec n f)
+formRec n f = f
+
 \end{code}
-\comentario{Localizado error, mala definición de formaRectificada}
+
 Por ejemplo
 
 \begin{code}
@@ -443,7 +450,7 @@ formaNormalPrenexa f = aplica cs (eliminaCuant (formaRectificada f))
       aplica [] f = f
       aplica ((PTodo x _):fs) f = aplica fs (PTodo x f)
       aplica ((Ex x _):fs) f = aplica fs (Ex x f)
-      cs = reverse (recolectaCuant (formaRectificada f))
+      cs = reverse (recolectaCuant (formRec 0 f))
 \end{code}
 
 Por ejemplo,
