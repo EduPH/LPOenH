@@ -238,8 +238,9 @@ res (C fs) (C gs) l | p = C (nub (delete (Neg l) ((delete l (fs++gs)))))
   Sean $C_1$ y $C_2$ cláusulas, se define $Res(C_1,C_2)$ como el conjunto de las resolventes entre $C_1$ y $C_2$. 
 \end{Def}
 
-Se define la función \texttt{ress c1 c2} que calcula el conjunto de las resolventes de las cláusulas \texttt{c1} y \texttt{c2}.
+Se define la función \texttt{(ress c1 c2)} que calcula el conjunto de las resolventes de las cláusulas \texttt{c1} y \texttt{c2}.
 
+\index{\texttt{ress}}
 \begin{code}
 ress :: Clausula -> Clausula -> [[Form]]
 ress (C []) (C gs) = []

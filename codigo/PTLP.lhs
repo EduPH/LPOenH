@@ -730,6 +730,7 @@ form3CAC (Conj fs) = Cs (map disyAClau fs)
       disyAClau p@(Atom _ _) = C [p]
       disyAClau (Disy fs) = C fs
 \end{code}
+\comentario{Hay que corregir la forma clausal para ejemplos como (PTodo x (Disy [Atom "P" [tx], Ex y (Atom "Q" [ty])]))}
 
 Por ejemplo
 
