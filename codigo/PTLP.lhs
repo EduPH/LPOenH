@@ -356,7 +356,7 @@ formaRectificada (Disy fs) = Disy (map formaRectificada fs)
 formaRectificada (Neg f) = Neg (formaRectificada f)
 formaRectificada f = f
 \end{code}
-
+\comentario{Localizado error, no se puede definir asi para Conj y Disy pues uniformiza las variables}
 Por ejemplo
 
 \begin{code}
@@ -459,12 +459,10 @@ Por ejemplo,
 \subsection{Forma normal prenexa conjuntiva}
 
 \begin{Def}
-  Una fórmula $F$ está en \textbf{forma normal prenexa conjuntiva} si está en
-  forma normal prenexa con $G$ en forma normal conjuntiva.
+  Una fórmula $F$ está en \textbf{forma normal prenexa conjuntiva} si está en forma normal prenexa con $G$ en forma normal conjuntiva.
 \end{Def}
 
-La implementamos en \texttt{Haskell} mediante la función 
-\texttt{(formaNPConjuntiva f)}
+La implementamos en \texttt{Haskell} mediante la función \texttt{(formaNPConjuntiva f)}
 
 \index{\texttt{formaNPConjuntiva}}
 \begin{code}
@@ -476,8 +474,6 @@ formaNPConjuntiva f = aux (formaNormalPrenexa f)
       aux f = formaNormalConjuntiva f
 \end{code}
 
-\comentario{formaNPConjuntiva (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
-  no da lo que debe}
 Por ejemplo,
 
 \begin{code}
