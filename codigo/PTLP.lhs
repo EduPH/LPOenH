@@ -617,7 +617,12 @@ La función \texttt{(skolem f)} devuelve la forma de Skolem de la fórmula
 \index{\texttt{skolem}}
 \begin{code}
 skolem :: Form -> Form
-skolem  = sk . elimImpEquiv 
+skolem  = aux. sk . elimImpEquiv 
+    where
+      aux (Neg (Neg f)) = f
+      aux (Neg (Ex v f)) = (PTodo v f)
+      aux (Disy fs) = Disy (map aux fs)
+      aux f = f
 \end{code}
 
 Por ejemplo,
@@ -632,7 +637,13 @@ Por ejemplo,
 -- R[cero,sk0]
 -- >>> skolem formula5
 -- (¬P[sk0]⋁∀y Q[x,y])
+-- >>> skolem (Neg (Ex x (Impl (Atom "P" [tx]) (PTodo x (Atom "P" [tx])))))
+-- ∀x (¬P[x]⋁P[sk0[x]])
+-- >>> let f1 = Impl (Neg (Disy [PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx])),PTodo x (Impl (Atom "Q" [tx]) (Atom "R" [tx]))])) (PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx])))
+-- >>> skolem f1
+-- ((∀x (¬P[x]⋁Q[x])⋁∀x (¬Q[x]⋁R[x]))⋁∀x (¬P[x]⋁Q[x]))
 \end{code}
+
 
 
 \section{Forma clausal}
@@ -749,6 +760,7 @@ a su forma clausal.
 
 formaClausal :: Form -> Clausulas
 formaClausal  = form3CAC . skolem .formaNPConjuntiva
+    
 
 \end{code}
 
