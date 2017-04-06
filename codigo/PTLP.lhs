@@ -482,12 +482,12 @@ Por ejemplo,
 -- | Ejemplos
 -- >>> formula2
 -- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formaNormalPrenexa formula2
--- ∀x0 ∀x1 ∃x4 (R[x0,x1]⟹(R[x0,x4]⋀R[x4,x1]))
+-- >>> formaNPConjuntiva formula2
+-- ∀x0 ∀x1 ∃x4 ((¬R[x0,x1]⋁R[x0,x4])⋀(¬R[x0,x1]⋁R[x4,x1]))
 -- >>> formula3
 -- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
--- >>> formaNormalPrenexa formula3
--- ∃x0 (R[x,y]⟹(R[x,x0]⋀R[x0,y]))
+-- >>> formaNPConjuntiva formula3
+-- ∃x0 ((¬R[x,y]⋁R[x,x0])⋀(¬R[x,y]⋁R[x0,y]))
 \end{code}
 
 \subsection{Forma de Skolem}
@@ -639,9 +639,9 @@ Por ejemplo,
 -- (¬P[sk0]⋁∀y Q[x,y])
 -- >>> skolem (Neg (Ex x (Impl (Atom "P" [tx]) (PTodo x (Atom "P" [tx])))))
 -- ∀x (¬P[x]⋁P[sk0[x]])
--- >>> let f1 = Impl (Neg (Disy [PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx])),PTodo x (Impl (Atom "Q" [tx]) (Atom "R" [tx]))])) (PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx])))
+-- >>> let f1 = Impl (Neg (Disy [PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx])),PTodo x (Impl (Atom "Q" [tx]) (Atom "R" [tx]))])) (PTodo x (Impl (Atom "P" [tx]) (Atom "R" [tx])))
 -- >>> skolem f1
--- ((∀x (¬P[x]⋁Q[x])⋁∀x (¬Q[x]⋁R[x]))⋁∀x (¬P[x]⋁Q[x]))
+-- ((∀x (¬P[x]⋁Q[x])⋁∀x (¬Q[x]⋁R[x]))⋁∀x (¬P[x]⋁R[x]))
 \end{code}
 
 
