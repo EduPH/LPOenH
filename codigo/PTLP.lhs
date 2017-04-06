@@ -471,11 +471,13 @@ La implementamos en \texttt{Haskell} mediante la función
 formaNPConjuntiva :: Form -> Form
 formaNPConjuntiva f = aux (formaNormalPrenexa f)
     where
-      aux (PTodo x f) = PTodo x (aux f)
-      aux (Ex x f) = Ex x (aux f)
+      aux (PTodo v f) = PTodo v (aux f)
+      aux (Ex v f) = Ex v (aux f)
       aux f = formaNormalConjuntiva f
 \end{code}
 
+\comentario{formaNPConjuntiva (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
+  no da lo que debe}
 Por ejemplo,
 
 \begin{code}
@@ -768,9 +770,11 @@ formaClausal  = form3CAC . skolem .formaNPConjuntiva
 Por ejemplo
 
 \begin{code}
--- | Ejemplo
+-- | Ejemplos
 -- >>> formaClausal (Neg (Conj [p, Impl q r]))
 -- {{¬p,q},{¬p,¬r}}
+-- >>> formaClausal (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
+-- {{P[sk0[x0]],Q[sk0[x0]]}}
 \end{code}
 
 \section{Tableros semánticos}
