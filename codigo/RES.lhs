@@ -202,7 +202,7 @@ Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
 \end{itemize}
 \end{Prop}
 
-\section{Demostraciones por resolución}
+\section{Demostraciones por resolución (Lógica Proposicional)}
 
 \begin{Def}
   Sean $C_1$ una cláusula, $L$ un literal de $C_1$ y $C_2$ una cláusula que contiene el complementario de $L$. La \textbf{resolvente de $C_1$ y $C_2$ respecto de $L$} es 
@@ -260,4 +260,14 @@ Algunos ejemplos
 -- [[q,¬q],[r,¬r]]
 -- >>> ress (C [p]) (C [Neg q,r]) 
 -- []
+\end{code}
+
+\section{Demostración por resolución (Lógica de primer orden)}
+\comentario{Toda la sección sobre resolución está en proceso, tanto de estructuración como de programación}
+\begin{code}
+listaTerms (Atom _ ts) = ts
+listaTerms (Neg (Atom _ ts)) = ts
+listaTermsCl (C fs) = concat (map listaTerms fs)
+--resolucion :: Clausula -> Clausula -> Form -> Clausula
+resolucion c1 c2 f = unificadoresListas (listaTermsCl c1) (listaTermsCl c2)
 \end{code}
