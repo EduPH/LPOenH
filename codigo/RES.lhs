@@ -268,6 +268,14 @@ Algunos ejemplos
 listaTerms (Atom _ ts) = ts
 listaTerms (Neg (Atom _ ts)) = ts
 listaTermsCl (C fs) = concat (map listaTerms fs)
---resolucion :: Clausula -> Clausula -> Form -> Clausula
-resolucion c1 c2 f = unificadoresListas (listaTermsCl c1) (listaTermsCl c2)
+
+resolucion :: Clausula -> Clausula -> Clausula
+resolucion c1@(C fs) c2 = aux c1' c2
+    where
+      sust = unificadoresListas (listaTermsCl c1) (listaTermsCl c2)
+      c1' = C (sustitucionForms (head sust) fs)
+      aux (C (f:fs)) (C (g:gs)) | Neg f == g || f == Neg g = C (fs++gs)
+                                | otherwise = aux (C fs) (C gs)
 \end{code}
+
+\comentario{Primer intento, aún erróneo}
