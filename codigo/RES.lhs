@@ -264,18 +264,46 @@ Algunos ejemplos
 
 \section{Demostración por resolución (Lógica de primer orden)}
 \comentario{Toda la sección sobre resolución está en proceso, tanto de estructuración como de programación}
+
+En esta sección implementaremos la resolución binaria entre dos cláusulas. Con este objetivo definimos inicialmente la función \texttt{(listaTerms f)} que calcula los términos de una fórmula dada.
+
+\begin{nota}
+  La fórmula de entrada siempre será un literal, pues se aplicará a formas clausales.
+\end{nota}
+
+\index{\texttt{listaTerms}}
 \begin{code}
+listaTerms :: Form -> [Termino]
 listaTerms (Atom _ ts) = ts
 listaTerms (Neg (Atom _ ts)) = ts
-listaTermsCl (C fs) = concat (map listaTerms fs)
-
-resolucion :: Clausula -> Clausula -> Clausula
-resolucion c1@(C fs) c2 = aux c1' c2
-    where
-      sust = unificadoresListas (listaTermsCl c1) (listaTermsCl c2)
-      c1' = C (sustitucionForms (head sust) fs)
-      aux (C (f:fs)) (C (g:gs)) | Neg f == g || f == Neg g = C (fs++gs)
-                                | otherwise = aux (C fs) (C gs)
 \end{code}
 
-\comentario{Primer intento, aún erróneo}
+Ahora calculamos la resolución entre dos cláusulas mediante la función \texttt{(resolucion c1 c2 f1 f2)}, donde \texttt{c1} y \texttt{c2} son cláusulas y, \texttt{f1} y \texttt{f2} serán fórmulas de \texttt{c1} y \texttt{c2}, respectivamente, tales que se podrá efectuar resolución entre ellas mediante la unificación adecuada.
+
+\begin{code}
+resolucion :: Clausula -> Clausula -> Form -> Form -> Clausula
+resolucion c1@(C fs) c2@(C gs) f1 f2 =  aux c1' c2'
+    where
+      sust = unificadoresListas (listaTerms f1) (listaTerms f2)
+      c1' = C (sustitucionForms (head sust) fs)
+      c2' = C (sustitucionForms (head sust) gs)
+      aux (C ((Neg f):fs)) (C gs) | elem f gs = C (fs++(delete f gs))
+                                  | otherwise = aux (C fs) (C gs)
+      aux (C (f:fs)) (C gs) | elem (Neg f) gs = C (fs ++ (delete (Neg f) gs))
+                            | otherwise = aux (C fs) (C gs)
+\end{code}
+
+\begin{code}
+-- | Ejemplos
+-- >>> let c1 = C [Neg (Atom "P" [tx, Ter "f" [tx,ty]])]
+-- >>> let c2 = C [Atom "P" [a,tz],Neg (Atom "Q" [tz,tu])]
+-- >>> resolucion c1 c2 (Neg (Atom "P" [tx, Ter "f" [tx,ty]])) (Atom "P" [a,tz]) 
+-- {¬Q[f[a,y],u]}
+\end{code}
+
+Definimos un operador infijo que resultará útil al hacer resolución en un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusa n-ésima de un conjunto de cláusulas. 
+
+\begin{code}
+(!!!) :: Clausulas -> Int -> Clausula
+(Cs cs) !!! n = cs !! n
+\end{code}

@@ -402,6 +402,7 @@ eliminaCuant (Conj fs) = Conj (map eliminaCuant fs)
 eliminaCuant (Disy fs) = Disy (map eliminaCuant fs)
 eliminaCuant (Neg f) = Neg (eliminaCuant f)
 eliminaCuant (Impl f1 f2) = Impl (eliminaCuant f1) (eliminaCuant f2)
+eliminaCuant (Equiv f1 f2) = Equiv (eliminaCuant f1) (eliminaCuant f2)
 eliminaCuant p@(Atom _ _) = p
 \end{code}
 
@@ -427,6 +428,7 @@ recolectaCuant (Disy fs) = concat (map recolectaCuant fs)
 recolectaCuant (Neg f) = recolectaCuant f
 recolectaCuant (Impl f1 f2) = recolectaCuant f1 ++ recolectaCuant f2
 recolectaCuant p@(Atom _ _) = []
+recolectaCuant (Equiv f1 f2) = recolectaCuant f1 ++ recolectaCuant f2
 \end{code}
 
 Por ejemplo,
@@ -779,6 +781,10 @@ Por ejemplo
 -- {{¬p,q},{¬p,¬r}}
 -- >>> formaClausal (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
 -- {{P[x0],Q[sk0[x0]]}}
+-- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom
+-- "P" [ty,ty]))))))
+-- >>> formaClausal f
+-- {{¬P[sk0[x0],x0],¬P[sk0[x0],sk0[x0]]},{P[sk0[x0],sk0[x0]],P[sk0[x0],x0]}}
 \end{code}
 
 \section{Tableros semánticos}
@@ -1058,11 +1064,7 @@ Nuestro objetivo es definir en Haskell un método para el cálculo de tableros
 semánticos. El contenido relativo a tableros semánticos se encuentra en el
 módulo \texttt{Tableros}.
 
-\ignora{ 
-  La validación es
-  codigo> doctest PTLP.lhs
-  Examples: 106  Tried: 106  Errors: 0  Failures: 0
-}
+
 
 \entrada{Tableros}
 
