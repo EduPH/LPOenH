@@ -202,7 +202,7 @@ Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
 \end{itemize}
 \end{Prop}
 
-\section{Demostraciones por resolución (Lógica Proposicional)}
+\section{Resolución sin términos que unificar}
 
 \begin{Def}
   Sean $C_1$ una cláusula, $L$ un literal de $C_1$ y $C_2$ una cláusula que contiene el complementario de $L$. La \textbf{resolvente de $C_1$ y $C_2$ respecto de $L$} es 
@@ -262,7 +262,7 @@ Algunos ejemplos
 -- []
 \end{code}
 
-\section{Demostración por resolución (Lógica de primer orden)}
+\section{Resolvente binaria}
 \comentario{Toda la sección sobre resolución está en proceso, tanto de estructuración como de programación}
 
 En esta sección implementaremos la resolución binaria entre dos cláusulas. Con este objetivo definimos inicialmente la función \texttt{(listaTerms f)} que calcula los términos de una fórmula dada.
@@ -280,6 +280,7 @@ listaTerms (Neg (Atom _ ts)) = ts
 
 Ahora calculamos la resolución entre dos cláusulas mediante la función \texttt{(resolucion c1 c2 f1 f2)}, donde \texttt{c1} y \texttt{c2} son cláusulas y, \texttt{f1} y \texttt{f2} serán fórmulas de \texttt{c1} y \texttt{c2}, respectivamente, tales que se podrá efectuar resolución entre ellas mediante la unificación adecuada.
 
+\index{\texttt{resolucion}}
 \begin{code}
 resolucion :: Clausula -> Clausula -> Form -> Form -> Clausula
 resolucion c1@(C fs) c2@(C gs) f1 f2 =  aux c1' c2'
