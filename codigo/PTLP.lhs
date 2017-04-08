@@ -983,10 +983,13 @@ algoritmo:
 Ejemplo de tablero completo
 
 \begin{center}
-  \begin{tikzpicture}[sibling distance=15em,
-  every node/.style = {shape=rectangle, rounded corners,
+  \begin{tikzpicture}[every node/.style = {shape=rectangle, rounded corners,
     draw, align=center,
-    top color=white}
+    top color=white}, 
+  level 1/.style={sibling distance=10em},
+  level 2/.style={sibling distance=20em},
+  level 3/.style={sibling distance=10em},
+  level 4/.style={sibling distance=10em}
 ]]
   \node {1. $\neg (p \vee q \rightarrow p \wedge q)$}
   child { node {2. $p\vee q$ , $\neg (p \wedge q)$ (1)}
@@ -1001,8 +1004,6 @@ Ejemplo de tablero completo
   ;
   \end{tikzpicture}
 \end{center}
-
-\comentario{Se solapan las ramas del arbol}
 
 Representamos la fórmula de este tablero en Haskell.
 
