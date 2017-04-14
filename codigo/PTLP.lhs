@@ -1007,8 +1007,6 @@ Ejemplo de tablero completo
 
 Representamos la fórmula de este tablero en Haskell.
 
-Representamos la fórmula 
-
 \begin{code}
 tab1 = Neg (Impl (Disy [p,q]) (Conj [p,q]))
 

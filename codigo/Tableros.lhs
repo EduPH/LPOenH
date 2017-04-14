@@ -73,12 +73,13 @@ componentes (Neg (Ex x f))  = [Neg f]
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> componentes (skolem (tab1))
-[¬¬(p⋀[q]),¬(p⋁[q])]
-ghci> componentes (skolem (tab2))
-[(¬p⋁[q]),(¬q⋁[r]),¬(¬p⋁[r])]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> componentes (skolem (tab1))
+-- [¬¬(p⋀[q]),¬(p⋁[q])]
+-- >>> componentes (skolem (tab2))
+-- [(¬p⋁[q]),(¬q⋁[r]),¬(¬p⋁[r])]
+\end{code}
 
 Definimos la función \texttt{(varLigada f)} que devuelve la variable ligada de
 la fórmula \texttt{f}
@@ -105,20 +106,21 @@ descomponer = descomp [] where
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> descomponer formula2
-([x,y],(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]])))
-ghci> formula3
-(R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> descomponer formula3
-([],(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]])))
-ghci> formula4
-∃x R[cero,x]
-ghci> descomponer formula4
-([],∃x R[cero,x])
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> descomponer formula2
+-- ([x,y],(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]])))
+-- >>> formula3
+-- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> descomponer formula3
+-- ([],(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]])))
+-- >>> formula4
+-- ∃x R[cero,x]
+-- >>> descomponer formula4
+-- ([],∃x R[cero,x])
+\end{code}
 
 
 Definimos \texttt{(ramificacion nodo)} que ramifica un nodo aplicando          
@@ -147,7 +149,7 @@ ramificacion (Nd i pos neg (f:fs))
     f'     = sustitucionForm b g
 \end{code}
 
-Debido a que pueden darse la infinitud de un árbol por las fórmulas
+Debido a que puede darse la infinitud de un árbol por las fórmulas
 gamma, definimos otra función \texttt{(ramificacionP k nodo)} que ramifica
 un nodo teniendo en cuenta la profundidad.
 
@@ -269,12 +271,13 @@ tableroInicial f = [Nd [] [] [] [f]]
 
 Por ejemplo,
 
-\begin{sesion}
-ghci> tab1
-¬((p⋁q)⟹(p⋀q))
-ghci> tableroInicial tab1
-[Nd [] [] [] [¬((p⋁[q])⟹(p⋀[q]))]]
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> tab1
+-- ¬((p⋁q)⟹(p⋀q))
+-- >>> tableroInicial tab1
+-- [Nd [] [] [] [¬((p⋁[q])⟹(p⋀[q]))]]
+\end{code}
 
 La función \texttt{(refuta k f)} intenta refutar la fórmula \texttt{f} con un
 tablero de profundidad \texttt{k}.
@@ -319,28 +322,29 @@ tautologia1 = Disy [Atom "P" [tx], Neg (Atom "P" [tx])]
 
 se tiene
 
-\begin{sesion}
-ghci> tautologia1
-(P[x]⋁¬P[x])
-ghci> esTeorema 1 tautologia1
-True
-ghci> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-ghci> esTeorema 20 formula2
-False
-ghci> tab1
-¬((p⋁q)⟹(p⋀q))
-ghci> esTeorema 20 tab1
-False
-ghci> satisfacible 1 tab1
-True
-ghci> tab2
-((p⟹q)⋀((q⟹r)⋀¬(p⟹r)))
-ghci> esTeorema 20 tab2
-False
-ghci> satisfacible 20 tab2
-False
-\end{sesion}
+\begin{code}
+-- | Ejemplos
+-- >>> tautologia1
+-- (P[x]⋁¬P[x])
+-- >>> esTeorema 1 tautologia1
+-- True
+-- >>> formula2
+-- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+-- >>> esTeorema 20 formula2
+-- False
+-- >>> tab1
+-- ¬((p⋁q)⟹(p⋀q))
+-- >>> esTeorema 20 tab1
+-- False
+-- >>> satisfacible 1 tab1
+-- True
+-- >>> tab2
+-- ((p⟹q)⋀((q⟹r)⋀¬(p⟹r)))
+-- >>> esTeorema 20 tab2
+-- False
+-- >>> satisfacible 20 tab2
+-- False
+\end{code}
 
 \begin{Teo}
   El cálculo de tableros semánticos es adecuado y completo.
