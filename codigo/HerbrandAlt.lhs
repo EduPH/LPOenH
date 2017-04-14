@@ -19,8 +19,6 @@ import LPH
 import PTLP
 \end{code}
 
-\comentario{Corregir codeEj para que lo considere doctest}
-
 \section{Universo de Herbrand}
 
 \begin{Def}
