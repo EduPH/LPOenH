@@ -783,6 +783,7 @@ Por ejemplo
 -- {{P[x0],Q[sk0[x0]]}}
 -- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom
 -- "P" [ty,ty]))))))
+-- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom "P" [ty,ty]))))))
 -- >>> formaClausal f
 -- {{¬P[sk0[x0],x0],¬P[sk0[x0],sk0[x0]]},{P[sk0[x0],sk0[x0]],P[sk0[x0],x0]}}
 \end{code}

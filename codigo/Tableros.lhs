@@ -76,9 +76,9 @@ Por ejemplo,
 \begin{code}
 -- | Ejemplos
 -- >>> componentes (skolem (tab1))
--- [¬¬(p⋀[q]),¬(p⋁[q])]
+-- [¬¬(p⋁q),¬(p⋀q)]
 -- >>> componentes (skolem (tab2))
--- [(¬p⋁[q]),(¬q⋁[r]),¬(¬p⋁[r])]
+-- [(¬p⋁q),(¬q⋁r),¬(¬p⋁r)]
 \end{code}
 
 Definimos la función \texttt{(varLigada f)} que devuelve la variable ligada de
@@ -111,11 +111,11 @@ Por ejemplo,
 -- >>> formula2
 -- ∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 -- >>> descomponer formula2
--- ([x,y],(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]])))
+-- ([x,y],(R[x,y]⟹∃z (R[x,z]⋀R[z,y])))
 -- >>> formula3
 -- (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
 -- >>> descomponer formula3
--- ([],(R[x,y]⟹∃z (R[x,z]⋀[R[z,y]])))
+-- ([],(R[x,y]⟹∃z (R[x,z]⋀R[z,y])))
 -- >>> formula4
 -- ∃x R[cero,x]
 -- >>> descomponer formula4
@@ -276,7 +276,7 @@ Por ejemplo,
 -- >>> tab1
 -- ¬((p⋁q)⟹(p⋀q))
 -- >>> tableroInicial tab1
--- [Nd [] [] [] [¬((p⋁[q])⟹(p⋀[q]))]]
+-- [Nd [] [] [] [¬((p⋁q)⟹(p⋀q))]]
 \end{code}
 
 La función \texttt{(refuta k f)} intenta refutar la fórmula \texttt{f} con un
