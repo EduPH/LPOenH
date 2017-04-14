@@ -42,7 +42,7 @@ Mostremos en una tabla, aunque posteriormente tratemos con ejemplos y más deten
      Modus ponens        & Aplicación de funciones \\ \hline
    \end{tabular}
  \end{center}
- Veamos en el siguiente ejemplo el isomorfismo de Curry-Howard, así como la interpretación que se infiere de ella.
+ Veamos en el siguiente ejemplo el isomorfismo de Curry-Howard, así como la interpretación que se infiere de él.
  Por ejemplo, si tenemos la proposición lógica
  $$ a \rightarrow a$$
  

@@ -302,7 +302,7 @@ resolucion c1@(C fs) c2@(C gs) f1 f2 =  aux c1' c2'
 -- {¬Q[f[a,y],u]}
 \end{code}
 
-Definimos un operador infijo que resultará útil al hacer resolución en un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusa n-ésima de un conjunto de cláusulas. 
+Definimos un operador infijo que puede resultar útil al hacer resolución en un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusa n-ésima de un conjunto de cláusulas. 
 
 \begin{code}
 (!!!) :: Clausulas -> Int -> Clausula
