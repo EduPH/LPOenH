@@ -6,3 +6,4 @@
  + http://www.haskellforall.com/2017/02/the-curry-howard-correspondence-between.html
  + https://en.wikibooks.org/wiki/Haskell/The_Curry%E2%80%93Howard_isomorphism
  + https://github.com/libreim/curryHoward/blob/master/CurryHoward.pdf
+ + https://www.researchgate.net/publication/292607124_Relacion_entre_demostraciones_logicas_y_programas_Isomorfismo_Curry-Howard

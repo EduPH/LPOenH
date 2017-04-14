@@ -27,7 +27,7 @@ Por ello, cabe preguntarnos si existen funciones para todo tipo que nos podamos 
 
 Lo que indica que existirá una función de un determinado tipo si dicho tipo, interpretado como una proposición lógica, es cierto. 
 
-Mostremos en una tabla, aunque posteriormente tratemos con ejemplos y más detenimiento, las correspondencias entre elementos propios de la lógica y elementos del $\lambda -$cálculo, en concreto Haskell. 
+Mostremos en una tabla las correspondencias entre elementos propios de la lógica y elementos del $\lambda -$cálculo, en concreto Haskell. 
 
   \begin{center}
    \begin{tabular}{| l | l |}
@@ -72,7 +72,7 @@ Que no es más que la proposición lógica $(\forall a\in P. \quad a \rightarrow
  $$\forall a,b,c\in P. \quad(b\rightarrow c)\rightarrow (a\rightarrow b) \rightarrow (a\rightarrow c) $$
 
  
- Saquemos una serie de conclusiones de los ejemplos y, posteriormente, tratemos los distintas entradas de la tabla anterior en secciones separadas.
+ Saquemos una serie de conclusiones de los ejemplos
 
 \begin{itemize}
 \item Dada una proposición lógica podemos inferir un tipo de dato equivalente a ella.
@@ -80,3 +80,4 @@ Que no es más que la proposición lógica $(\forall a\in P. \quad a \rightarrow
 \comentario{Referencia a clases en Haskell}
 \end{itemize}
 
+Analicemos otro ejemplo interesante, la equivalencia $$\neg (P \wedge Q) \leftrightarrow \neg p \vee \neg q $$, se trata de una de las leyes de DeMorgan, y existe una prueba formal. Pero en nuestro caso, aplicando la correspondencia de Curry-Howard, nos basta determinar que hay dos funciones, una para cada implicación, con los tipos de datos adecuados. 
