@@ -1,3 +1,9 @@
+
+
+Descubrimientos de gran interés se han realizado al estudiar la relación existente entre campos a primera vista distintos. Algunos ejemplos nombrados Philip Walder en su artículo Propositions as types son los ejes coordenados de Descartes que une geometría y álgebra, la teoría cuántica de Planck que relaciona particulas y ondas, entre otras teorías. En nuestro caso establecemos una relación entre la lógica y la computación, estableciendo ``Proposiciones como tipos''. 
+
+Esta correspondencia fue observada en 1934 por Curry, y mejorada posteriormente por Howard en 1969. 
+
 Comencemos un módulo en Haskell, donde escribiremos nuestros ejemplos.
 
 \begin{code}
@@ -6,6 +12,12 @@ import LPH
 import Data.Void
 import Data.Either
 \end{code}
+
+Como hemos dicho, el primer resultado que establecemos es:
+
+\begin{center}
+  \textit{Proposiciones como tipos.}
+\end{center}
 
 En Haskell, podemos definir una gran diversidad de funciones que manejan tipos distintos, por ejemplo:
 
@@ -18,16 +30,35 @@ En Haskell, podemos definir una gran diversidad de funciones que manejan tipos d
 -- elem :: (Eq a, Foldable t) => a -> t a -> Bool
 \end{code}
 
-Por ello, cabe preguntarnos si existen funciones para todo tipo que nos podamos inventar. Ahí entra en juego la correspondencia de Curry- Howard, estableciendo las siguientes equivalencias:
+Posteriormente, dadas las proposiciones lógicas, hay que determinar si son ciertas, es decir, si podemos demostrarlas. Se establece la siguiente relación:
 
-\begin{itemize*}
-\item Los tipos son teoremas.
-\item Los programas son demostraciones.
-\end{itemize*}
+\begin{center}
+  \textit{Demostraciones como programas.}
+\end{center}
 
 Lo que indica que existirá una función de un determinado tipo si dicho tipo, interpretado como una proposición lógica, es cierto. 
 
-Mostremos en una tabla las correspondencias entre elementos propios de la lógica y elementos del $\lambda -$cálculo, en concreto Haskell. 
+Podemos seguir indagando, una función implementada en Haskell puede ser evaluada, lo que nos lleva a:
+
+\begin{center}
+  \textit{Simplificación de demostraciones como evaluación de programas.}
+\end{center}
+
+A cada forma de simplificar una prueba le corresponde una forma de evaluar el programa.
+
+\vspace{3mm}
+
+Concretemos las relaciones establecidas por la correspondencia de Curry-Howard para elementos propios de la lógica:
+
+\begin{itemize*}
+  \item La conjunción entre dos elementos $A$ y $B$ corresponde al producto cartesiano, es decir un par. Una prueba de $A\wedge B$ requiere de una prueba de $A$ y de una prueba de $B$ lo que de manera equivalente será que, dado el par $(A,B)$, un valor para dicho tipo $(A,B)$ requiere de un valor de tipo $A$ y otro tipo $B$. 
+
+  \item La disyunción entre dos elementos $A$ y $B$ corresponde a la suma disjunta de los dos elementos. Una prueba de $A\vee B$ requiere una prueba de $A$ o una prueba de $B$. Análogamente a lo anterior, la suma disjunta consite en un valor del tipo $A$ o uno del $B$.
+
+  \item El condicional $A\rightarrow B$ establece que dada una prueba de $A$ se infiera la prueba de $B$, y se establece una correspondencia con las funciones que dado un valor del tipo $A$ devuelven uno del $B$. 
+\end{itemize*}
+
+Si lo particularizamos en Haskell, obtenemos la siguiente tabla:
 
   \begin{center}
    \begin{tabular}{| l | l |}
@@ -70,14 +101,3 @@ Que no es más que la proposición lógica $(\forall a\in P. \quad a \rightarrow
 
  Que con una ligera reflexión, no es más que la proposición lógica que afirma que
  $$\forall a,b,c\in P. \quad(b\rightarrow c)\rightarrow (a\rightarrow b) \rightarrow (a\rightarrow c) $$
-
- 
- Saquemos una serie de conclusiones de los ejemplos
-
-\begin{itemize}
-\item Dada una proposición lógica podemos inferir un tipo de dato equivalente a ella.
-\item Demostrar un teorema es equivalente a encontrar una función del tipo de dato adecuado.
-\comentario{Referencia a clases en Haskell}
-\end{itemize}
-
-Analicemos otro ejemplo interesante, la equivalencia $$\neg (P \wedge Q) \leftrightarrow \neg p \vee \neg q $$, se trata de una de las leyes de DeMorgan, y existe una prueba formal. Pero en nuestro caso, aplicando la correspondencia de Curry-Howard, nos basta determinar que hay dos funciones, una para cada implicación, con los tipos de datos adecuados. 
