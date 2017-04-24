@@ -16,7 +16,7 @@ dicho módulo representa un sujeto. Cada sujeto tendrá distintas propiedades.
 En secciones posteriores se definirá un modelo lógico. Aquí empleamos el término modelo
 como una modelización o representación de la realidad. 
   
-Damos un ejemplo de predicados lógicos para la clasificación botánica. La cual
+Damos un ejemplo de predicados lógicos para la clasificación botánica, la cual
 no es completa, pero nos da una idea de la manera de una representación lógica.
 
 Primero definimos los elementos que pretendemos clasificar, y que cumplirán los
