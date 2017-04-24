@@ -5,15 +5,14 @@ import Data.List
 
 \section{Introducción a Haskell}
 
-En esta sección, se introducirán funciones básicas para la programación   
+En esta sección se introducirán funciones básicas para la programación   
 en Haskell. Como método didáctico, se empleará la definición de   
 funciones ejemplos, así como la redefinición de funciones que Haskell
 ya tiene predefinidas, con el objetivo de que el lector aprenda 
 ``\textit{a montar en bici, montando}''.
 
-A continuación se muestra la definición del que constituye nuestro 
-primer ejemplo. 
-\texttt{(cuadrado x)} es el cuadrado de \texttt{x}. Por ejemplo,
+A continuación se muestra la definición \texttt{(cuadrado x)} es el cuadrado de \texttt{x}. 
+Por ejemplo,
 \begin{sesion}
 ghci> cuadrado 3
 9
@@ -63,9 +62,9 @@ divisiblePor x n =  x `rem` n == 0
 \end{code}
 
 Hasta ahora hemos trabajado con los tipos de datos \texttt{Int} y
-\texttt{Bool}; es decir, números enteros y booleanos respectivamente. 
+\texttt{Bool}; es decir, números enteros y booleanos, respectivamente. 
 Pero también se puede trabajar con otros tipos de datos como son las cadenas 
-de caracteres, que son tipo
+de caracteres que son tipo
 \texttt{[Char]} o \texttt{String}.Definimos la función 
 \texttt{(contieneLaLetra xs l)} que identifica si una palabra contiene una 
 cierta letra \texttt{l} dada. Por ejemplo,
@@ -99,7 +98,7 @@ ghci> [1..4]
 [1,2,3,4]
 \end{sesion}
 
-Una lista por comprensión es parecido a su expresión como conjunto:
+Una lista por comprensión es parecida a su expresión como conjunto:
 
 $$\{ x | x \in A, P(x) \} $$
 
