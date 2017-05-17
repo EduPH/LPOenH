@@ -1,6 +1,65 @@
 \chapter{Correspondencia de Curry-Howard}
 
-En este capítulo trataremos la correspondencia de Curry-Howard, también llamada isomorfismo o equivalencia de Curry-Howard. Debe su nombre a que establece una correspondencia entre las pruebas en la lógica y los tipos de datos en la programación. 
+A lo largo de este trabajo hemos implementado la lógica de primer orden
+en Haskell, así como distintos métodos y áspectos de la misma. Hemos
+traducido la lógica a un sistema de programación funcional, al lambda-cálculo.
+Mediante esta implementación que hemos desarrollado, sin tener una conciencia
+plena de ello, hemos establecido una relación entre dos campos, la lógica y
+un determinado lenguaje de programación. ¿Las matemáticas y la programación
+son lo mismo? ¿Hasta donde alcanza su similitud? ¿Todo lo que yo cree en
+matemáticas, proposiciones, teoremas, demostraciones... es implementable y
+tiene su hermano en el campo de la programación? La correspondencia de Curry
+Howard nos arrojará un poco de luz al respecto.
+
+\vspace{5mm}
+
+La correspondencia de Curry Howard, también llamada isomorfismo de Curry-Howard
+fue publicada en 1980 en honor a Curry. El lema principal que reivindica:
+\textbf{las proposiciones son tipos}. Es decir, se describe una correspondencia
+que asocia a cada proposición en la lógica un tipo en un lenguaje de programación,
+así como el recíproco.
+
+\vspace{5mm}
+Una vez que se define dicha correspondencia nos toca profundizar. Cuando
+enunciamos una proposición se requiere su demostración. ¿Cuál es el hermano
+de las demostraciones que habita en la programación? Esta pregunta nos lleva al segundo
+lema: \textbf{las demostraciones son programas}. Es decir, dada una prueba de
+una proposición existe un programa del tipo correspondiente.
+
+\vspace{5mm}
+
+
+En 1934, Curry observó que toda función del tipo (\texttt{A $\rightarrow$ B})
+puede ser leida como la proposición $(A\supset B)$ y, que leyendo el tipo de
+cualquier función siempre existe una proposición demostrable asociada. Howard,
+notando que existe una correspondencia similar entre deducción natural y el
+lambda-cálculo, probó la extensión de la correspondencia al resto de conectivas lógicas.
+
+\vspace{5mm}
+\begin{itemize}
+\item La \textbf{conjunción} $(A\wedge B)$ corresponde al producto cartesiano.
+  En Haskell dicho tipo corresponde al par $(a,b)$.
+\item La \textbf{disyunción} $(A\vee B)$ corresponde a la suma disjunta de $A$
+  y $B$. En Haskell tenemos su tipo de dato abstracto hermano equivalente que es
+  \texttt{Either a b}.
+\item La \textbf{implicación} $(A \Rightarrow B)$ corresponde a las funciones de
+  tipo $A\rightarrow B$. Su hermano en Haskell es evidente, se trata de los tipos
+  de función que van de un tipo de dato $A$ a otro $B$.
+\item \textbf{Los cuantificadores existencial} ($\exists$) y \textbf{universal}
+  ($\forall$) corresponden a los llamados tipos dependientes.
+\end{itemize}
+
+De hecho, la correspondencia va más allá. Las reglas de demostración en la deducción
+natural y las reglas de tipos tienen sus similitudes. La primera se basa en reglas de introducción
+y reglas de eliminación. Las reglas de introducción se ven representadas en la programación en las
+maneras de definir o construir valores de un determinado tipo, así como las reglas de eliminación
+son representadas por las formas de usar o deconstruir valores de un determinado tipo.
+
+Un nivel más profundo de identificación entre la programación y la lógica que el
+isomorfismo de Curry establece es que
+\textbf{las simplificaciones de demostraciones son evaluaciones de programas}. Por lo tanto,
+a pesar de no establecer una biyección entre ambos ámbitos, se establece un isomorfismo que preserva
+la estructura entre programas y pruebas, simplificación y evaluación.
 
 
 
