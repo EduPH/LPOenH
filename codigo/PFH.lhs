@@ -398,7 +398,8 @@ abecedario, declarando el tipo de dato \texttt{Entidades} contenido en el módul
 \subsection{Generador de tipos en Haskell: Descripción de funciones}
 
 En esta sección se introducirán y describirán funciones útiles en la generación
-de ejemplos en tipos de datos abstractos. Estos generadores son útiles
-para las comprobación de propiedades con QuickCheck
+de ejemplos en tipos de datos abstractos. Estos generadores se emplean
+en la comprobación de propiedades con QuickCheck.
+\entrada{Generadores}
 
 \entrada{Map}
