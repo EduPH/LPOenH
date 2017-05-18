@@ -172,7 +172,7 @@ Para finalizar debemos implementar un generador de fórmulas
 instance Arbitrary (Form) where
     arbitrary = sized formula
         
-formula 0 = liftM2 Atom genNombre (listOf (termino 3))
+formula 0 = liftM2 Atom genNombre (resize 3 (listOf (termino 3)))
 formula n = oneof [liftM  Neg generaFormula,
                    liftM2 Impl generaFormula generaFormula,
                    liftM2 Equiv generaFormula generaFormula,
