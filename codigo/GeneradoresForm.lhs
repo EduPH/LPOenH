@@ -15,15 +15,16 @@ data Variable = Variable Nombre Indice
 
 Comprobamos que una variable está compuesta de un nombre y un índice.
 Así que comenzamos generando el nombre y, con este fin, generamos letras al azar
-del abecedario, y cada una compondrá un nombre para una variable.
+entre unas cuantas elegidas de la \texttt{x} a la \texttt{w}, y cada una compondrá
+un nombre para una variable.
 
 
 \begin{code}
-abecedario :: Nombre
-abecedario =  ['a'..'z']
+vars :: Nombre
+vars =  "xyzuvw"
 
 genLetra :: Gen Char
-genLetra = elements abecedario
+genLetra = elements vars
 \end{code}
 
 Podemos emplear como dijimos en la sección introductoria a los generadores
@@ -48,7 +49,7 @@ Una definición alternativa a la anterior es \texttt{genNombre2} como sigue
 \begin{code}
 genNombre2 :: Gen Nombre
 genNombre2 = do
-  c <- elements ['a'..'z']
+  c <- elements vars
   return [c]
 \end{code}
 
@@ -63,13 +64,13 @@ ghci> generate genNombre2 :: IO Nombre
 "y"
 \end{sesion}
 
-Una vez que tenemos los nombres de nuestras variables, podemos generar índices. En nuestro caso limitaremos los índices al rango del 0 al 100, pues no necesitamos una cantidad mayor de variables.
+Una vez que tenemos los nombres de nuestras variables, podemos generar índices. En nuestro caso limitaremos los índices al rango del 0 al 10, pues no necesitamos una cantidad mayor de variables.
 
 Definimos un generador de enteros \texttt{genNumero} en el rango requerido.
 
 \begin{code}
 genNumero :: Gen Int
-genNumero = choose (0,100)
+genNumero = choose (0,10)
 \end{code}
 
 Y construimos el generador de índices \texttt{genIndice}.
@@ -83,11 +84,11 @@ Comprobemos que podemos tomar índices al azar.
 
 \begin{sesion}
 ghci> generate genIndice :: IO Indice
-[52]
+[2]
 ghci> generate genIndice :: IO Indice
-[70]
+[0]
 ghci> generate genIndice :: IO Indice
-[89]
+[9]
 \end{sesion}
 
 Una vez que hemos establecido generadores de los tipos abstractos que componen las variables,
@@ -99,6 +100,7 @@ generaVariable = liftM2 Variable (genNombre) (genIndice)
 \end{code}
 
 Introducimos nuestro generador en la clase \texttt{Arbitrary}.
+
 \begin{code}
 instance Arbitrary (Variable) where
     arbitrary = generaVariable
@@ -108,46 +110,77 @@ Ya podemos generar variables pseudoaleatorias, comprobemos lo que obtenemos.
 
 \begin{sesion}
 ghci> generate generaVariable :: IO Variable
-a94
+t4
 ghci> generate generaVariable :: IO Variable
-x85
+x5
 ghci> generate generaVariable :: IO Variable
-j56
+y6
 ghci> generate generaVariable :: IO Variable
-x54
+x4
 ghci> generate generaVariable :: IO Variable
-a82
+z2
 \end{sesion}
 
-\comentario{Faltan términos y fórmulas}
-\subsubsection{Generador de Términos}
+Como ya vimos al definir las bases de la lógica, una vez que hemos definido las variables, el siguiente nivel es trabajar con términos.
+
+Incluimos el tipo de dato \texttt{Termino} en la clase \texttt{Arbitrary}.
 \begin{code}
 
 instance Arbitrary (Termino) where
-    arbitrary = sized termino
-        where
-          termino 0 = liftM Var generaVariable
-          termino n = liftM2 Ter genNombre (listOf generaTermino)
+    arbitrary = resize 3 (sized termino)
+
+\end{code}    
+
+Definimos el generador de términos que tiene en cuenta el tamaño \texttt{termino n}. 
+\begin{code}
+termino :: (Num a, Ord a) => a -> Gen Termino
+termino 0 = liftM Var generaVariable
+termino n | n <=1 = liftM2 Ter genNombre (resize 3 (listOf1 (generaTermino)))
+          | n > 1 = termino 1
               where
               generaTermino = termino (n-1)
 \end{code}
 
-\subsubsection{Generador de Fórmulas}
+\begin{nota}
+ \texttt{resize n} redimensiona un generador para ajustarlo a una escala.
+\end{nota}
+\begin{nota}
+  Se ha acotado tanto la dimensión del generador porque no nos compensa tener
+  términos de gran cantidad de variables o con muchos términos dentros unos de otros.
+\end{nota}
+
+Generemos algunos términos que nos sirvan de ejemplo para comprobar el funcionamiento de nuestro
+generador.
+\begin{sesion}
+ghci> generate (termino 0) :: IO Termino
+z7
+ghci> generate (termino 1) :: IO Termino
+v[z1,u6]
+ghci> generate (termino 2) :: IO Termino
+x[z0,z10]
+ghci> generate (termino 3) :: IO Termino
+y[v2]
+ghci> generate (termino 4) :: IO Termino
+u[x0,z5,z9]
+\end{sesion}
+
+
+Para finalizar debemos implementar un generador de fórmulas
 
 \begin{code}
 
-instance Arbitrary (Formula) where
+instance Arbitrary (Form) where
     arbitrary = sized formula
-        where
-          formula 0 = liftM2 Atomo genNombre (listOf generaVariable)
-          formula n = oneof [liftM  Negacion generaFormula,
-                             liftM2 Implica generaFormula generaFormula,
-                             liftM2 Equivalente generaFormula generaFormula,
-                             liftM Conjuncion (listOf generaFormula),
-                             liftM Disyuncion (listOf generaFormula),
-                             liftM2 ParaTodo generaVariable generaFormula,
-                             liftM2 Existe   generaVariable generaFormula]
+        
+formula 0 = liftM2 Atom genNombre (listOf (termino 3))
+formula n = oneof [liftM  Neg generaFormula,
+                   liftM2 Impl generaFormula generaFormula,
+                   liftM2 Equiv generaFormula generaFormula,
+                   liftM Conj (listOf generaFormula),
+                   liftM Disy (listOf generaFormula),
+                   liftM2 PTodo generaVariable generaFormula,
+                   liftM2 Ex   generaVariable generaFormula]
               where
-                generaFormula = formula (n-1)
+                generaFormula = formula (div n 4)
 \end{code}
 
