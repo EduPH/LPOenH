@@ -672,7 +672,7 @@ Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
 Para poder emplear el sistema de comprobación QuickCheck, necesitamos poder
 generar elementos aleatorios de los tipos de datos creados hasta ahora.
 
-\entrada{Generadores}
+\entrada{GeneradoresForm}
 
 \subsection{Otros conceptos de la lógica de primer orden}
 
