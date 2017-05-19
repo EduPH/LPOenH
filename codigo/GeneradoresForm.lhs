@@ -135,10 +135,12 @@ Definimos el generador de términos que tiene en cuenta el tamaño \texttt{termi
 \begin{code}
 termino :: (Num a, Ord a) => a -> Gen Termino
 termino 0 = liftM Var generaVariable
-termino n | n <=1 = liftM2 Ter genNombre (resize 3 (listOf1 (generaTermino)))
-          | n > 1 = termino 1
-              where
-              generaTermino = termino (n-1)
+termino n | n <=1 =
+              liftM2 Ter genNombre (resize 3 (listOf1 (generaTermino)))
+          | n > 1 = 
+              termino 1
+    where
+      generaTermino = termino (n-1)
 \end{code}
 
 \begin{nota}
@@ -165,7 +167,8 @@ u[x0,z5,z9]
 \end{sesion}
 
 
-Para finalizar debemos implementar un generador de fórmulas
+Para finalizar debemos implementar un generador de fórmulas. Primero lo añadiremos a la
+clase \texttt{Arbitrary}, y finalmente se construye el generador de fórmulas.
 
 \begin{code}
 
@@ -184,3 +187,15 @@ formula n = oneof [liftM  Neg generaFormula,
                 generaFormula = formula (div n 4)
 \end{code}
 
+Algunos ejemplos de generación de fórmulas serían los siguientes.
+
+\begin{sesion}
+ghci> generate (formula 0)
+y[v[u9,x6,x8]]
+ghci> generate (formula 2)
+∀x4 z[x[z10]]
+ghci> generate (formula 3)
+¬x[x[w6,u2]]
+ghci> generate (formula 4)
+(¬w[w[x6,v4]]⟹∀y7 v[y[u2]])
+\end{sesion}
