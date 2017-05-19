@@ -24,11 +24,11 @@ type Not x = (forall a. x -> a)
 
 Ahora podemos definir una serie de ejemplos que nos convenzan de la correspondencia.
 
-Nuestra primer ejemplo consistirá en las leyes de deMorgan, cuya formalización matemática es:
+Nuestro primer ejemplo consistirá en las leyes de deMorgan, cuya formalización matemática es:
 
 $$\neg(A\wedge B)  \leftrightarrow (\neg A) \vee (\neg B) \text{ y } \neg (A\vee B) \leftrightarrow (\neg A) \vee (\neg B)$$
 
-A esta proposiciones les corresponde un tipo de dato en Haskell.
+A estas proposiciones les corresponde un tipo de dato en Haskell.
 
 
 \begin{nota}
@@ -36,7 +36,6 @@ A esta proposiciones les corresponde un tipo de dato en Haskell.
 \end{nota}
 
 \begin{code}
-
 leydeMorgan1 :: (Not a, Not b) -> Not (Either a b)
   
 leydeMorgan2 :: Either (Not a) (Not b) -> Not (a,b)
@@ -46,7 +45,6 @@ Y podríamos demostrar dichas proposiciones pero eso será equivalente a la exis
 un programa asociado a los tipos de datos antes señalados.
 
 \begin{code}
-  
 leydeMorgan1 (noA, _) (Left a) = noA a
 leydeMorgan1 (_, noB) (Right b) = noB b
  
@@ -54,7 +52,7 @@ leydeMorgan2 (Left noA) (a, _) = noA a
 leydeMorgan2 (Right noB) (_, b) = noB b
 \end{code}
 
-Veamos un último ejemplo con motivación inversa. Si tenemos la función implementada en Haskell \texttt{curry f a b}. Veamos su uso con unos ejemplos:
+Veamos un último ejemplo con motivación inversa. Si tenemos la función implementada en Haskell \texttt{curry f a b}, intentemos deducir su análogo lógico. Veamos primero su uso con unos ejemplos:
 
 \begin{code}
 -- | Ejemplos
@@ -66,19 +64,20 @@ Veamos un último ejemplo con motivación inversa. Si tenemos la función implem
 -- 'b'
 \end{code}
 
-\texttt{curry} "currifica" una función, es decir, dada una función
+\begin{nota}
+\texttt{curry} `currifica` una función, es decir, dada una función
 \texttt{f} y dos elementos \texttt{a} y \texttt{b} se da la igualdad
-informal \texttt{curry (f,a,b) = f(a,b)}. Preguntemos a Haskell cuál es
-el tipo de dato de la función curry.
+informal \texttt{curry (f,a,b) = f(a,b)}.
+\end{nota}
+
+Una vez conocido su uso, preguntemos a Haskell cuál es su tipo de dato:
 
 \begin{sesion}
 ghci> :t curry
 curry :: ((a, b) -> c) -> a -> b -> c
 \end{sesion}
 
-¿Cuál es la proposición asociada a este tipo de dato?
-
-La respuesta será
+Vista la respuesta de Haskell no es dificil inferir la proposición asociada,
 
 $$((A\wedge B)\rightarrow c) \rightarrow (A \rightarrow B \rightarrow C) $$
 
