@@ -6,11 +6,175 @@ import DNH
 import PTLP
 \end{code}
 
-\section{Ampliación de la forma clausal}
+\section{Forma clausal}
 
-La resolución requiere del uso de las formas clausales definidas anteriormente. Definamos algunas cuestiones:
+Para la implementación de la resolución, primero debemos definir una serie de conceptos y construir la forma clausal.
 
-Primero implementemos un tipo de dato adecuado para las interpretaciones de cláusulas, \texttt{InterpretacionC}.
+\begin{Def}
+  Un \textbf{literal} es un átomo o la negación de un átomo.
+\end{Def}
+
+\begin{Def}
+  Una \textbf{cláusula} es un conjunto finito de literales.
+\end{Def}
+
+\begin{Def}
+  Una \textbf{forma clausal} de una fórmula $F$ es un conjunto de cláusulas
+  equivalente a $F$.
+\end{Def}
+
+\begin{Prop}
+  Si $(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$ es una forma
+  normal conjuntiva de la fórmula $F$. Entonces, una forma clausal de $F$ es
+  $\left\{ (p_1\vee \dots \vee p_n) , \dots , (q_1 \vee \dots \vee q_m) \right\}$.
+\end{Prop}
+
+\begin{nota}
+Una forma clausal de $\neg (p \wedge (q \rightarrow r))$
+es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$.
+\end{nota}
+
+\vspace{5mm}
+
+
+Ahora que ya conocemos los conceptos básicos, debemos comenzar la implementación.
+
+Definimos los tipos de dato \texttt{Clausula} y \texttt{Clausulas} para la representación una cláusula o un conjunto de ellas, respectivamente.
+
+\begin{code}
+
+data Clausula  = C [Form]
+data Clausulas = Cs [Clausula]
+
+\end{code}
+
+Definimos su representación en la clase \texttt{Show}
+
+\begin{code}
+instance Show Clausula where
+    show (C []) = "[]"
+    show (C fs) = "{" ++  init (tail (show fs)) ++ "}"
+instance Show Clausulas where
+    show (Cs []) = "[]"
+    show (Cs cs) = "{" ++  init (tail (show cs)) ++ "}"
+
+\end{code}
+
+Si consideramos la siguiente fórmula,
+
+\begin{code}
+-- | Fórmula
+-- >>> Neg (Conj [p,Impl q r])
+-- ¬(p⋀(q⟹r))
+\end{code}
+
+Su forma clausal sería la siguiente:
+
+\begin{code}
+-- | Forma clausal
+-- >>> Cs [C [Neg p,q], C [Neg p, Neg r]]
+-- {{¬p,q},{¬p,¬r}}
+\end{code}
+
+Para el cálculo de la forma clausal tenemos el siguiente algoritmo:
+
+\parbox{130mm}{
+\begin{enumerate}
+\item Sea $F_1 = \exists y_1 \dots \exists y_n F$, donde $y_i$ con $i=1,\dots ,n$
+  son las variables libres de F.
+\item Sea $F_2$ una forma normal prenexa conjuntiva rectificada de $F_1$.
+\item Sea $F_3= \texttt{ Skolem }(F_2)$, que tiene la forma
+  $$\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
+\end{enumerate}}
+
+Entonces, una forma clausal es
+
+$$ S=
+\left\{
+  \left\{ L_1, \dots ,L_n \right\}
+  ,\dots ,
+  \left\{ M_1, \dots ,M_m \right\}
+\right\} $$
+
+  
+Dada una fórmula que está en la forma del paso 3 del algoritmo, es decir,
+
+ $$\texttt{ f } =\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
+, podemos convertirla
+a su forma causal por medio de la función \texttt{(form3AC f)}
+
+\index{\texttt{form3CAC}}
+\begin{code}
+form3CAC :: Form -> Clausulas
+form3CAC (Disy fs) = Cs [C fs]
+form3CAC p@(Atom _ _) = Cs [C [p]]
+form3CAC (PTodo x f) = form3CAC f
+form3CAC (Conj fs) = Cs (map disyAClau fs)
+    where
+      disyAClau p@(Atom _ _) = C [p]
+      disyAClau (Disy fs) = C fs
+\end{code}
+
+Por ejemplo,
+
+\begin{code}
+-- | Ejemplo
+-- >>> Conj [p, Disy [q,r]]
+-- (p⋀(q⋁r))
+-- >>> form3CAC (Conj [p, Disy [q,r]])
+-- {{p},{q,r}}
+\end{code}
+
+Definimos \texttt{(formaClausal f)} que transforma una fórmula \texttt{f}
+a su forma clausal.
+
+\index{\texttt{formaClausal}}
+\begin{code}
+
+formaClausal :: Form -> Clausulas
+formaClausal  = form3CAC . skolem .formaNPConjuntiva
+    
+
+\end{code}
+
+Por ejemplo,
+
+\begin{code}
+-- | Ejemplos
+-- >>> formaClausal (Neg (Conj [p, Impl q r]))
+-- {{¬p,q},{¬p,¬r}}
+-- >>> formaClausal (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
+-- {{P[x0],Q[sk0[x0]]}}
+-- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom
+-- "P" [ty,ty]))))))
+-- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom "P" [ty,ty]))))))
+-- >>> formaClausal f
+-- {{¬P[sk0[x0],x0],¬P[sk0[x0],sk0[x0]]},{P[sk0[x0],sk0[x0]],P[sk0[x0],x0]}}
+\end{code}
+
+
+Definimos la unión clausal mediante el operador infijo \texttt{(++!)}. 
+
+\begin{code}
+(++!) :: Clausulas -> Clausulas -> Clausulas
+(Cs cs) ++! (Cs cs') = Cs (cs++cs')  
+\end{code}
+
+\begin{code}
+-- | Ejemplo
+-- >>> let c1 = formaClausal (Impl p q)
+-- >>> let c2 = formaClausal (Impl q r)
+-- >>> c1 ++! c2
+-- {{¬p,q},{¬q,r}}
+\end{code}
+
+\section{Otras implementaciones de la forma clausal}
+
+
+Primero implementemos un tipo de dato adecuado para las interpretaciones de cláusulas,
+\texttt{InterpretacionC}.
 
 \begin{code}
 type InterpretacionC = [(Form,Int)]
@@ -27,7 +191,8 @@ type InterpretacionC = [(Form,Int)]
   \end{equation*}
 \end{Def}
 
-Implementamos el valor de una cláusula $C$ mediante la función \texttt{(valorC c is)}
+Implementamos el valor de una cláusula \texttt{c} por una interpretación \texttt{is}
+mediante la función \texttt{(valorC c is)}.
 
 \index{\texttt{valorC}}
 
@@ -52,7 +217,7 @@ valorC (C fs) is =
   \end{equation*}
 \end{Def}
 
-Implementamos el valor de un conjunto de cláusulas mediante la función \texttt{(valorCs s is)}
+Implementamos el valor de un conjunto de cláusulas mediante la función \texttt{(valorCs cs is)}
 
 \index{\texttt{valorCs}}
 
@@ -67,7 +232,8 @@ valorCs (Cs cs) is =
 \end{nota}
 
 \begin{Def}
-  Una cláusula $C$ y una fórmula $F$ son \textbf{equivalentes} si $I(C)=I(F)$ para cualquier interpretación $I$. 
+  Una cláusula $C$ y una fórmula $F$ son \textbf{equivalentes} si $I(C)=I(F)$
+  para cualquier interpretación $I$. 
 \end{Def}
 
 Veamos algunos ejemplos que nos ilustren lo definido hasta ahora:
@@ -87,7 +253,7 @@ Veamos algunos ejemplos que nos ilustren lo definido hasta ahora:
   Una interpretación $I$ es \textbf{modelo} de un conjunto de cláusulas $S$ si $I(S)=1$. 
 \end{Def}
 
-Caracterizamos el concepto de modelo de un conjunto de cláusulas mediante la función \texttt{(is `esModeloDe` cs)}
+Caracterizamos el concepto ``modelo de un conjunto de cláusulas'' mediante la función \texttt{(is `esModeloDe` cs)}.
 
 \index{\texttt{esModeloDe}}
 \begin{code}
@@ -185,14 +351,26 @@ Caracterizamos cuando una cláusula es consecuencia de un conjunto de cláusulas
 
 \index{\texttt{esConsecuenciaDe}}
 \begin{code}
-esConsecuenciaDe :: Clausula -> Clausulas ->  Bool
-esConsecuenciaDe c cs = and [i `esModeloDe` (Cs [c]) |i <-  modelosDe cs]
+esConsecuenciaDe :: Clausulas -> Clausulas ->  Bool
+esConsecuenciaDe c cs = and [i `esModeloDe` c |i <-  modelosDe cs]
 \end{code}
+
+Veamos por ejemplo que si tenemos $p \rightarrow q$ y $q \rightarrow r$ se tiene como consecuencia que $p \rightarrow r$. 
+
+\begin{code}
+-- | Ejemplo 
+-- >>> let c1 = formaClausal (Impl p q)
+-- >>> let c2 = formaClausal (Impl q r)
+-- >>> let c3 = formaClausal (Impl p r)
+-- >>> esConsecuenciaDe c3 (c1++!c2)
+-- True
+\end{code}
+
 
 \begin{Prop}
 Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
 \begin{itemize}
-\item $\{ F_1,\dots,F_n\}$ es consistente si y sólo si $S_1\cup \dots S_n$ es consistente.
+\item $\{ F_1,\dots,F_n\}$ es consistente si y sólo si $S_1\cup \dots \cup S_n$ es consistente.
 \item Si $S$ es una forma clausal de $\neg G$, entonces son equivalentes:
   \begin{enumerate}
   \item $\{F_1,\dots,F_n\} \models G$.
@@ -202,7 +380,25 @@ Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
 \end{itemize}
 \end{Prop}
 
-\section{Resolución sin términos que unificar}
+Si continuamos con el ejemplo anterior, una aplicación de esta proposición sería ver que
+$$\{p\rightarrow q, q\rightarrow r \} \models p \rightarrow r \Leftrightarrow   \{\{\neg p,q\},\{\neg q,r\},\{p\},\{\neg r\}\} \text{ es inconsistente.}$$
+
+Hemos comprobado que lo primero es cierto, es decir, que se tiene la consecuencia. Nos faltaría comprobar
+que la expresión a la derecha del ``si y sólo si'' es inconsistente. Lo comprobamos a continuación.
+
+\begin{code}
+-- | Ejemplo
+-- >>> let c1 = formaClausal (Impl p q)
+-- >>> let c2 = formaClausal (Impl q r)
+-- >>> let c3 = Cs [C [p],C [Neg r]]
+-- >>> c1++!c2++!c3
+-- {{¬p,q},{¬q,r},{p},{¬r}}
+-- >>> esConsistente (c1++!c2++!c3)
+-- False
+\end{code}
+
+
+\section{Resolución proposicional}
 
 \begin{Def}
   Sean $C_1$ una cláusula, $L$ un literal de $C_1$ y $C_2$ una cláusula que contiene el complementario de $L$. La \textbf{resolvente de $C_1$ y $C_2$ respecto de $L$} es 
@@ -262,8 +458,11 @@ Algunos ejemplos
 -- []
 \end{code}
 
-\section{Resolvente binaria}
-\comentario{Toda la sección sobre resolución está en proceso, tanto de estructuración como de programación}
+\section{Resolución de primer orden}
+
+\comentario{Pendiente de escritura}
+
+\subsection{Resolvente binaria}
 
 En esta sección implementaremos la resolución binaria entre dos cláusulas. Con este objetivo definimos inicialmente la función \texttt{(listaTerms f)} que calcula los términos de una fórmula dada.
 
@@ -297,7 +496,11 @@ resolucion c1@(C fs) c2@(C gs) f1 f2 =  aux c1' c2'
 \begin{code}
 -- | Ejemplos
 -- >>> let c1 = C [Neg (Atom "P" [tx, Ter "f" [tx,ty]])]
+-- >>> c1
+-- {¬P[x,f[x,y]]}
 -- >>> let c2 = C [Atom "P" [a,tz],Neg (Atom "Q" [tz,tu])]
+-- >>> c2
+-- {P[a,z],¬Q[z,u]}
 -- >>> resolucion c1 c2 (Neg (Atom "P" [tx, Ter "f" [tx,ty]])) (Atom "P" [a,tz]) 
 -- {¬Q[f[a,y],u]}
 \end{code}
