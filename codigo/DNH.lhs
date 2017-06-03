@@ -413,7 +413,7 @@ Por ejemplo,
 -- False
 \end{code}
 
-En las posteriores subsecciones se va a definir la función \texttt{(verifica d)}, donde \texttt{d} será un elemento del tipo de dato \texttt{Deduccion}, y que pretende determinar si un proceso elaborado por deducción natural es correcto.
+En las subsecciones siguientes se irá definiendo la función \texttt{(verifica d)}, donde \texttt{d} será un elemento del tipo de dato \texttt{Deduccion}, y que pretende determinar si un proceso elaborado por deducción natural es correcto.
 
 \begin{code}
 verifica :: Deduccion -> Bool
