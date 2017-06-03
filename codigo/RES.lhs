@@ -114,6 +114,7 @@ form3CAC (PTodo x f) = form3CAC f
 form3CAC (Conj fs) = Cs (map disyAClau fs)
     where
       disyAClau p@(Atom _ _) = C [p]
+      disyAClau p@(Neg (Atom _ _)) = C [p]
       disyAClau (Disy fs) = C fs
 \end{code}
 
@@ -458,10 +459,6 @@ Algunos ejemplos
 -- []
 \end{code}
 
-\section{Resolución de primer orden}
-
-\comentario{Pendiente de escritura}
-
 \subsection{Resolvente binaria}
 
 En esta sección implementaremos la resolución binaria entre dos cláusulas. Con este objetivo definimos inicialmente la función \texttt{(listaTerms f)} que calcula los términos de una fórmula dada.
@@ -511,3 +508,7 @@ Definimos un operador infijo que puede resultar útil al hacer resolución en un
 (!!!) :: Clausulas -> Int -> Clausula
 (Cs cs) !!! n = cs !! n
 \end{code}
+
+\section{Resolución de primer orden}
+
+\comentario{Pendiente de escritura}
