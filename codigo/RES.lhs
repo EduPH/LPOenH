@@ -509,6 +509,147 @@ Definimos un operador infijo que puede resultar útil al hacer resolución en un
 (Cs cs) !!! n = cs !! n
 \end{code}
 
+Definimos la eliminación de un literal en una cláusula mediante \texttt{(borra l c)}.
+
+\begin{code}
+  borra p (C fs) = C (delete p fs)
+\end{code}
+
+Definimos el operador infijo \texttt{(+!)} que une cláusulas.
+\begin{code}
+(+!) :: Clausula -> Clausula -> Clausula
+(C fs)+! (C gs) = C (fs++gs)
+\end{code}
+
 \section{Resolución de primer orden}
 
-\comentario{Pendiente de escritura}
+\subsection{Separación de variables}
+
+
+A continuación definamos una serie de conceptos importantes para la resolución.
+
+\begin{Def}
+  La sustitución $[x_1/t_1,\dots,x_n/t_n]$ es un \textbf{renombramiento} si todos los $t_i$ son variables.
+\end{Def}
+
+\begin{nota}
+  Mediante un renombramiento se obtiene una cláusula equivalente a la que teníamos.
+\end{nota}
+
+\begin{code}
+renombramiento :: Clausula -> Sust -> Clausula
+renombramiento (C fs) sust = C [sustitucionForm sust f | f <- fs]
+\end{code}
+
+\begin{Def}
+  Las cláusulas $C_1$ y $C_2$ \textbf{están separadas} si no tienen ninguna variable común. 
+\end{Def}
+
+\begin{code}
+varsClaus :: Clausula -> [Variable]
+varsClaus (C fs) = concat [varEnForm f | f <- fs] 
+\end{code}
+
+\begin{Def}
+  Una \textbf{separación de las variables} de $C_1$ y $C_2$ es un par de renombramientos $(\theta_1,\theta_2)$ tales que $C_1\theta_1$ y $C_2\theta_2$ están separadas.
+\end{Def}
+
+
+ Vayamos definiendo funciones de manera progresiva para el cálculo de la resolvente binaria de dos cláusulas.
+
+ Definimos \texttt{(mismoNombre l1 l2)} que determina si dos literales son iguales en nombre aunque no tengan las mismos términos. Nos interesan aquellos que sean negacione suno del otro, por ello sólo tenemos en cuenta dos casos.
+ 
+\begin{code}
+mismoNombre (Neg (Atom n1 _)) (Atom n2 _) = n1 == n2
+mismoNombre (Atom n1 _) (Neg (Atom n2 _)) = n1 == n2
+mismoNombre _ _ = False
+\end{code}
+
+Un par de ejemplos que ilustran la función. 
+
+\begin{code}
+-- | Ejemplo
+-- >>> mismoNombre (Atom "P" [tx]) (Atom "P" [Ter "f" [tx]])
+-- False
+-- >>> mismoNombre (Atom "P" [tx]) (Neg (Atom "P" [Ter "f" [tx]]))
+-- True
+\end{code}
+
+
+Definimos \texttt{(RenAux n str vs)} que dada una lista de variables \texttt{vs} obtiene una sustitución de las variables nombrándolas según un nombre \texttt{str} y una secuencia de números empezando en \texttt{n}.
+
+\begin{code}
+renAux :: Int -> String -> [Variable] -> Sust
+renAux _ _ [] = []
+renAux n str (v:vs) = (v,Var (Variable str [n])): (renAux (n+1) str vs)
+\end{code}
+
+Definimos \texttt{(separacionVars c1 c2)} que separa las variables de ambas cláusulas, devolviendo un par con las cláusulas ya separadas.
+
+\begin{code}
+separacionVars :: Clausula -> Clausula -> (Clausula,Clausula)
+separacionVars c1 c2 = (renombramiento c1 s1, renombramiento c2 s2)
+    where
+      s1 = renAux 1 "x" (varsClaus c1)
+      s2 = renAux 1 "y" (varsClaus c2)
+\end{code}
+
+En el siguiente ejemplo vemos la separación de variables de las cláusulas
+$$C_1=\{P(x),Q(x,y)\} \text{ y } \{\neg Q(x),R(g(x))\} $$
+
+\begin{code}
+-- | Ejemplos
+-- >>> let c1 = C [Neg (Atom "P" [tx]), Atom "Q" [Ter "f" [tx]]]
+-- >>> let c2 = C [Neg (Atom "Q" [tx]), Atom "R" [Ter "g" [tx]]]
+-- >>> separacionVars c1 c2
+-- ({¬P[x1],Q[f[x1]]},{¬Q[y1],R[g[y1]]})
+\end{code}
+
+
+\subsection{Resolvente binaria}
+
+En esta sección definiremos la resolvente binaria en lógica de primer orden. Para ello definiremos una serie de funciones auxiliares hasta alcanzar la meta de la resolvente de dos cláusulas.
+
+Definimos \texttt{(litMisNom c1 c2)} que determina los literales comunes en ambas cláusulas.
+
+\begin{code}
+litMisNom :: Clausula -> Clausula -> (Form, Form)
+litMisNom (C fs) (C gs) = head [(f,g) | f <- fs,g <- gs, mismoNombre f g] 
+\end{code}
+
+
+Definimos \texttt{(unifClau l1 l2)} que determina las unificaciones posibles entre dos literales.
+
+\begin{code}
+unifClau (Atom _ ts) (Atom _ ts') = unificadoresListas ts ts'
+unifClau (Atom _ ts) (Neg (Atom _ ts')) = unificadoresListas ts ts'
+unifClau (Neg (Atom _ ts)) (Atom _ ts') = unificadoresListas ts ts'                      
+\end{code}
+
+\begin{Def}
+  La cláusula $C$ es una \textbf{resolvente binaria} de las cláusulas $C_1$ y $C_2$ si existen una separación de variables $(\theta_1,\theta_2)$ de $C_1$ y $C_2$, un literal $L_1\in C_1$, un literal $L_2\in C_2$ y un UMG $\sigma $ de $L_1\sigma_1$ y $L_2^c\theta_2$ tales que
+   $$C=(C_1\theta_1\sigma \backslash \{L_1\theta_2\sigma_1\})\cup (C_2\theta_2\sigma \backslash \{L_2\theta_2\sigma \} ) $$
+ \end{Def}
+
+Definimos la resolvente binaria de dos cláusulas mediante la función \texttt{(resolBin c1 c2)}.
+
+\begin{code}
+resolBin c1 c2 | s /= [] = renombramiento (c1'' +! c2'') (head s)
+               | otherwise = error "No se puede unificar"
+    where
+      (c1', c2') = separacionVars c1 c2
+      (p,q) = (litMisNom c1' c2')
+      s = unifClau p q
+      c1'' = borra p c1'
+      c2'' = borra q c2'
+\end{code}
+
+Empleando las cláusulas de antes, tenemos la siguiente resolvente binaria.
+
+\begin{code}
+-- | Ejemplo
+-- >>> let c1 = C [Neg (Atom "P" [tx]), Atom "Q" [Ter "f" [tx]]]
+-- >>> let c2 = C [Neg (Atom "Q" [tx]), Atom "R" [Ter "g" [tx]]]
+-- >>> resolBin c1 c2
+-- {¬P[x1],R[g[f[x1]]]}
+\end{code}

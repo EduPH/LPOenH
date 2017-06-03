@@ -11,6 +11,8 @@ import Text.PrettyPrint.GenericPretty
 \end{code}
 
 
+
+
 \section{Unificación}
 
 \begin{Def}
@@ -18,6 +20,9 @@ import Text.PrettyPrint.GenericPretty
   $S(t_1) = S(t_2)$.
 \end{Def}
 
+Se define la función (\texttt{unificadoresTerminos t1 t2}) que devuelve un unificador de los términos de entrada.
+
+\index{\texttt{unificadoresTerminos}}
 \begin{code}
 unificadoresTerminos :: Termino -> Termino -> [Sust]
 unificadoresTerminos (Var x) (Var y)   
@@ -31,11 +36,32 @@ unificadoresTerminos (Ter f ts) (Ter g rs) =
   [u | f == g, u <- unificadoresListas ts rs]
 \end{code}
 
+
+\begin{Def}
+La sustitución $\sigma_1$ es \textbf{más general} que la $\sigma_2$ si existe una sustitución $\sigma_3$ tal que $\sigma_2=\sigma_1\sigma_3$.   
+\end{Def}
+
+\begin{Def}
+  La sustitución $\sigma $ es un \textbf{unificador de máxima generalidad} (UMG) de los términos $t_1$
+  y $t_2$ si
+  \begin{itemize*}
+  \item $\sigma $ es un unificador de $t_1$ y $t_2$.
+  \item $\sigma $ es más general que cualquier unificador de $t_1$ y $t_2$.
+  \end{itemize*}
+\end{Def}
+
+
+\begin{Def}
+  Dadas dos listas de términos $s$ y $t$ son \textbf{unificables} si tienen algún unificador.
+\end{Def}
+
 El valor de \texttt{(unificadoresListas ts rs)} es un unificador de las listas
 de términos \texttt{ts} y \texttt{rs}; es decir, una sustitución \texttt{s} tal
 que si \texttt{ts = [t1,...,tn]} y \texttt{rs = [r1,...,rn]} entonces
 \texttt{s(t1) = s(r1)}, \dots, \texttt{s(tn) = s(rn)}.
 
+
+\index{\texttt{unificadoresListas}}
 \begin{code}
 unificadoresListas :: [Termino] -> [Termino] -> [Sust]
 unificadoresListas [] [] = [identidad]
@@ -52,7 +78,10 @@ Por ejemplo,
 \begin{sesion}
 unificadoresListas [tx] [ty]  ==  [[(x,y)]]
 unificadoresListas [tx] [tx]  ==  [[]]
+unificadoresListas [tx,tx] [a,b] == []
+unificadoresListas [tx,b] [a,ty] == [[(y,b),(x,a)]]
 \end{sesion}
+
 
 
 \section{Skolem}
