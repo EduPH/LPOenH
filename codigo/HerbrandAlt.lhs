@@ -3,11 +3,8 @@
 En este capítulo se da una definición alternativa del
 universo de Herbrand que simplifica su representación.
 El contenido de este capítulo se encuentra en el módulo
-\texttt{HerbrandAlt}
+\texttt{Herbrand}
 
-\comentario{Se ha definido la alternativa en un capítulo aparte para               
-luego decidir si mantenemos ambos capítulos complementándose o nos
-quedamos solo con este.}
 
 \begin{code}
 {-# LANGUAGE DeriveGeneric #-}
@@ -17,6 +14,7 @@ import Text.PrettyPrint.GenericPretty
 import PFH                           
 import LPH                           
 import PTLP
+import Tableros
 \end{code}
 
 \section{Universo de Herbrand}
@@ -597,6 +595,105 @@ modelosH n fs =
   where uH = universoHerbrandForms n fs
         bH = baseHerbrandForms n fs
 \end{code}
+
+\section{Consistencia mediante modelos de Herbrand}
+
+
+\begin{Prop}
+  Sea $S$ un conjunto de fórmulas básicas. Son equivalentes:
+  \begin{enumerate}
+    \item $S$ es consistente.
+    \item $S$ tiene un modelo de Herbrand.
+  \end{enumerate}
+\end{Prop}
+
+\begin{Prop}
+  Existen conjuntos de fórmulas consistentes sin modelos de Herbrand.
+\end{Prop}
+
+Un ejemplo de fórmula consistente sin modelo de Herbrand
+
+\begin{code}
+formula10 :: Form
+formula10 = Conj [Ex x (Atom "P" [tx]), Neg (Atom "P" [a])]
+\end{code}
+
+Como podemos ver aplicando \texttt{modelosH}
+
+\begin{sesion}
+ghci> formula10
+(∃x P[x]⋀¬P[a])
+ghci> modelosH 0 [formula10]
+[]
+ghci> modelosH 1 [formula10]
+[]
+ghci> modelosH 2 [formula10]
+[]
+ghci> modelosH 3 [formula10]
+[]
+\end{sesion}
+
+Pero es satisfacible
+
+\begin{sesion}
+ghci> satisfacible 0 formula10
+True
+\end{sesion}
+
+\section{Extensiones de Herbrand}
+
+\begin{Def} 
+Sea $C=\left\{ L_1,\dot ,L_n \right\}$ una cláusula de $L$ y 
+$\sigma$ una sustitución de $L$. Entonces, $C\sigma = 
+\left\{ L_1\sigma,\dots, L_n\sigma \right\}$ es una \textbf{instancia}
+de $C$.
+\end{Def}
+
+\begin{Def}
+
+$C\sigma $ es una \textbf{instancia básica} de $C$ si todos los
+literales de $C\sigma $ son básicos.
+
+\end{Def}
+
+Por ejemplo, si tenemos $C=\left\{ P(x,a),\neg P(x,f(y)) \right\} $, 
+una instancia básica sería
+
+\begin{equation*}
+  C[x/a,y/f(a)] = \left\{ P(a,a),\neg P(x,f(f(a))) \right\}
+\end{equation*}
+
+Que en haskell lo habríamos representado por
+
+\begin{sesion}
+ghci> Conj [Atom "P" [tx,a],Neg (Atom "P" [tx,Ter "f" [ty]])]
+(P[x,a]⋀¬P[x,f[y]])
+ghci> sustitucionForm [(x,a),(y,Ter "f" [a])] 
+        (Conj [Atom "P" [tx,a], Neg (Atom "P" [tx,Ter "f" [ty]])])
+(P[a,a]⋀¬P[a,f[f[a]]])
+\end{sesion}
+
+\begin{Def}
+  La \textbf{extensión de Herbrand} de un conjunto de cláusulas $Cs$
+  es el conjunto de fórmulas
+
+  \begin{equation*}
+    EH(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
+      \sigma (x) \in UH(Cs) \right\}
+  \end{equation*}
+
+\end{Def}
+
+\begin{Prop}
+  $EH(L)=\cup_{i\geq 0} EH_i(L)$, donde $EH_i(L)$ es el nivel $i$
+  de la $EH(L)$
+
+  \begin{equation*}
+    EH_i(Cs) = \left\{ C\sigma : C\in Cs \text{ y }, \forall x \in C, 
+      \sigma (x) \in UH_i(Cs) \right\}
+  \end{equation*}
+\end{Prop}
+
 
 \ignora{
 La validación es
