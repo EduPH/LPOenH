@@ -39,7 +39,7 @@ es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$.
 
 Ahora que ya conocemos los conceptos básicos, debemos comenzar la implementación.
 
-Definimos los tipos de dato \texttt{Clausula} y \texttt{Clausulas} para la representación una cláusula o un conjunto de ellas, respectivamente.
+Definimos los tipos de dato \texttt{Clausula} y \texttt{Clausulas} para la representación de una cláusula o un conjunto de ellas, respectivamente.
 
 \begin{code}
 
@@ -62,19 +62,17 @@ instance Show Clausulas where
 
 Si consideramos la siguiente fórmula,
 
-\begin{code}
--- | Fórmula
--- >>> Neg (Conj [p,Impl q r])
--- ¬(p⋀(q⟹r))
-\end{code}
+\begin{sesion}
+ghci> Neg (Conj [p,Impl q r])
+¬(p⋀(q⟹r))
+\end{sesion}
 
 Su forma clausal sería la siguiente:
 
-\begin{code}
--- | Forma clausal
--- >>> Cs [C [Neg p,q], C [Neg p, Neg r]]
--- {{¬p,q},{¬p,¬r}}
-\end{code}
+\begin{sesion}
+ghci> Cs [C [Neg p,q], C [Neg p, Neg r]]
+{{¬p,q},{¬p,¬r}}
+\end{sesion}
 
 Para el cálculo de la forma clausal tenemos el siguiente algoritmo:
 
@@ -101,9 +99,8 @@ $$ S=
 Dada una fórmula que está en la forma del paso 3 del algoritmo, es decir,
 
  $$\texttt{ f } =\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
-  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
-, podemos convertirla
-a su forma causal por medio de la función \texttt{(form3AC f)}
+ \wedge \dots \wedge (M_1\vee \dots \vee M_m)],$$
+ podemos convertirla a su forma causal por medio de la función \texttt{(form3AC f)}
 
 \index{\texttt{form3CAC}}
 \begin{code}
@@ -148,8 +145,6 @@ Por ejemplo,
 -- {{¬p,q},{¬p,¬r}}
 -- >>> formaClausal (Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])])
 -- {{P[x0],Q[sk0[x0]]}}
--- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom
--- "P" [ty,ty]))))))
 -- >>> let f = Neg (PTodo x (Ex y (Neg (Equiv (Atom "P" [ty,tx]) (Neg (Atom "P" [ty,ty]))))))
 -- >>> formaClausal f
 -- {{¬P[sk0[x0],x0],¬P[sk0[x0],sk0[x0]]},{P[sk0[x0],sk0[x0]],P[sk0[x0],x0]}}
@@ -171,7 +166,51 @@ Definimos la unión clausal mediante el operador infijo \texttt{(++!)}.
 -- {{¬p,q},{¬q,r}}
 \end{code}
 
-\section{Otras implementaciones de la forma clausal}
+Definimos otro operador infijo que puede resultar útil al hacer resolución en un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusula n-ésima de un conjunto de cláusulas. 
+
+\begin{code}
+(!!!) :: Clausulas -> Int -> Clausula
+(Cs cs) !!! n = cs !! n
+\end{code}
+
+Definimos la eliminación de un literal en una cláusula mediante \texttt{(borra l c)}.
+
+\begin{code}
+borra :: Form -> Clausula -> Clausula
+borra p (C fs) = C (delete p fs)
+\end{code}
+
+Definimos el operador infijo \texttt{(+!)} que une cláusulas.
+
+\begin{code}
+(+!) :: Clausula -> Clausula -> Clausula
+(C fs)+! (C gs) = C (nub (fs++gs))
+\end{code}
+
+Una serie de ejemplos de estas funciones definidas podrían ser.
+
+\begin{code}
+-- | Ejemplos
+-- >>> let c = C [Atom "P" [tx],q]
+-- >>> c
+-- {P[x],q}
+-- >>> borra q c
+-- {P[x]}
+-- >>> let c' = C [Atom "P" [tx],q,Atom "Q" [Ter "f" [tx]]]
+-- >>> c+!c'
+-- {P[x],q,Q[f[x]]}
+-- >>> let f = Neg (Impl (Conj [(PTodo x (Impl (Atom "P" [tx]) 
+-- (Atom "Q" [tx]))),PTodo x (Impl (Atom "Q" [tx]) (Atom "R" [tx]))]) 
+-- (PTodo x (Impl (Atom "P" [tx]) (Atom "R" [tx]))))
+-- >>> f
+-- ¬((∀x (P[x]⟹Q[x])⋀∀x (Q[x]⟹R[x]))⟹∀x (P[x]⟹R[x]))
+-- >>> formaClausal f
+-- {{¬P[x0],Q[x0]},{¬Q[x1],R[x1]},{P[x2]},{¬R[x2]}}
+-- >>> (formaClausal f)!!! 3
+-- {¬R[x2]}
+\end{code}
+
+\section{Interpretación y modelos de la forma clausal}
 
 
 Primero implementemos un tipo de dato adecuado para las interpretaciones de cláusulas,
@@ -502,24 +541,6 @@ resolucion c1@(C fs) c2@(C gs) f1 f2 =  aux c1' c2'
 -- {¬Q[f[a,y],u]}
 \end{code}
 
-Definimos un operador infijo que puede resultar útil al hacer resolución en un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusula n-ésima de un conjunto de cláusulas. 
-
-\begin{code}
-(!!!) :: Clausulas -> Int -> Clausula
-(Cs cs) !!! n = cs !! n
-\end{code}
-
-Definimos la eliminación de un literal en una cláusula mediante \texttt{(borra l c)}.
-
-\begin{code}
-  borra p (C fs) = C (delete p fs)
-\end{code}
-
-Definimos el operador infijo \texttt{(+!)} que une cláusulas.
-\begin{code}
-(+!) :: Clausula -> Clausula -> Clausula
-(C fs)+! (C gs) = C (fs++gs)
-\end{code}
 
 \section{Resolución de primer orden}
 
@@ -536,6 +557,7 @@ A continuación definamos una serie de conceptos importantes para la resolución
   Mediante un renombramiento se obtiene una cláusula equivalente a la que teníamos.
 \end{nota}
 
+\index{\texttt{renombramiento}}
 \begin{code}
 renombramiento :: Clausula -> Sust -> Clausula
 renombramiento (C fs) sust = C [sustitucionForm sust f | f <- fs]
@@ -545,6 +567,9 @@ renombramiento (C fs) sust = C [sustitucionForm sust f | f <- fs]
   Las cláusulas $C_1$ y $C_2$ \textbf{están separadas} si no tienen ninguna variable común. 
 \end{Def}
 
+La función \texttt{(varsClaus c)} obtiene la lista de las variables que aparecen en la cláusula \texttt{c}.
+
+\index{\texttt{varsClaus}}
 \begin{code}
 varsClaus :: Clausula -> [Variable]
 varsClaus (C fs) = concat [varEnForm f | f <- fs] 
@@ -558,7 +583,8 @@ varsClaus (C fs) = concat [varEnForm f | f <- fs]
  Vayamos definiendo funciones de manera progresiva para el cálculo de la resolvente binaria de dos cláusulas.
 
  Definimos \texttt{(mismoNombre l1 l2)} que determina si dos literales son iguales en nombre aunque no tengan las mismos términos. Nos interesan aquellos que sean negacione suno del otro, por ello sólo tenemos en cuenta dos casos.
- 
+
+\index{\texttt{mismoNombre}}
 \begin{code}
 mismoNombre (Neg (Atom n1 _)) (Atom n2 _) = n1 == n2
 mismoNombre (Atom n1 _) (Neg (Atom n2 _)) = n1 == n2
@@ -578,6 +604,7 @@ Un par de ejemplos que ilustran la función.
 
 Definimos \texttt{(RenAux n str vs)} que dada una lista de variables \texttt{vs} obtiene una sustitución de las variables nombrándolas según un nombre \texttt{str} y una secuencia de números empezando en \texttt{n}.
 
+\index{\texttt{renAux}}
 \begin{code}
 renAux :: Int -> String -> [Variable] -> Sust
 renAux _ _ [] = []
@@ -586,6 +613,7 @@ renAux n str (v:vs) = (v,Var (Variable str [n])): (renAux (n+1) str vs)
 
 Definimos \texttt{(separacionVars c1 c2)} que separa las variables de ambas cláusulas, devolviendo un par con las cláusulas ya separadas.
 
+\index{\texttt{separacionVars}}
 \begin{code}
 separacionVars :: Clausula -> Clausula -> (Clausula,Clausula)
 separacionVars c1 c2 = (renombramiento c1 s1, renombramiento c2 s2)
