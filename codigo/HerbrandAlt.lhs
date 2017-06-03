@@ -1,7 +1,3 @@
-\chapter{Modelos de Herbrand alternativo}
-
-En este capítulo se da una definición alternativa del
-universo de Herbrand que simplifica su representación.
 El contenido de este capítulo se encuentra en el módulo
 \texttt{Herbrand}
 
