@@ -28,22 +28,13 @@ data Nodo = Nd Indice [Termino] [Termino] [Form]
 
 Donde la primera lista de términos representa los literales positivos,
 la segunda lista de términos representa los negativos, y la lista de fórmulas 
-son aquellas ligadas a los términos de las listas anteriores.
+son aquellas ligadas a los términos de las listas anteriores. Esta separación de
+los literales por signo es necesaria para la unificación en tableros. 
 
-
-Definimos los tableros como una lista de nodos.
+Una vez definidos los nodos, definimos los tableros como una lista de ellos.
 
 \begin{code}
 type Tablero = [Nodo]
-\end{code}
-
-Necesitamos poder reconocer las dobles negaciones, para ello
-definimos la función \texttt{dobleNeg f}.
-
-\index{\texttt{dobleNeg}}
-\begin{code}
-dobleNeg (Neg (Neg f)) = True
-dobleNeg _             = False
 \end{code}
 
 Una función auxiliar de conversión de literales a términos es
@@ -82,7 +73,7 @@ Por ejemplo,
 \end{code}
 
 Definimos la función \texttt{(varLigada f)} que devuelve la variable ligada de
-la fórmula \texttt{f}
+la fórmula \texttt{f}.
 
 \index{\texttt{varLigada}}
 \begin{code}
@@ -151,7 +142,8 @@ ramificacion (Nd i pos neg (f:fs))
 
 Debido a que puede darse la infinitud de un árbol por las fórmulas
 gamma, definimos otra función \texttt{(ramificacionP k nodo)} que ramifica
-un nodo teniendo en cuenta la profundidad.
+un nodo teniendo en cuenta la profundidad $\gamma $, algo así como el número
+de veces que se aplica una regla $\gamma $. 
 
 \index{\texttt{ramificacionP}}
 \begin{code}
@@ -180,7 +172,7 @@ ramificacionP k (Nd i pos neg (f:fs))
   Un nodo está completamente \textbf{expandido} si no se puede seguir ramificando
 \end{Def}
 
-Se define en Haskell
+Caracterizamos cuando un nodo está expandido mediante la función \texttt{(nodoExpandido nd)}.
 
 \index{\texttt{nodoExpandido}}
 \begin{code}
@@ -190,7 +182,7 @@ nodoExpandido _                 = False
 \end{code}
 
 Definimos la función \texttt{(expandeTablero n tab)} que desarrolla un tablero
-a una profundidad \texttt{n}.
+a una profundidad $\gamma $ igual a \texttt{n}. 
 
 \index{\texttt{expandeTablero}}
 \begin{code}
@@ -203,6 +195,10 @@ expandeTablero n (nodo:nodos)
   | otherwise          = expandeTablero (n-1) (nodos ++ nuevoNodo)
   where (k,nuevoNodo) = ramificacionP n nodo
 \end{code}
+
+\begin{nota}
+  Se aplica el paso de expansión al primer nodo que lo necesite hasta que la profundidad $\gamma $ se vea reducida y cuando ésto sucedese cambia de nodo al siguiente. Así los nodos son expandidos de manera regular. Este proceso se sigue recursivamente hasta que \texttt{n} llega a 0 o el tablero está completamente expandido. 
+\end{nota}
 
 Para una visualización más gráfica, definimos \texttt{(expandeTableroG)}
 empleando la función \texttt{(trace)}.
@@ -224,19 +220,26 @@ expandeTableroG n (nodo:nodos)
   where (k, nuevoNodo) = ramificacionP n nodo
 \end{code}
 
-Definimos la función \texttt{(esNodoCerrado)} para comprobar si hay hoja
-cerrada.
 
-\index{\texttt{esNodoCerrado}}
+Un nodo ``cierra`` cuando es posible unificar uno de sus literales positivos con uno
+de los literales negativos, así que es interesante y necesario poder coleccionar todas aquellas sustituciones para la unificación. Aquí vemos la motivación de la separación que anteriormente comentamos en dos listas, una de literales positivos y otra con los negativos.
+
+
+Definimos la función \texttt{(sustDeUnifTab)} para construir la lista de sustituciones de unificación de un nodo. 
+
+\index{\texttt{sustDeUnifTab}}
 \begin{code}
-esNodoCerrado :: Nodo -> [Sust]
-esNodoCerrado (Nd _ pos neg _) =
+sustDeUnifTab :: Nodo -> [Sust]
+sustDeUnifTab (Nd _ pos neg _) =
     concat [ unificadoresTerminos p n | p <- pos,
                                         n <- neg ]
 \end{code}
 
-Definimos las funciones auxiliares \texttt{(sustNodo nd)} y \texttt{(sustTab
-  tb)} que aplican sustituciones a nodos y tableros.
+\begin{nota}
+  Como los literales se han representado como términos, hemos podido aplicar la función \texttt{unificadoresTerminos}.
+\end{nota}
+
+Como hemos definido una función para generar la lista de unificaciones, ahora tiene sentido definir las funciones auxiliares \texttt{(sustNodo sust nd)} y \texttt{(sustTab sut tb)} que aplican sustituciones a nodos y tableros.
 
 \index{\texttt{sustNodo}}
 \index{\texttt{susTab}}
@@ -249,19 +252,18 @@ susTab :: Sust -> Tablero -> Tablero
 susTab = map . sustNodo
 \end{code}
 
-Se define \texttt{esCerrado} para determinar si un tablero es cerrado.
+Se define \texttt{(esCerrado t)} para determinar si un tablero es cerrado. Esta función construye una lista de sustituciones de unificación para todos sus nodos, así que un tablero será cerrado si su lista generada por esta función es no vacía. 
 
 \index{\texttt{esCerrado}}
 \begin{code}
 esCerrado :: Tablero -> [Sust]
 esCerrado []     = [identidad]
-esCerrado [nodo] = esNodoCerrado nodo
+esCerrado [nodo] = sustDeUnifTab nodo
 esCerrado (nodo:nodos) = 
-  concat [esCerrado (susTab s nodos) | s <- esNodoCerrado nodo ]
+  concat [esCerrado (susTab s nodos) | s <- sustDeUnifTab nodo ]
 \end{code}
 
-Dada una fórmula es necesario crear un tablero inicial para posteriormente
-desarrollarlo. Lo hacemos mediante la función \texttt{(tableroInicial f)}.
+Dada una fórmula a la que queremos construir su tablero asociado, es necesario crear un tablero inicial para posteriormente desarrollarlo. Lo hacemos mediante la función \texttt{(tableroInicial f)}.
 
 \index{\texttt{tableroInicial}}
 \begin{code}
@@ -286,7 +288,8 @@ tablero de profundidad \texttt{k}.
 \begin{code}
 refuta :: Int -> Form -> Bool
 refuta k f = esCerrado tab /= []
-  where tab = expandeTablero k (tableroInicial f)
+    where tab = expandeTablero k (tableroInicial f)
+--  where tab = expandeTableroG k (tableroInicial f)
 \end{code}
 
 \begin{nota}
@@ -302,7 +305,7 @@ refuta k f = esCerrado tab /= []
   
 Finalmente, podemos determinar si una fórmula es un teorema y si es
 satisfacible mediante las funciones \texttt{(esTeorema n f)} y
-\texttt{(satisfacible n f)}.
+\texttt{(satisfacible n f)}, respectivamente.
 
 \index{\texttt{esTeorema}}
 \index{\texttt{satisfacible}}
@@ -352,11 +355,10 @@ se tiene
 
 \begin{Def}
   Una fórmula $F$ es \textbf{deducible} a partir del conjunto de fórmulas $S$
-  si exite un tablero completo cerrado de la conjunción de $S$ y $\neg F$. Se
+  si existe un tablero completo cerrado de la conjunción de $S$ y $\neg F$. Se
   representa por $S \vdash_{Tab} F$.
 \end{Def}
 
-\comentario{Explicar más el método de tableros con polaridad.}
 
 \comentario{Comparar la implementación con la de Ben Ari que se encuentra en  
   \href{https://github.com/motib/mlcs/blob/master/fol/tabl.pro}

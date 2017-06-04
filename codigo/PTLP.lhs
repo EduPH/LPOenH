@@ -693,9 +693,9 @@ Por ejemplo,
 
 La idea de obtener fórmulas equivalentes nos hace introducir los tipos de
 fórmulas alfa, beta, gamma y delta. No son más que equivalencias ordenadas por
-orden teórico en el que se pueden acometer para una simplicación eficiente de
-una fórmula, a otra cuyas únicas conectivas lógicas sean disyunciones y
-conjunciones.
+orden en el que se pueden acometer para una simplicación eficiente de
+una fórmula a otras. Así se obtendrán fórmulas cuyas únicas conectivas lógicas
+sean disyunciones y conjunciones.
 
 \begin{itemize}
 \item Fórmulas alfa
@@ -829,6 +829,17 @@ negAtomo (Neg (Atom _ _)) = True
 negAtomo  _               = False
 
 literal f = atomo f || negAtomo f
+\end{code}
+
+Estas definiciones de literales nos permiten distinguir entre literales positivos y literales negativos, lo cual será necesario a la hora de construir un tablero como veremos muy pronto.
+
+Necesitamos también poder reconocer las dobles negaciones, para ello
+definimos la función \texttt{dobleNeg f}.
+
+\index{\texttt{dobleNeg}}
+\begin{code}
+dobleNeg (Neg (Neg f)) = True
+dobleNeg _             = False
 \end{code}
 
 El método de tableros de un conjunto de fórmulas $S$ sigue el siguiente
