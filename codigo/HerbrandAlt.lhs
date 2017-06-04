@@ -16,6 +16,11 @@ import Tableros
 \section{Universo de Herbrand}
 
 \begin{Def}
+  La \textbf{aridad} de un operador $f(x_1,\dots,x_n)$ es el número número de
+  argumentos a los que se aplica.
+\end{Def}
+
+\begin{Def}
   Una \textbf{signatura} es una terna formada por las constantes, símbolos funcionales
   y símbolos de relación. Teniendo en cuenta la aridad tanto de los símbolos funcionales
   como los de relación.
@@ -455,8 +460,6 @@ type InterpretacionH = (InterpretacionHR, InterpretacionHF)
 \begin{code}
 type AtomosH = [Form]
 \end{code}
-\comentario{Definir fórmulas atómicas básicas}
-
 
 Se define la interpretación de Herbrand de un conjunto
 de átomos de Herbrand a través de \texttt{(interpretacionH fs)}
