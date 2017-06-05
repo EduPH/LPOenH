@@ -20,7 +20,25 @@ import Text.PrettyPrint.GenericPretty
   $S(t_1) = S(t_2)$.
 \end{Def}
 
-Se define la función (\texttt{unificadoresTerminos t1 t2}) que devuelve un unificador de los términos de entrada.
+\begin{Def}
+La sustitución $\sigma_1$ es \textbf{más general} que la $\sigma_2$ si existe una sustitución $\sigma_3$ tal que $\sigma_2=\sigma_1\sigma_3$.   
+\end{Def}
+
+\begin{Def}
+  La sustitución $\sigma $ es un \textbf{unificador de máxima generalidad} (UMG) de los términos $t_1$
+  y $t_2$ si
+  \begin{itemize*}
+  \item $\sigma $ es un unificador de $t_1$ y $t_2$.
+  \item $\sigma $ es más general que cualquier unificador de $t_1$ y $t_2$.
+  \end{itemize*}
+\end{Def}
+
+\begin{Def}
+  Dadas dos listas de términos $s$ y $t$ son \textbf{unificables} si tienen algún unificador.
+\end{Def}
+
+Se define la función (\texttt{unificadoresTerminos t1 t2}) que devuelve
+los unificadores de los términos de entrada.
 
 \index{\texttt{unificadoresTerminos}}
 \begin{code}
@@ -36,24 +54,6 @@ unificadoresTerminos (Ter f ts) (Ter g rs) =
   [u | f == g, u <- unificadoresListas ts rs]
 \end{code}
 
-
-\begin{Def}
-La sustitución $\sigma_1$ es \textbf{más general} que la $\sigma_2$ si existe una sustitución $\sigma_3$ tal que $\sigma_2=\sigma_1\sigma_3$.   
-\end{Def}
-
-\begin{Def}
-  La sustitución $\sigma $ es un \textbf{unificador de máxima generalidad} (UMG) de los términos $t_1$
-  y $t_2$ si
-  \begin{itemize*}
-  \item $\sigma $ es un unificador de $t_1$ y $t_2$.
-  \item $\sigma $ es más general que cualquier unificador de $t_1$ y $t_2$.
-  \end{itemize*}
-\end{Def}
-
-
-\begin{Def}
-  Dadas dos listas de términos $s$ y $t$ son \textbf{unificables} si tienen algún unificador.
-\end{Def}
 
 El valor de \texttt{(unificadoresListas ts rs)} es un unificador de las listas
 de términos \texttt{ts} y \texttt{rs}; es decir, una sustitución \texttt{s} tal
@@ -94,8 +94,9 @@ unificadoresListas [tx,b] [a,ty] == [[(y,b),(x,a)]]
 \end{Def}
 
 \begin{nota}
-La forma normal conjuntiva es propia de la lógica proposicional. Por ello las fórmulas
-aquí definidas sólo se aplicaran a fórmulas sin cuantificadores.
+La forma normal conjuntiva es propia de la lógica
+proposicional. Por ello las fórmulas aquí definidas sólo se aplicarán a
+fórmulas sin cuantificadores.
 \end{nota}
 
 Definimos la función \texttt{(enFormaNC f)} para determinar si una fórmula
@@ -172,7 +173,7 @@ elimImpEquiv (PTodo x f) =
 
 \begin{nota}
   Se aplica a fórmulas con cuantificadores pues la función será
-  empleada en la sección de la forma de skolem.
+  empleada en la sección de la forma de Skolem.
 \end{nota}
 
 Por ejemplo,
@@ -282,11 +283,9 @@ conjuntivas. Definimos la función \texttt{(formaNormalConjuntiva f)}
 
 
 \begin{code}
-
 formaNormalConjuntiva :: Form -> Form
 formaNormalConjuntiva = 
     unificaConjuncion . interiorizaDisy . interiorizaNeg . elimImpEquiv
-
 \end{code}
 
 Por ejemplo
@@ -327,7 +326,7 @@ Por ejemplo
 
 \begin{Def}
   Una fórmula $F$ está en forma \textbf{rectificada} si ninguna variable
-  aparece, de manera simultánea, libre y ligada ,y cada cuantificador se 
+  aparece de manera simultánea libre y ligada y cada cuantificador se 
   refiere a una variable diferente.
 \end{Def}
 
@@ -554,15 +553,16 @@ Para ello definimos la equivalencia y equisatisfacibilidad entre fórmulas.
 Finalmente, definamos una cadena de funciones, para finalizar con
 \texttt{(skolem f)} que transforma \texttt{f} a su forma de Skolem.
 
-Se define la función \texttt{(skol k vs)} que convierte una lista de variables
-a un término de Skolem. Al calcular la forma de skolem de una fórmula, las variables
-cuantificadas son sustituidas por lo que denotamos \textbf{término de skolem} para obtener
-una fórmula libre. Los términos de skolem estan compuestos por las siglas ``sk''
-y un entero que lo identifique. 
+Se define la función \texttt{(skol k vs)} que convierte una lista de
+variables a un término de Skolem. Al calcular la forma de Skolem de una
+fórmula, las variables cuantificadas son sustituidas por lo que
+denotamos \textbf{término de Skolem} para obtener una fórmula libre. Los
+términos de Skolem están compuestos por las siglas ``sk'' y un entero
+que lo identifique.
 
 \begin{nota}
-  El término de skolem está expresado con la misma
-  estructura que los términos funcionales.
+  El término de Skolem está expresado con la misma estructura que los términos
+  funcionales.
 \end{nota}
 
 
@@ -589,8 +589,8 @@ Definimos la función \texttt{(skf f vs pol k)}, donde
 \end{enumerate}
 
 \begin{Def}
-  La \textbf{Polaridad} cuantifica las apariciones de las variables cuantificadas
-  de la siguiente forma:
+  La \textbf{Polaridad} cuantifica las apariciones de las variables
+  cuantificadas de la siguiente forma:
   \begin{itemize*}
   \item  Una cantidad de apariciones impar de $x$ en la subfórmula $F$ de
     $\exists x F$ indica que $x$ tiene una polaridad negativa en la fórmula.
@@ -628,7 +628,6 @@ skf (Neg f) vs pol k =
   (Neg f',j)
   where (f',j) = skf f vs (not pol) k
 \end{code}
-
 donde la skolemización de una lista está definida por  
 
 \index{\texttt{skfs}}
@@ -685,11 +684,9 @@ Por ejemplo,
 \section{Tableros semánticos}
 
 \begin{Def}
-  Un conjunto de fórmulas es \textbf{consistente} si tiene algún modelo. En
-  caso contrario, se denomina \textbf{inconsistente}.
+  Un conjunto de fórmulas cerradas es \textbf{consistente} si tiene algún
+  modelo. En caso contrario, se denomina \textbf{inconsistente}.
 \end{Def}
-
-\comentario{Distinguir el caso de fórmulas con variables libres.}
 
 La idea de obtener fórmulas equivalentes nos hace introducir los tipos de
 fórmulas alfa, beta, gamma y delta. No son más que equivalencias ordenadas por
@@ -801,11 +798,8 @@ delta _                     = False
 \end{itemize}
 
 \begin{nota}
-
   Cada elemento de la izquierda de las tablas es equivalente a la
   entrada de la derecha de la tabla que esté en su misma altura.
-  Es decir, considerando las tablas como matrices $a_{i,1}\equiv a_{i,2} \forall i$.
-  
 \end{nota}
 
 Mediante estas equivalencias se procede a lo que se denomina método de los
@@ -816,7 +810,7 @@ determinar si una fórmula es consistente, así como la búsqueda de modelos.
   Un \textbf{literal} es un átomo o la negación de un átomo.
 \end{Def}
 
-Lo definimos en haskell
+Lo definimos en Haskell
 
 \index{\texttt{literal}}
 \begin{code}
@@ -936,7 +930,7 @@ Un ejemplo de tablero cerrado es
     \wedge  \neg (p \rightarrow r)$  }
   child { node {2. $p \rightarrow q$, $q \rightarrow r$,
       $p$, $ \neg r$ (1) }
-    child { node {3. $p \rightarrow q$ , $\neg p$ ,
+    child { node {3. $p \rightarrow q$ , $\neg q$ ,
         $p$, $\neg r$ (2)}
       child { node {5. $ \neg p$ , $ \neg q$ ,
           $p$ , $ \neg r$ (3)}

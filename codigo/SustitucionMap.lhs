@@ -9,7 +9,7 @@ import Text.PrettyPrint.GenericPretty
 \end{code}
 
 Debido a que muchas funciones de esta librería coinciden
-con funciones definidas en \texttt{prelude}, ésta se suele
+con funciones definidas en \texttt{Prelude}, ésta se suele
 importar \texttt{qualified}.
 
 \comentario{No compatible con nuestra definición de término, hay que adaptarlo}

@@ -1,8 +1,8 @@
 \section{Librería Data.Map}
 
-Introducimos la librería \texttt{Data.Map} cuya función es el trabajo             
-con diccionarios, permitiendo tanto la construcción de estos diccionarios, 
-como su modificación y acceso a la información.
+Introducimos la librería \texttt{Data.Map} cuya función es el trabajo
+con diccionarios, permitiendo tanto la construcción de estos
+diccionarios, como su modificación y acceso a la información.
 
 \begin{code}
 module Map where  
@@ -13,13 +13,13 @@ import Text.PrettyPrint
 import Text.PrettyPrint.GenericPretty
 \end{code}
 
-Debido a que mucha de sus funciones tienen nombres coincidentes con 
+Debido a que mucha de sus funciones tienen nombres coincidentes con
 algunas ya definidas en \texttt{Prelude}, es necesario importarla
-renombrándola de la siguiente manera: \texttt{import qualified Data.Map as M}.
-Eso implica que cuando llamemos a una función de esta librería, tendremos que hacerlo
-poniendo \texttt{M.(función)}.
+renombrándola de la siguiente manera: \texttt{import qualified Data.Map
+as M}.  Eso implica que cuando llamemos a una función de esta librería,
+tendremos que hacerlo poniendo \texttt{M.(función)}.
 
-Los diccionarios son del tipo \texttt{M k} y la forma de construirlos es
+Los diccionarios son del tipo \texttt{Map k a} y la forma de construirlos es
 mediante la función \texttt{(M.fromList)} seguida de una lista de pares.
 
 \begin{code}
@@ -31,8 +31,8 @@ mediante la función \texttt{(M.fromList)} seguida de una lista de pares.
 -- fromList [(0,"Luis"),(1,"Pablo"),(7,"Cristina"),(10,"Elisabeth")]
 \end{code}
 
-Una vez creado un diccionario, podemos acceder a la información registrada en él
-y modificarla.
+Una vez creado un diccionario, podemos acceder a la información
+registrada en él y modificarla.
 
 El operador \texttt{(M.!)} sirve para acceder a elementos del diccionario.
 
@@ -45,8 +45,8 @@ El operador \texttt{(M.!)} sirve para acceder a elementos del diccionario.
 -- "Elisabeth"
 \end{code}
 
-La función \texttt{(M.size)} devuelve el tamaño del diccionario; es decir, su número
-de elementos. 
+La función \texttt{(M.size)} devuelve el tamaño del diccionario; es
+decir, su número de elementos.
 
 \begin{code}
 -- | Ejemplos  
@@ -64,7 +64,8 @@ La función \texttt{(M.insert)} registra un elemento en el diccionario.
 -- fromList [(0,"Luis"),(1,"Pablo"),(7,"Cristina"),(8,"Jesus"),(10,"Elisabeth")]
 \end{code}
 
-El operador \texttt{(M.\\)} realiza la diferencia entre dos diccionarios.
+El operador \texttt{(M.\textbackslash\textbackslash)} realiza la
+diferencia entre dos diccionarios.
 
 \begin{code}
 -- | Ejemplos
@@ -76,7 +77,8 @@ El operador \texttt{(M.\\)} realiza la diferencia entre dos diccionarios.
 -- fromList [(10,"Elisabeth")]
 \end{code}
 
-Para determinar si un elemento pertenece a un diccionario se emplea \texttt{(M.member)}
+Para determinar si un elemento pertenece a un diccionario se emplea
+\texttt{(M.member)}
 
 \begin{code}
 -- | Ejemplos
@@ -87,7 +89,8 @@ Para determinar si un elemento pertenece a un diccionario se emplea \texttt{(M.m
 -- False
 \end{code}
 
-Para localizar la definición de un elemento en un diccionario usamos la función \texttt{(M.lookup)}
+Para localizar la definición de un elemento en un diccionario usamos la
+función \texttt{(M.lookup)}
 
 \begin{code}
 -- | Ejemplos
@@ -96,7 +99,8 @@ Para localizar la definición de un elemento en un diccionario usamos la funció
 -- Just "Elisabeth"
 \end{code}
 
-La función \texttt{(M.adjust)} actualiza una entrada de un diccionario aplicando una función determinada.
+La función \texttt{(M.adjust)} actualiza una entrada de un diccionario
+aplicando una función determinada.
 
 \begin{code}
 -- | Ejemplos

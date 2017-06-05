@@ -144,7 +144,7 @@ termino n | n <=1 =
 \end{code}
 
 \begin{nota}
- \texttt{resize n} redimensiona un generador para ajustarlo a una escala.
+ \texttt{(resize n)} redimensiona un generador para ajustarlo a una escala.
 \end{nota}
 \begin{nota}
   Se ha acotado tanto la dimensión del generador porque no nos compensa tener

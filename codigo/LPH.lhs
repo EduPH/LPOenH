@@ -20,16 +20,17 @@ Los elementos básicos de las fórmulas en la lógica de primer orden, así como
 la lógica proposicional son las variables. Por ello, definimos un tipo   
 de dato para las variables. 
 
-Una variable estará compuesta por un nombre y un índice, es decir, nombraremos las
-variables como \texttt{x1,a1,...}
+Una variable estará compuesta por un nombre y un índice; es decir,
+nombraremos las variables como \texttt{x1,a1,...}
 
-El tipo de dato para el \texttt{nombre} lo definimos como una lista de caracteres
+El tipo de dato para el \texttt{nombre} lo definimos como una lista de
+caracteres
 
 \begin{code}
 type Nombre = String
 \end{code}
 
-El tipo de dato para los \texttt{índices} lo definimos como lista de enteros.
+El tipo de dato para los índices lo definimos como lista de enteros.
 
 \begin{code}
 type Indice = [Int]
@@ -39,7 +40,7 @@ Quedando el tipo de dato compuesto \texttt{Variable} como
 
 \begin{code}
 data Variable = Variable Nombre Indice
-  deriving (Eq,Ord,Generic)
+  deriving (Eq, Ord, Generic)
 \end{code}
 
 Para una visualización agradable en pantalla se define su representación en la
@@ -92,7 +93,8 @@ a2
 \end{sesion}
 
 \begin{Def}
-  Se dice que \texttt{F} es una \textbf{fórmula} si satisface la siguiente definición inductiva
+  Se dice que \texttt{F} es una \textbf{fórmula} si se obtiene mediante
+  la siguiente definición recursiva 
   \begin{enumerate}
   \item Las variables proposicionales son fórmulas atómicas.
   \item Si $F$ y $G$ son fórmulas, entonces $\neg F$, $(F \wedge G)$,
@@ -162,7 +164,7 @@ simetrica = ParaTodo x (ParaTodo y ( Atomo "R" [x,y] `Implica`
     \item si $f$ es un símbolo de función n--aria de $L$, entonces
       $I(f):\mathcal{U}^n \rightarrow \mathcal{U}$
     \item si $P$ es un símbolo de relación 0--aria de $L$, entonces
-      $I(P)\in \left\{1,\right\}$
+      $I(P)\in \left\{0,1,\right\}$
     \item si $R$ es un símbolo de relación n--aria de $L$, entonces
       $I(R)\subseteq \mathcal{U}^n$
     \end{itemize*}
@@ -232,9 +234,9 @@ representamos mediante el 0, y verdadero mediante el 1.
 El valor de \texttt{(sustituye s x d)} es la asignación obtenida a partir de la
 asignación \texttt{s} pero con \texttt{x} interpretado como \texttt{d},
 \begin{equation*}
-\text{sustituye (s(t),x,d,v)}= \left\{
+\text{sustituye (s,x,d)(v)}= \left\{
  \begin{array}{ll}
-  \text{d}, & \text{si } \text{x} = \text{v} \\
+  \text{d}, & \text{si } \text{v} = \text{x} \\
   \text{s(v)}, & \text{ en caso contrario} 
 \end{array} \right.
 \end{equation*}
@@ -247,7 +249,7 @@ asignación \texttt{s} pero con \texttt{x} interpretado como \texttt{d},
 -- >>> sustituye asignacion y B y
 -- B
 sustituye :: Asignacion a -> Variable -> a -> Asignacion a
-sustituye s x d v | x == v    = d 
+sustituye s x d v | v == x    = d 
                   | otherwise = s v
 \end{code}
 
@@ -397,7 +399,7 @@ esVariable _       = False
 \end{code}
 
 Ahora, creamos el tipo de dato \texttt{Form} de manera análoga a como lo
-hicimos en la sección anterior , pero en este caso considerando cualquier 
+hicimos en la sección anterior, pero en este caso considerando cualquier 
 término.
 
 \begin{code}
@@ -476,11 +478,11 @@ en los términos.
   $\mathcal{I}_A: Term(L) \rightarrow U$ por
   \begin{equation*}
     \mathcal{I}_A(t) = \left\{
-      \begin{array}{lll}
-        I(c), \text{ si } t \text{ es una constante } c \\
-        A(x), \text{ si } t \text{ es una variable } x \\
+      \begin{array}{llll}
+        I(c), & \text{ si } t \text{ es una constante } c \\
+        A(x), & \text{ si } t \text{ es una variable } x \\
         I(f)(\mathcal{I}_A(t_1),\dots ,\mathcal{I}_A(t_n)),
-        \text{ si } t \text{ es } f(t_1,\dots t_n)
+        & \text{ si } t \text{ es } f(t_1,\dots t_n)
       \end{array} \right.
   \end{equation*}
 \end{Def}
@@ -499,7 +501,7 @@ valorT i a (Var v)    = a v
 valorT i a (Ter f ts) = i f (map (valorT i a) ts)
 \end{code}
 
-Para evaluar ejemplos de evaluación de términos usaremos la siguiente
+Para los ejemplos de evaluación de términos usaremos la siguiente
 interpretación de los símbolos de función
 
 \begin{code}
@@ -700,7 +702,7 @@ varEnTerms = nub . concatMap varEnTerm
 \end{code}
 
 \begin{nota}
-  La función \texttt{nub xs} elimina elementos repetidos en una
+  La función \texttt{(nub xs)} elimina elementos repetidos en una
   lista \texttt{xs}. Se encuentra en el paquete \texttt{Data.List}.
 \end{nota}
 
@@ -784,7 +786,7 @@ variablesLibres (Ex x f) =
 
 \begin{Def}
   Una variable $x$ está \textbf{ligada} en una fórmula cuando tiene una
-  aparición de la forma $\forall x$ o $\exists x$.
+  aparición en alguna subfórmula de la forma $\forall x$ o $\exists x$.
 \end{Def}
 
 \begin{Def}

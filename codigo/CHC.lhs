@@ -70,7 +70,7 @@ Veamos un último ejemplo con motivación inversa. Si tenemos la función implem
 informal \texttt{curry (f,a,b) = f(a,b)}.
 \end{nota}
 
-Una vez conocido su uso, preguntemos a Haskell cuál es su tipo de dato:
+Una vez conocido su uso, preguntemos a Haskell cuál es su tipo:
 
 \begin{sesion}
 ghci> :t curry
@@ -79,6 +79,6 @@ curry :: ((a, b) -> c) -> a -> b -> c
 
 Vista la respuesta de Haskell no es dificil inferir la proposición asociada,
 
-$$((A\wedge B)\rightarrow c) \rightarrow (A \rightarrow B \rightarrow C) $$
+$$((A\wedge B)\rightarrow C) \rightarrow (A \rightarrow B \rightarrow C) $$
 
 Por lo tanto, hemos establecido de nuevo una correspondencia entre lógica y, en este caso, el lenguaje de programación funcional Haskell. 

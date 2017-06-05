@@ -8,6 +8,8 @@ import Text.PrettyPrint.GenericPretty
 
 \section{Sustitución}
 
+\comentario{Pasar esta sección al capítulo de tableros.}
+
 \begin{Def}
   Una \textbf{sustitución} es una aplicación $S: Variable \rightarrow Termino$.
 \end{Def}
@@ -318,7 +320,9 @@ Un ejemplo de una sustitución libre
 
 \section{Sustitucion mediante diccionarios}
 
-En esta sección definiremos las sustituciones ,de una manera alternativa,
+\comentario{Pendiente de decidir su inclusión.}
+
+En esta sección definiremos las sustituciones, de una manera alternativa,
 mediante la librería \texttt{Data.Map}.
 \entrada{SustitucionMap}
 
@@ -401,6 +405,10 @@ elemMap :: [Form] -> [Form] -> Bool
 elemMap xs ys = all (`elem` ys) xs
 \end{code}
 
+\comentario{¿Se puede definir quita con la predefinida en Data.List?}
+
+\comentario{¿elemMap no es contenida?}
+
 Por ejemplo,
 
 \begin{code}
@@ -420,11 +428,15 @@ verifica :: Deduccion -> Bool
 \end{code}
 
 
-Los primeros casos en la función \texttt{verifica} serán el básico, es decir, en el que determinaremos que el proceso deductivo es correcto, y la regla antes definida en el tipo de dato \texttt{Reglas} como \texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista de las suposiciones. Lo implementamos en la función \texttt{verifica}. 
+Los primeros casos en la función \texttt{verifica} serán el básico; es
+decir, en el que determinaremos que el proceso deductivo es correcto, y
+la regla antes definida en el tipo de dato \texttt{Reglas} como
+\texttt{Suponer}, cuya función va a ser incluir una fórmula en la lista
+de las suposiciones. Lo implementamos en la función \texttt{verifica}.
 
 \begin{code}
-verifica (D pr [] []) = True
-verifica (D pr sp []) = error "Quedan supuestos"
+verifica (D pr [] [])               = True
+verifica (D pr sp [])               = error "Quedan supuestos"
 verifica (D pr sp ((Suponer f):rs)) = verifica (D pr (f:sp) rs)
 \end{code}
 

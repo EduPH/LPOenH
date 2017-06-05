@@ -360,6 +360,3 @@ se tiene
 \end{Def}
 
 
-\comentario{Comparar la implementación con la de Ben Ari que se encuentra en  
-  \href{https://github.com/motib/mlcs/blob/master/fol/tabl.pro}
-       {\url{https://github.com/motib/mlcs/blob/master/fol/tabl.pro}}}

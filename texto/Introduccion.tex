@@ -1,6 +1,12 @@
 \chapter*{Introducción}
 \addcontentsline{toc}{chapter}{Introducción}
 
+\comentario{La introducción tiene que ser más amplia de forma que casi se
+  corresponda con la presentación del TFG. Puedes ver la de
+  \href{http://bit.ly/2a8PGz7}{Dani} y la de
+  \href{http://bit.ly/2alh1ld}{María}.}
+
+
 El objetivo del trabajo es la implementación de los algoritmos de la lógica de
 primer orden en Haskell. Consta de dos partes:
 
@@ -17,24 +23,56 @@ primer orden en Haskell. Consta de dos partes:
   \footnote{\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.467.1441&rep=rep1&type=pdf}}
   (\cite{Eijck-03}) y su correspondiente teoría. 
 
-\item En la segunda parte se comentan aquellos sistemas empleados en la elaboración del
-  trabajo.
+\item En la segunda parte se comentan aquellos sistemas empleados en la
+  elaboración del trabajo.
  
 \end{itemize}
 
-La lógica de primer orden o lógica de predicados nace como una extensión de la lógica proposicional ante algunas carencias que ésta presenta. La lógica proposicional tiene como objetivo modelizar el razonamiento y nos aporta una manera de formalizar las demostraciones. El problema surge cuando aparecen propiedades universales o nos cuestionamos la existencia de elementos con una cierta propiedad, es decir, aparecen razonamientos del tipo
+La lógica de primer orden o lógica de predicados nace como una extensión de la
+lógica proposicional ante algunas carencias que ésta presenta. La lógica
+proposicional tiene como objetivo modelizar el razonamiento y nos aporta una
+manera de formalizar las demostraciones. El problema surge cuando aparecen
+propiedades universales o nos cuestionamos la existencia de elementos con una
+cierta propiedad, es decir, aparecen razonamientos del tipo
 \begin{center}
+\begin{tabular}{l}
   Todos los sevillanos van a la feria. \\
   Yo soy sevillano.\\
   Por lo tanto, voy a la feria
+\end{tabular}
 \end{center}
-A pesar de ser yo una clara prueba de que la proposición no es cierta, sí que se infieren las carencias de la lógica proposicional.
+A pesar de ser yo una clara prueba de que la proposición no es cierta, sí que
+se infieren las carencias de la lógica proposicional.
 
-Una vez que vemos la necesidad de la existencia de la lógica de primer orden, nos damos cuenta de que el progreso nos lleva a la mejora y automatización del razonamiento, y eso desemboca en el empleo de lenguajes informáticos para pasar del ``hombre'' a la ``máquina''. Con este fin, se ha elegido como lenguaje para la implementación Haskell, un lenguaje de programación funcional, y nos vemos motivados a esta elección debido a su cercanía a la representación matemática en su ``enfoque funcional''.
+Una vez que vemos la necesidad de la existencia de la lógica de primer orden,
+nos damos cuenta de que el progreso nos lleva a la mejora y automatización del
+razonamiento, y eso desemboca en el empleo de lenguajes informáticos para pasar
+del ``hombre'' a la ``máquina''. Con este fin, se ha elegido como lenguaje para
+la implementación Haskell, un lenguaje de programación funcional, y nos vemos
+motivados a esta elección debido a su cercanía a la representación matemática
+en su ``enfoque funcional''.
 
-Como se ha comentado antes, se implementarán aquellas cuestiones impartidas en la asignatura de Lógica matemática y fundamentos. Cuestiones como la semántica de la lógica proposicional, resolución, prueba de teoremas, modelos de Herbrand... Todas estas implementaciones desembocan en una pregunta mayor, ¿es la lógica y la programación lo mismo? O más allá, ¿existe una equivalencia entre la programación y las matemáticas? Estas preguntas se ven motivadas ante la posibilidad de implementar distintos ámbitos de las matemáticas, el preguntarnos si cada rama de las matemáticas tiene su clon en formato código, desembocando en el último capítulo de la primera parte, la correspondencia de Curry-Howard, que nos da una satisfactoria relación entre ambos campos.
+Como se ha comentado antes, se implementarán aquellas cuestiones impartidas en
+la asignatura de Lógica matemática y fundamentos. Cuestiones como la semántica
+de la lógica proposicional, resolución, prueba de teoremas, modelos de
+Herbrand, \dots Todas estas implementaciones desembocan en una pregunta mayor,
+¿es la lógica y la programación lo mismo? O más allá, ¿existe una equivalencia
+entre la programación y las matemáticas? Estas preguntas se ven motivadas ante
+la posibilidad de implementar distintos ámbitos de las matemáticas, el
+preguntarnos si cada rama de las matemáticas tiene su clon en formato código,
+desembocando en el último capítulo de la primera parte, la correspondencia de
+Curry-Howard, que nos da una satisfactoria relación entre ambos campos.
 
-Finalmente, la segunda parte del trabajo consta de una guía sobre github, para el trabajo común entre varias personas a través de esta plataforma y el uso de \texttt{git} en emacs. 
+Finalmente, la segunda parte del trabajo consta de una guía sobre GitHub, para
+el trabajo común entre varias personas a través de esta plataforma y el uso de
+\texttt{git} en emacs.
+
+\comentario{Indicar que se ha escrito en Haskell literario (mezclando código
+  Haskell y LaTeX) y se ha desarrollado como un proyecto en GitHub (poniendo un
+  enlace).}
+
+\comentario{Comentar el uso de la librería \texttt{doctest} para la
+  comprobación de las definiciones y ejemplos.}
 
 %%% Local Variables: 
 %%% mode: latex

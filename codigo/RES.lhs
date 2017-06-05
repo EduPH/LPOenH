@@ -130,11 +130,8 @@ a su forma clausal.
 
 \index{\texttt{formaClausal}}
 \begin{code}
-
 formaClausal :: Form -> Clausulas
 formaClausal  = form3CAC . skolem .formaNPConjuntiva
-    
-
 \end{code}
 
 Por ejemplo,

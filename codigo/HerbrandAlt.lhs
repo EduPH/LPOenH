@@ -360,7 +360,7 @@ Definimos un tipo de dato para las bases de Herbrand
 type BaseH = [Form]
 \end{code}
 
-Implementamos la base de herbrand a nivel \texttt{n} de la signatura
+Implementamos la base de Herbrand a nivel \texttt{n} de la signatura
 \texttt{s} mediante la función \texttt{(baseHerbrand n s)}
 
 \index{\texttt{baseHerbrand}}
