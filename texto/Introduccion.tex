@@ -6,27 +6,6 @@
   \href{http://bit.ly/2a8PGz7}{Dani} y la de
   \href{http://bit.ly/2alh1ld}{María}.}
 
-El objetivo del trabajo es la implementación de los algoritmos de la lógica de
-primer orden en Haskell. Consta de dos partes:
-
-\begin{itemize}
-\item La primera parte consiste en la implementación en Haskell de la teoría
-  impartida en la asignatura
-  \href{https://www.cs.us.es/~jalonso/cursos/lmf-15} 
-       {Lógica matemática y fundamentos}\
-  \footnote{\url{{https://www.cs.us.es/~jalonso/cursos/lmf-15}}}
-  (\cite{Alonso-15a}). Para ello, se lleva a cabo la adaptación de los programas del libro de
-  J. van Eijck 
-  \href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.467.1441&rep=rep1&type=pdf}
-       {Computational semantics and type theory}\
-  \footnote{\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.467.1441&rep=rep1&type=pdf}}
-  (\cite{Eijck-03}) y su correspondiente teoría. 
-
-\item En la segunda parte se comentan aquellos sistemas empleados en la
-  elaboración del trabajo.
- 
-\end{itemize}
-
 La lógica de primer orden o lógica de predicados nace como una extensión de la
 lógica proposicional ante algunas carencias que ésta presenta. La lógica
 proposicional tiene como objetivo modelizar el razonamiento y nos aporta una
@@ -37,41 +16,80 @@ cierta propiedad, es decir, aparecen razonamientos del tipo
 \begin{tabular}{l}
   Todos los sevillanos van a la feria. \\
   Yo soy sevillano.\\
-  Por lo tanto, voy a la feria
+  Por lo tanto, voy a la feria.
 \end{tabular}
 \end{center}
 A pesar de ser yo una clara prueba de que la proposición no es cierta, sí que
-se infieren las carencias de la lógica proposicional.
+se infieren las carencias de la lógica proposicional, la ausencia de cuantificadores.
 
-Una vez que vemos la necesidad de la existencia de la lógica de primer orden,
-nos damos cuenta de que el progreso nos lleva a la mejora y automatización del
-razonamiento, y eso desemboca en el empleo de lenguajes informáticos para pasar
-del ``hombre'' a la ``máquina''. Con este fin, se ha elegido como lenguaje para
-la implementación Haskell, un lenguaje de programación funcional, y nos vemos
-motivados a esta elección debido a su cercanía a la representación matemática
-en su ``enfoque funcional''.
+\vspace{4mm}
 
-Como se ha comentado antes, se implementarán aquellas cuestiones impartidas en
-la asignatura de Lógica matemática y fundamentos. Cuestiones como la semántica
-de la lógica proposicional, resolución, prueba de teoremas, modelos de
-Herbrand, \dots Todas estas implementaciones desembocan en una pregunta mayor,
-¿es la lógica y la programación lo mismo? O más allá, ¿existe una equivalencia
-entre la programación y las matemáticas? Estas preguntas se ven motivadas ante
-la posibilidad de implementar distintos ámbitos de las matemáticas, el
-preguntarnos si cada rama de las matemáticas tiene su clon en formato código,
-desembocando en el último capítulo de la primera parte, la correspondencia de
-Curry-Howard, que nos da una satisfactoria relación entre ambos campos.
+En este trabajo se pretende realizar una implementación en Haskell de la teoría impartida en la asignatura
+\href{https://www.cs.us.es/~jalonso/cursos/lmf-15}{Lógica matemática y fundamentos}\
+\footnote{\url{{https://www.cs.us.es/~jalonso/cursos/lmf-15}}}
+(\cite{Alonso-15a}) del grado en matemáticas.  Para ello, se lleva a cabo la adaptación de los programas del libro de
+J. van Eijck 
+\href{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.467.1441&rep=rep1&type=pdf}
+{Computational semantics and type theory}\
+\footnote{\url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.467.1441&rep=rep1&type=pdf}}
+(\cite{Eijck-03}) y su correspondiente teoría. 
 
-Finalmente, la segunda parte del trabajo consta de una guía sobre GitHub, para
-el trabajo común entre varias personas a través de esta plataforma y el uso de
-\texttt{git} en emacs.
+\vspace{3mm}
 
-\comentario{Indicar que se ha escrito en Haskell literario (mezclando código
-  Haskell y LaTeX) y se ha desarrollado como un proyecto en GitHub (poniendo un
-  enlace).}
+Se comenzará con una \textbf{introducción a Haskell}(\ref{sec:progfunHas}) a través de
+la definición de funciones y numerosos ejemplos. Esto nos llevará a introducir las
+funciones básicas, la teoría de tipos y la teoría de generadores. De esta manera,
+se establece la base de conocimientos propios de la programación que van  más allá de la lógica y que son necesarios para la implementación.
 
-\comentario{Comentar el uso de la librería \texttt{doctest} para la
-  comprobación de las definiciones y ejemplos.}
+A continuación, en el capítulo sobre \textbf{sintaxis y semántica de la lógica de primer orden}
+(\ref{sec:sinsemlpo}), se definen los tipos de datos que sirven de vehículo en la representación
+de fórmulas, así como generadores de fórmulas para, en caso necesario, poder hacer comprobaciones
+con QuiCheck.
+
+Ya asentadas las bases de la lógica y teniendo un suelo en el que sostenernos, se pretende trabajar
+con las fórmulas para la \textbf{prueba de teoremas} (\ref{sec:pruteologpred}). Se definen conceptos
+tan necesarios en la lógica de primer orden como la sustitución y unificación. También se definen
+distintas equivalencias entre fórmulas que nos llevan a construir las formas normales, rectificada...
+Con el objetivo de conseguir establecer la forma de Skolem de una fórmula para la implementación de
+tableros semánticos. Dichos tableros semánticos son un algoritmo para la prueba de consistencia de
+fórmulas, es decir, conforman un demostrador. 
+
+Posteriormente hablamos sobre un método constructivo para generar interpretaciones de fórmulas
+o conjuntos de fórmulas, es lo que llamamos \textbf{modelos de Herbrand} (\ref{sec:herbrand}),
+que debe su nombre al matemático francés Jacques Herbrand.
+
+Luego implementamos la \textbf{resolución} (\ref{sec:resolucion}), que establece una regla para obtener
+deducciones lógicas a partir de cláusulas. Para ello, definimos la forma clausal y su interpretación con el objetivo de implementar las resolventes binarias, tanto para la lógica proposicional como
+la lógica de primer orden. En ese capítulo se construye la base de la resolución pero no se
+implementan algoritmos de demostración vía resolución, los cuales podrían establecerse
+basados en el código propuesto. 
+  
+Todos estos capítulos aquí mencionados suponen la implementación de una rama matemática
+en un lenguaje de programación, y eso nos lleva al último capítulo que trata sobre
+la \textbf{correspondencia de Curry-Howard} (\ref{sec:curry}). Así, vemos que hemos
+establecido una relación entre matemáticas y programación, que se ve reflejada
+en el isomorfismo de Curry-Howard que establece que las proposiciones son tipos y
+las demostraciones funciones.
+
+\vspace{3mm}
+
+Finalmente, cabe comentar que la elaboración de este trabajo ha supuesto el aprendizaje
+y el empleo de distintos métodos y recursos.
+
+La escritura del trabajo se ha llevado a cabo en Haskell literario. La programación
+literaria es un estilo de programación propuesto por Donald Knuth, un experto en
+ciencias de la computación. En nuestro caso, supone la escritura simultánea de código
+y texto vía LaTeX y Haskell, resultando un documento en el que el código es ejecutable
+y en su totalidad reproducible según las características de LaTeX. 
+
+Para la cooperación entre el tutor y el alumno se ha realizado el trabajo en la plataforma
+github, en el repositorio \href{https://github.com/EduPH/LPOenH}{LPOenH}. Esto ha
+llevado a un aprendizaje del uso de \href{https://git-scm.com/}{\texttt{git}}, un sistema de control de versiones
+para el manejo de proyectos de manera rápida y eficiente. Además, se ha realizado una pequeña guía para su uso en emacs en el apéndice \ref{aped.A}.
+
+También cabe comentar que todos los ejemplos y definiciones del trabajo se han comprobado empleando la librería
+\texttt{doctest}, habiendo realizado además una pequeña guía en el apéndice \ref{aped.B}.
+
 
 %%% Local Variables: 
 %%% mode: latex
