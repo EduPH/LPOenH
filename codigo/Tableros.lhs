@@ -1,6 +1,5 @@
 \begin{code}
 module Tableros where
-import DNH
 import PTLP
 import LPH
 import Debug.Trace     

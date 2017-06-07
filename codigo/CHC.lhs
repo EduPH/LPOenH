@@ -1,6 +1,6 @@
 
 Para terminar veamos algunos ejemplos entre la lógica y la
-programación en Haskell. Para ello, creemos un módulo que contenga
+programación en Haskell, se pueden ver más ejemplo, así como análisis sobre la correspondencia en \cite{Wikibooks16}, \cite{Gonzalez-17} y \cite{HaskellWiki2010}  . Para ello, creemos un módulo que contenga
 nuestro ejemplos.
 
 \begin{code}
@@ -8,7 +8,59 @@ module CHC where
 import Data.Either  
 \end{code}
 
-No hemos hablado anteriormente del análogo de la negación lógica en Haskell. Para ello, primero tenemos que añadir las siguientes líneas y así extender el lenguaje.
+Vayamos escalando la montaña con mesura. Si tenemos la implicación $a \rightarrow a$, no es dificil intuir la función que la demuestra y el tipo que define la proposición en Haskell, no es más que la función \texttt{identidad}.
+
+\begin{code}
+identidad :: a -> a
+identidad x = x
+\end{code}
+
+Sigamos componiendo conectivas para ir construyendo ejemplos poco a poco más complejos. La implicación $a \rightarrow b \rightarrow a \wedge b$ se vería representada en Haskell por el tipo
+
+\begin{sesion}
+a -> b -> (a, b)
+\end{sesion}
+
+Y demostrada por la existencia de una función con ese tipo, en este caso
+el operador \texttt{(,)}.
+
+\begin{sesion}
+ (,) :: a -> b -> (a, b)
+ (,) x y = (x,y) 
+\end{sesion}
+
+Otro ejemplo podría ser la regla de la eliminación de la conjunción por la izquierda, es decir, $a \wedge b \rightarrow a$ cuya representación y demostración ponemos a continuación.
+
+\begin{sesion}
+fst :: (a,b) -> a
+fst (x,y) = x
+\end{sesion}
+
+Hasta ahora hemos demostrado distintas proposiciones encontrando la función adecuada pero, ¿qué sucede si tomamos una que no sea cierta? Por ejemplo, $a \rightarrow a \wedge b$, ¿existe alguna función con el tipo de dato \texttt{a -> (a,b)}? La respuesta es no, un alivio porque en caso contrario no sería consistente la teoría.
+
+Procedamos ahora con la siguiente proposición $(a \rightarrow b \rightarrow c) \rightarrow (b \rightarrow a \rightarrow c) $ siendo su tipo y función demostradora los siguientes.
+
+\begin{sesion}
+flip :: (a -> b -> c) -> b -> a -> c
+flip f x y = f y x  
+\end{sesion}
+
+¿ Existirá alguna función con el tipo análogo a la proposición $a \wedge b \rightarrow a$? El tipo de la función buscada sería.
+
+\begin{sesion}
+Either a b -> a
+\end{sesion}
+
+Y podemos pasarlo por nuestro demostrador basado en tableros semánticos y determinar si debería existit o no una función con este tipo.
+
+\begin{sesion}
+ghci> esTeorema 5 (Impl (Disy [p,q]) q)
+False
+\end{sesion}
+
+Por lo tanto, no debería y, de hecho, no existe ninguna función con el tipo buscado.
+
+Anteriormente no hemos hablado anteriormente del análogo de la negación lógica en Haskell. Para ello, primero tenemos que añadir las siguientes líneas y así extender el lenguaje.
 
 \begin{code}
 {-# LANGUAGE RankNTypes #-}

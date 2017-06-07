@@ -9,7 +9,7 @@ import Control.Monad
 \subsubsection{Teoría básica de generadores}
 
 Cuando se pretende realizar pruebas aleatorias mediante QuickCheck, es
-necesario generar casos aleatorios. Dado un tipo de dato, se puede hacer
+necesario generar casos aleatorios. Dos buenas fuentes de información sobre generadores son \cite{Villa15} y \cite{ClaeHughes2009}. Dado un tipo de dato, se puede hacer
 miembro de la llamada clase \texttt{Arbitrary}.
 
 \begin{sesion}
@@ -49,7 +49,9 @@ sized :: (Int -> Gen a) -> Gen a
 
 Veamos un ejemplo de generadores que dependen del tamaño en los árboles
 binarios. En el caso de que no tuviéramos en cuenta el tamaño, el
-generador podría no acabar al generar un árbol infinito.
+generador podría no acabar al generar un árbol infinito. En \cite{Jovanovski15} se
+puede ver no sólo la implementación de generadores si no una lista de funciones y
+algoritmos aplicados a los árboles binarios. 
 
 Primero definimos el tipo de dato abstracto del árbol binario:
 
