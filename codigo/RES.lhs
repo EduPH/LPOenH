@@ -2,7 +2,6 @@
 module RES where
 import Data.List
 import LPH
-import DNH
 import PTLP
 \end{code}
 
@@ -196,9 +195,7 @@ Una serie de ejemplos de estas funciones definidas podrían ser.
 -- >>> let c' = C [Atom "P" [tx],q,Atom "Q" [Ter "f" [tx]]]
 -- >>> c+!c'
 -- {P[x],q,Q[f[x]]}
--- >>> let f = Neg (Impl (Conj [(PTodo x (Impl (Atom "P" [tx]) 
--- (Atom "Q" [tx]))),PTodo x (Impl (Atom "Q" [tx]) (Atom "R" [tx]))]) 
--- (PTodo x (Impl (Atom "P" [tx]) (Atom "R" [tx]))))
+-- >>> let f = Neg (Impl (Conj [(PTodo x (Impl (Atom "P" [tx]) (Atom "Q" [tx]))),PTodo x (Impl (Atom "Q" [tx]) (Atom "R" [tx]))]) (PTodo x (Impl (Atom "P" [tx]) (Atom "R" [tx]))))
 -- >>> f
 -- ¬((∀x (P[x]⟹Q[x])⋀∀x (Q[x]⟹R[x]))⟹∀x (P[x]⟹R[x]))
 -- >>> formaClausal f
