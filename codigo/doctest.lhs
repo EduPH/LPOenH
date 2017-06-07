@@ -14,7 +14,7 @@
 -- False
 \end{code}
 
-Finalmente, se abre la carpeta en la que está el archivo en un terminal y se invoca el paquete mediante \fbox{\texttt{doctest RES.lhs}}, y en caso de que todos los ejemplos sean correctos, devolverá:
+Finalmente, se abre la carpeta en la que está el archivo en un terminal y se invoca el paquete mediante \fbox{\texttt{doctest RES.lhs}} y, en caso de que todos los ejemplos sean correctos, devolverá:
 
 \texttt{
 > doctest RES.lhs \\
