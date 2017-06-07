@@ -58,9 +58,11 @@ ghci> esTeorema 5 (Impl (Disy [p,q]) q)
 False
 \end{sesion}
 
-Por lo tanto, no debería y, de hecho, no existe ninguna función con el tipo buscado.
+Por lo tanto, no debería y, de hecho, no existe ninguna función con el    
+tipo buscado. Una buena fuente de ejemplos y análisis del isomorfismo es \cite{Sherman14}.
 
-Anteriormente no hemos hablado anteriormente del análogo de la negación lógica en Haskell. Para ello, primero tenemos que añadir las siguientes líneas y así extender el lenguaje.
+
+Anteriormente no hemos hablado del análogo de la negación lógica en Haskell. Para ello, primero tenemos que añadir las siguientes líneas y así extender el lenguaje.
 
 \begin{code}
 {-# LANGUAGE RankNTypes #-}
