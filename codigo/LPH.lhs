@@ -669,8 +669,6 @@ Dada una fórmula $F$ de $L$ se tienen las siguientes definiciones:
 
 \subsection{Generadores}
 
-\comentario{Pendiente de revisión.}
-
 Para poder emplear el sistema de comprobación QuickCheck, necesitamos poder
 generar elementos aleatorios de los tipos de datos creados hasta ahora.
 
