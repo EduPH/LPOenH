@@ -36,40 +36,47 @@ J. van Eijck
 
 \vspace{3mm}
 
-Se comenzará con una \textbf{introducción a Haskell}(\ref{sec:progfunHas}) a través de
-la definición de funciones y numerosos ejemplos. Esto nos llevará a introducir las
+Se ha comenzado con una \textbf{introducción a Haskell}(\ref{sec:progfunHas}) a través de
+la definición de funciones y numerosos ejemplos. Esto lleva a introducir las
 funciones básicas, la teoría de tipos y la teoría de generadores. De esta manera,
 se establece la base de conocimientos propios de la programación que van  más allá de la lógica y que son necesarios para la implementación.
 
 A continuación, en el capítulo sobre \textbf{sintaxis y semántica de la lógica de primer orden}
-(\ref{sec:sinsemlpo}), se definen los tipos de datos que sirven de vehículo en la representación
-de fórmulas, así como generadores de fórmulas para, en caso necesario, poder hacer comprobaciones
-con QuiCheck.
+(\ref{sec:sinsemlpo}), ilustramos la utilidad de la lógica para dar una representación del conocimiento proponiendo un modelo de clasificación botánica. Se construyen los tipos de datos abstractos que sirven de vehículo en la representación de fórmulas y que son base de las implementaciones en los restantes capítulos. También se definen la evaluación de fórmulas por una interpretación y los términos funcionales, extendiendo el lenguaje y dando, posteriormente, la construcción de generadores de fórmulas
+para, en caso necesario, poder hacer comprobaciones con QuickCheck. 
 
-Ya asentadas las bases de la lógica y teniendo un suelo en el que sostenernos, se pretende trabajar
-con las fórmulas para la \textbf{prueba de teoremas} (\ref{sec:pruteologpred}). Se definen conceptos
-tan necesarios en la lógica de primer orden como la sustitución y unificación. También se definen
-distintas equivalencias entre fórmulas que nos llevan a construir las formas normales, rectificada...
-Con el objetivo de conseguir establecer la forma de Skolem de una fórmula para la implementación de
-tableros semánticos. Dichos tableros semánticos son un algoritmo para la prueba de consistencia de
-fórmulas, es decir, conforman un demostrador. 
+Ya asentadas las bases de la lógica y teniendo un suelo en el que sostenernos, se trabaja
+con las fórmulas para la \textbf{prueba de teoremas} (\ref{sec:pruteologpred}). Dicho capítulo tiene
+como objetivo implementar el método de tableros, un algoritmo para la prueba de teoremas y búsqueda de modelos. Para la definición del algoritmo se requiere de distintas definiciones previas:
+
+\begin{itemize}
+\item Sustitución: Nos permite llevar a cabo sustituciones de variables ligadas por términos.
+\item Unificación: Se basa en la posibilidad de sustituir términos en varias fórmulas para
+  unificarlas, es decir, que tengan los mismos términos asociados. Para ello determinamos tanto su
+  existencia como generamos la lista de unificadores.
+\item Forma de Skolem: Se trata de una forma de representación de una fórmula dada que se obtiene
+  a partir de una serie de reglas, a través de las cuales se consiguen representaciones equivalentes
+  unas de otras de la misma fórmula. En el proceso de definición de la forma de Skolem se definen
+  las formas normales, forma rectificada, forma normal prenexa y forma normal prenexa conjuntiva. Éstas además son necesarias para la definición en un capítulo posterior de la forma clausal. 
+\end{itemize}
 
 Posteriormente hablamos sobre un método constructivo para generar interpretaciones de fórmulas
 o conjuntos de fórmulas, es lo que llamamos \textbf{modelos de Herbrand} (\ref{sec:herbrand}),
-que debe su nombre al matemático francés Jacques Herbrand.
+que debe su nombre al matemático francés Jacques Herbrand. Además, es un método para determinar
+la consistencia de un conjunto de fórmulas, pues tener un modelo de Herbrand es equivalente a consistencia. 
 
-Luego implementamos la \textbf{resolución} (\ref{sec:resolucion}), que establece una regla para obtener
-deducciones lógicas a partir de cláusulas. Para ello, definimos la forma clausal y su interpretación con el objetivo de implementar las resolventes binarias, tanto para la lógica proposicional como
-la lógica de primer orden. En ese capítulo se construye la base de la resolución pero no se
+Luego implementamos la \textbf{resolución} (\ref{sec:resolucion}), que establece una regla para obtener deducciones lógicas a partir de cláusulas, que son un conjunto finito de literales. Para ello, definimos la forma clausal y su interpretación con el objetivo de implementar las resolventes binarias, tanto para la lógica proposicional como la lógica de primer orden, siendo éstas un método para obtener deducciones de dos cláusulas. En ese capítulo se construye la base de la resolución pero no se
 implementan algoritmos de demostración vía resolución, los cuales podrían establecerse
 basados en el código propuesto. 
   
 Todos estos capítulos aquí mencionados suponen la implementación de una rama matemática
-en un lenguaje de programación, y eso nos lleva al último capítulo que trata sobre
+en un lenguaje de programación, y eso nos lleva al último de ellos que trata sobre
 la \textbf{correspondencia de Curry-Howard} (\ref{sec:curry}). Así, vemos que hemos
 establecido una relación entre matemáticas y programación, que se ve reflejada
 en el isomorfismo de Curry-Howard que establece que las proposiciones son tipos y
-las demostraciones funciones.
+las demostraciones funciones, siendo matemáticas y programación dos caras de una misma
+moneda. Además, se propone la analogía entre distintos ejemplos que permiten convencerse
+de la veracidad del isomorfismo. 
 
 \vspace{3mm}
 
