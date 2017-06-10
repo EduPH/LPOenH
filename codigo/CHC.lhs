@@ -1,6 +1,6 @@
 
 Para terminar veamos algunos ejemplos entre la lógica y la
-programación en Haskell, se pueden ver más ejemplo, así como análisis sobre la correspondencia en \cite{Wikibooks16}, \cite{Gonzalez-17} y \cite{HaskellWiki2010}  . Para ello, creemos un módulo que contenga
+programación en Haskell, se pueden ver más ejemplos, así como un análisis sobre la correspondencia en \cite{Wikibooks16}, \cite{Gonzalez-17} y \cite{HaskellWiki2010}  . Para ello, creemos un módulo que contenga
 nuestro ejemplos.
 
 \begin{code}
@@ -51,7 +51,7 @@ flip f x y = f y x
 Either a b -> a
 \end{sesion}
 
-Y podemos pasarlo por nuestro demostrador basado en tableros semánticos y determinar si debería existit o no una función con este tipo.
+Y podemos pasarlo por nuestro demostrador basado en tableros semánticos y determinar si debería existir o no una función con este tipo.
 
 \begin{sesion}
 ghci> esTeorema 5 (Impl (Disy [p,q]) q)
@@ -76,9 +76,9 @@ Posteriormente definimos el tipo \texttt{Not} como que para cualquier \texttt{a}
 type Not x = (forall a. x -> a)
 \end{code}
 
-Ahora podemos definir una serie de ejemplos que nos convenzan de la correspondencia.
+Ahora podemos definir otro ejemplo que nos convenza de la correspondencia.
 
-Nuestro primer ejemplo consistirá en las leyes de deMorgan, cuya formalización matemática es:
+Nuestro ejemplo con negación consistirá en las leyes de deMorgan, cuya formalización matemática es:
 
 $$\neg(A\wedge B)  \leftrightarrow (\neg A) \vee (\neg B) \text{ y } \neg (A\vee B) \leftrightarrow (\neg A) \vee (\neg B)$$
 
