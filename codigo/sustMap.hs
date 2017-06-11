@@ -10,10 +10,12 @@ import Text.PrettyPrint.GenericPretty
 -- Sustitución de términos:
 sustTerm :: Termino -> Map Variable Termino -> Termino
 sustTerm (Var x) d = aux  x (M.lookup x d)
-    where
-      aux x (Just n) = n
-      aux x Nothing = Var x
+  where
+    aux x (Just n) = n
+    aux x Nothing  = Var x
 susTerm (Ter f ts) d = Ter f (sustTerms ts d)
+
+-- Comentario: Se puede simplificar con findWithDefault
 
 -- Sustitución de una lista de términos:
 sustTerms :: [Termino] -> Map Variable Termino -> [Termino]
@@ -22,7 +24,6 @@ sustTerms (t:ts) d = (sustTerm t d):(sustTerms ts d)
 
 
 -- Sustitución de términos en fórmulas:
-
 sustitucion :: Form -> Map Variable Termino -> Form 
 sustitucion (Atom str ts) d = Atom str (sustTerms ts d)
 sustitucion (Ig t1 t2) d = Ig (sustTerm t1 d) (sustTerm t2 d)
