@@ -9,7 +9,7 @@ import Text.PrettyPrint
 import Text.PrettyPrint.GenericPretty 
 \end{code}
 
-Antes de comenzar, se definen los átomos \texttt{p},\texttt{q} y \texttt{r} para comodidad en los ejemplos.
+Antes de comenzar, se definen los átomos \texttt{p}, \texttt{q} y \texttt{r} para comodidad en los ejemplos.
 
 \begin{code}
 p = Atom "p" []
@@ -45,9 +45,6 @@ requerimos de la definición de un nuevo tipo de dato para las sustituciones.
 \begin{code}
 type Sust = [(Variable, Termino)]
 \end{code}
-
-\comentario{Sería interesante comparar la representación de sustituciones
-  mediante diccionarios con la librería Data.Map}
 
 Este nuevo tipo de dato es una asociación de la variable con el término
 mediante pares. Denotamos el elemento identidad de la sustitución como 

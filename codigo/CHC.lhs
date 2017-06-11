@@ -45,10 +45,11 @@ flip :: (a -> b -> c) -> b -> a -> c
 flip f x y = f y x  
 \end{sesion}
 
-¿ Existirá alguna función con el tipo análogo a la proposición $a \wedge b \rightarrow a$? El tipo de la función buscada sería.
+¿Existirá alguna función con el tipo análogo a la proposición $a \wedge b \rightarrow a$? El tipo de la función buscada sería.
 
 \begin{sesion}
-Either a b -> a
+fst :: (a, b) -> a
+fst (x,y) = x
 \end{sesion}
 
 Y podemos pasarlo por nuestro demostrador basado en tableros semánticos y determinar si debería existir o no una función con este tipo.
