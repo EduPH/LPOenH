@@ -7,7 +7,8 @@ import PTLP
 
 \section{Forma clausal}
 
-Para la implementación de la resolución, primero debemos definir una serie de conceptos y construir la forma clausal.
+Para la implementación de la resolución, primero debemos definir una serie de
+conceptos y construir la forma clausal.
 
 \begin{Def}
   Un \textbf{literal} es un átomo o la negación de un átomo.
@@ -23,28 +24,30 @@ Para la implementación de la resolución, primero debemos definir una serie de 
 \end{Def}
 
 \begin{Prop}
-  Si $(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$ es una forma
-  normal conjuntiva de la fórmula $F$. Entonces, una forma clausal de $F$ es
-  $\left\{ (p_1\vee \dots \vee p_n) , \dots , (q_1 \vee \dots \vee q_m) \right\}$.
+  Si $(p_1\vee \dots \vee p_n) \wedge \dots \wedge (q_1 \vee \dots \vee q_m)$
+  es una forma normal conjuntiva de la fórmula $F$. Entonces, una forma clausal
+  de $F$ es
+  $\left\{ (p_1\vee \dots \vee p_n) , \dots , (q_1 \vee \dots \vee q_m)
+  \right\}$.
 \end{Prop}
 
 \begin{nota}
-Una forma clausal de $\neg (p \wedge (q \rightarrow r))$
-es $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$.
+  Una forma clausal de $\neg (p \wedge (q \rightarrow r))$ es
+  $\left\{ \left\{ \neg p, q \right\},\left\{\neg p,\neg r\right\} \right\}$.
 \end{nota}
 
 \vspace{5mm}
 
 
-Ahora que ya conocemos los conceptos básicos, debemos comenzar la implementación.
+Ahora que ya conocemos los conceptos básicos, debemos comenzar la
+implementación.
 
-Definimos los tipos de dato \texttt{Clausula} y \texttt{Clausulas} para la representación de una cláusula o un conjunto de ellas, respectivamente.
+Definimos los tipos de dato \texttt{Clausula} y \texttt{Clausulas} para la
+representación de una cláusula o un conjunto de ellas, respectivamente.
 
 \begin{code}
-
 data Clausula  = C [Form]
 data Clausulas = Cs [Clausula]
-
 \end{code}
 
 Definimos su representación en la clase \texttt{Show}
@@ -56,7 +59,6 @@ instance Show Clausula where
 instance Show Clausulas where
     show (Cs []) = "[]"
     show (Cs cs) = "{" ++  init (tail (show cs)) ++ "}"
-
 \end{code}
 
 Si consideramos la siguiente fórmula,
@@ -77,8 +79,8 @@ Para el cálculo de la forma clausal tenemos el siguiente algoritmo:
 
 \parbox{130mm}{
 \begin{enumerate}
-\item Sea $F_1 = \exists y_1 \dots \exists y_n F$, donde $y_i$ con $i=1,\dots ,n$
-  son las variables libres de F.
+\item Sea $F_1 = \exists y_1 \dots \exists y_n F$, donde $y_i$ con
+  $i=1,\dots ,n$ son las variables libres de F.
 \item Sea $F_2$ una forma normal prenexa conjuntiva rectificada de $F_1$.
 \item Sea $F_3= \texttt{ Skolem }(F_2)$, que tiene la forma
   $$\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
@@ -96,10 +98,10 @@ $$ S=
 
   
 Dada una fórmula que está en la forma del paso 3 del algoritmo, es decir,
-
- $$\texttt{ f } =\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
- \wedge \dots \wedge (M_1\vee \dots \vee M_m)],$$
- podemos convertirla a su forma causal por medio de la función \texttt{(form3AC f)}
+$$\texttt{ f } =\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+\wedge \dots \wedge (M_1\vee \dots \vee M_m)],$$
+podemos convertirla a su forma causal por medio de la función
+\texttt{(form3AC f)}
 
 \index{\texttt{form3CAC}}
 \begin{code}
@@ -146,7 +148,6 @@ Por ejemplo,
 -- {{¬P[sk0[x0],x0],¬P[sk0[x0],sk0[x0]]},{P[sk0[x0],sk0[x0]],P[sk0[x0],x0]}}
 \end{code}
 
-
 Definimos la unión clausal mediante el operador infijo \texttt{(++!)}. 
 
 \begin{code}
@@ -162,14 +163,17 @@ Definimos la unión clausal mediante el operador infijo \texttt{(++!)}.
 -- {{¬p,q},{¬q,r}}
 \end{code}
 
-Definimos otro operador infijo que puede resultar útil al hacer resolución en un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusula n-ésima de un conjunto de cláusulas. 
+Definimos otro operador infijo que puede resultar útil al hacer resolución en
+un conjunto de cláusulas. \texttt{(!!!)} devuelve la cláusula n-ésima de un
+conjunto de cláusulas.
 
 \begin{code}
 (!!!) :: Clausulas -> Int -> Clausula
 (Cs cs) !!! n = cs !! n
 \end{code}
 
-Definimos la eliminación de un literal en una cláusula mediante \texttt{(borra l c)}.
+Definimos la eliminación de un literal en una cláusula mediante
+\texttt{(borra l c)}.
 
 \begin{code}
 borra :: Form -> Clausula -> Clausula
@@ -206,9 +210,8 @@ Una serie de ejemplos de estas funciones definidas podrían ser.
 
 \section{Interpretación y modelos de la forma clausal}
 
-
-Primero implementemos un tipo de dato adecuado para las interpretaciones de cláusulas,
-\texttt{InterpretacionC}.
+Primero implementemos un tipo de dato adecuado para las interpretaciones de
+cláusulas, \texttt{InterpretacionC}.
 
 \begin{code}
 type InterpretacionC = [(Form,Int)]
@@ -225,8 +228,8 @@ type InterpretacionC = [(Form,Int)]
   \end{equation*}
 \end{Def}
 
-Implementamos el valor de una cláusula \texttt{c} por una interpretación \texttt{is}
-mediante la función \texttt{(valorC c is)}.
+Implementamos el valor de una cláusula \texttt{c} por una interpretación
+\texttt{is} mediante la función \texttt{(valorC c is)}.
 
 \index{\texttt{valorC}}
 
@@ -237,8 +240,6 @@ valorC (C fs) is =
         [1 | (f,0) <- is, elem (Neg f) fs]) /= [] 
     then 1 else 0
 \end{code}
-
-
 
 \begin{Def}
   El \textbf{valor} de un conjunto de cláusulas $S$ en una interpretación $I$ es
@@ -251,7 +252,8 @@ valorC (C fs) is =
   \end{equation*}
 \end{Def}
 
-Implementamos el valor de un conjunto de cláusulas mediante la función \texttt{(valorCs cs is)}
+Implementamos el valor de un conjunto de cláusulas mediante la función
+\texttt{(valorCs cs is)}
 
 \index{\texttt{valorCs}}
 
@@ -284,10 +286,12 @@ Veamos algunos ejemplos que nos ilustren lo definido hasta ahora:
 \end{code}
 
 \begin{Def}
-  Una interpretación $I$ es \textbf{modelo} de un conjunto de cláusulas $S$ si $I(S)=1$. 
+  Una interpretación $I$ es \textbf{modelo} de un conjunto de cláusulas $S$ si
+  $I(S)=1$.
 \end{Def}
 
-Caracterizamos el concepto ``modelo de un conjunto de cláusulas'' mediante la función \texttt{(is `esModeloDe` cs)}.
+Caracterizamos el concepto ``modelo de un conjunto de cláusulas'' mediante la
+función \texttt{(is `esModeloDe` cs)}.
 
 \index{\texttt{esModeloDe}}
 \begin{code}
@@ -304,12 +308,16 @@ esModeloDe is cs = valorCs cs is  == 1
 \end{code}
 
 \begin{Def}
-  Un conjunto de cláusulas es \textbf{consistente} si tiene modelos e \textbf{inconsistente}, en caso contrario. 
+  Un conjunto de cláusulas es \textbf{consistente} si tiene modelos e
+  \textbf{inconsistente}, en caso contrario.
 \end{Def}
 
-Definamos una serie de funciones necesarias para determinar si un conjunto de cláusulas es consistente.
+Definamos una serie de funciones necesarias para determinar si un conjunto de
+cláusulas es consistente.
 
-Primero definimos las funciones \texttt{(atomosC c)} y \texttt{(atomosCs cs)} que obtienen una lista de los átomos que aparecen en la cláusula o conjuntos de cláusulas \texttt{c} y \texttt{cs}, respectivamente.
+Primero definimos las funciones \texttt{(atomosC c)} y \texttt{(atomosCs cs)}
+que obtienen una lista de los átomos que aparecen en la cláusula o conjuntos de
+cláusulas \texttt{c} y \texttt{cs}, respectivamente.
 
 \index{\texttt{atomosC}}
 
@@ -326,7 +334,9 @@ atomosCs :: Clausulas -> [Form]
 atomosCs (Cs cs) = nub (concat [atomosC c | c <- cs])
 \end{code}
 
-A continuación, mediante la implementación de \texttt{(interPosibles cs)} obtenemos una lista de todas las posibles interpretaciones que podemos obtener de los átomos de \texttt{cs}.
+A continuación, mediante la implementación de \texttt{(interPosibles cs)}
+obtenemos una lista de todas las posibles interpretaciones que podemos obtener
+de los átomos de \texttt{cs}.
 
 \index{\texttt{interPosibles}}
 \begin{code}
@@ -338,7 +348,8 @@ interPosibles = sequence . aux2 . aux1 . atomosCs
       aux2 fs = [take 2 fs] ++ (aux2 (drop 2 fs))
 \end{code}
 
-Finalmente, comprobamos con la función \texttt{(esConsistente cs)} que alguna de las interpretaciones posibles es modelo del conjunto de cláusulas. 
+Finalmente, comprobamos con la función \texttt{(esConsistente cs)} que alguna
+de las interpretaciones posibles es modelo del conjunto de cláusulas.
 
 \index{\texttt{esConsistente}}
 \begin{code}
@@ -370,7 +381,9 @@ Ahora, como acostumbramos, veamos algunos ejemplos de las funciones definidas.
   $S\models C$ si para todo modelo $I$ de $S$, $I(C)=1$. 
 \end{Def}
 
-Para su implementación en Haskell definimos la lista de las interpretaciones que son modelo de un conjunto de cláusulas mediante la función \texttt{(modelosDe cs)}
+Para su implementación en Haskell definimos la lista de las interpretaciones
+que son modelo de un conjunto de cláusulas mediante la función
+\texttt{(modelosDe cs)}
 
 \index{\texttt{modelosDe}}
 
@@ -381,7 +394,8 @@ modelosDe cs = [i | i <- is, i `esModeloDe` cs]
       is = interPosibles cs
 \end{code}
 
-Caracterizamos cuando una cláusula es consecuencia de un conjunto de cláusulas mediante la función \texttt{(c `esConsecuenciaDe` cs)}
+Caracterizamos cuando una cláusula es consecuencia de un conjunto de cláusulas
+mediante la función \texttt{(c `esConsecuenciaDe` cs)}
 
 \index{\texttt{esConsecuenciaDe}}
 \begin{code}
@@ -389,7 +403,8 @@ esConsecuenciaDe :: Clausulas -> Clausulas ->  Bool
 esConsecuenciaDe c cs = and [i `esModeloDe` c |i <-  modelosDe cs]
 \end{code}
 
-Veamos por ejemplo que si tenemos $p \rightarrow q$ y $q \rightarrow r$ se tiene como consecuencia que $p \rightarrow r$. 
+Veamos por ejemplo que si tenemos $p \rightarrow q$ y $q \rightarrow r$ se
+tiene como consecuencia que $p \rightarrow r$.
 
 \begin{code}
 -- | Ejemplo 
@@ -402,9 +417,10 @@ Veamos por ejemplo que si tenemos $p \rightarrow q$ y $q \rightarrow r$ se tiene
 
 
 \begin{Prop}
-Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
+  Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
 \begin{itemize}
-\item $\{ F_1,\dots,F_n\}$ es consistente si y sólo si $S_1\cup \dots \cup S_n$ es consistente.
+\item $\{ F_1,\dots,F_n\}$ es consistente si y sólo si $S_1\cup \dots \cup S_n$
+  es consistente.
 \item Si $S$ es una forma clausal de $\neg G$, entonces son equivalentes:
   \begin{enumerate}
   \item $\{F_1,\dots,F_n\} \models G$.
@@ -414,11 +430,13 @@ Sean $S_1,\dots,S_n$ formas clausales de las fórmulas $F_1,\dots,F_n$:
 \end{itemize}
 \end{Prop}
 
-Si continuamos con el ejemplo anterior, una aplicación de esta proposición sería ver que
+Si continuamos con el ejemplo anterior, una aplicación de esta proposición
+sería ver que
 $$\{p\rightarrow q, q\rightarrow r \} \models p \rightarrow r \Leftrightarrow   \{\{\neg p,q\},\{\neg q,r\},\{p\},\{\neg r\}\} \text{ es inconsistente.}$$
 
-Hemos comprobado que lo primero es cierto, es decir, que se tiene la consecuencia. Nos faltaría comprobar
-que la expresión a la derecha del ``si y sólo si'' es inconsistente. Lo comprobamos a continuación.
+Hemos comprobado que lo primero es cierto, es decir, que se tiene la
+consecuencia. Nos faltaría comprobar que la expresión a la derecha del ``si y
+sólo si'' es inconsistente. Lo comprobamos a continuación.
 
 \begin{code}
 -- | Ejemplo
@@ -431,15 +449,17 @@ que la expresión a la derecha del ``si y sólo si'' es inconsistente. Lo compro
 -- False
 \end{code}
 
-
 \section{Resolución proposicional}
 
 \begin{Def}
-  Sean $C_1$ una cláusula, $L$ un literal de $C_1$ y $C_2$ una cláusula que contiene el complementario de $L$. La \textbf{resolvente de $C_1$ y $C_2$ respecto de $L$} es 
+  Sean $C_1$ una cláusula, $L$ un literal de $C_1$ y $C_2$ una cláusula que
+  contiene el complementario de $L$. La \textbf{resolvente de $C_1$ y $C_2$
+  respecto de $L$} es
   $$Res_L(C_1,C_2)=(C_1 \backslash \{L\})\cup (C_2\backslash \{L^c\}) $$
 \end{Def}
 
-Implementamos la función \texttt{(res c1 c2 l)} que calcula la resolvente de \texttt{c1} y \texttt{c2} respecto del literal \texttt{l}. 
+Implementamos la función \texttt{(res c1 c2 l)} que calcula la resolvente de
+\texttt{c1} y \texttt{c2} respecto del literal \texttt{l}.
 
 \index{\texttt{res}}
 \begin{code}
@@ -465,10 +485,12 @@ res (C fs) (C gs) l | p = C (nub (delete (Neg l) ((delete l (fs++gs)))))
 
 
 \begin{Def}
-  Sean $C_1$ y $C_2$ cláusulas, se define $Res(C_1,C_2)$ como el conjunto de las resolventes entre $C_1$ y $C_2$. 
+  Sean $C_1$ y $C_2$ cláusulas, se define $Res(C_1,C_2)$ como el conjunto de
+  las resolventes entre $C_1$ y $C_2$.
 \end{Def}
 
-Se define la función \texttt{(ress c1 c2)} que calcula el conjunto de las resolventes de las cláusulas \texttt{c1} y \texttt{c2}.
+Se define la función \texttt{(ress c1 c2)} que calcula el conjunto de las
+resolventes de las cláusulas \texttt{c1} y \texttt{c2}.
 
 \index{\texttt{ress}}
 \begin{code}
@@ -494,10 +516,13 @@ Algunos ejemplos
 
 \subsection{Resolvente binaria}
 
-En esta sección implementaremos la resolución binaria entre dos cláusulas. Con este objetivo definimos inicialmente la función \texttt{(listaTerms f)} que calcula los términos de una fórmula dada.
+En esta sección implementaremos la resolución binaria entre dos cláusulas. Con
+este objetivo definimos inicialmente la función \texttt{(listaTerms f)} que
+calcula los términos de una fórmula dada.
 
 \begin{nota}
-  La fórmula de entrada siempre será un literal, pues se aplicará a formas clausales.
+  La fórmula de entrada siempre será un literal, pues se aplicará a formas
+  clausales.
 \end{nota}
 
 \index{\texttt{listaTerms}}
@@ -507,7 +532,11 @@ listaTerms (Atom _ ts) = ts
 listaTerms (Neg (Atom _ ts)) = ts
 \end{code}
 
-Ahora calculamos la resolución entre dos cláusulas mediante la función \texttt{(resolucion c1 c2 f1 f2)}, donde \texttt{c1} y \texttt{c2} son cláusulas y, \texttt{f1} y \texttt{f2} serán fórmulas de \texttt{c1} y \texttt{c2}, respectivamente, tales que se podrá efectuar resolución entre ellas mediante la unificación adecuada.
+Ahora calculamos la resolución entre dos cláusulas mediante la función
+\texttt{(resolucion c1 c2 f1 f2)}, donde \texttt{c1} y \texttt{c2} son
+cláusulas y, \texttt{f1} y \texttt{f2} serán fórmulas de \texttt{c1} y
+\texttt{c2}, respectivamente, tales que se podrá efectuar resolución entre
+ellas mediante la unificación adecuada.
 
 \index{\texttt{resolucion}}
 \begin{code}
@@ -540,15 +569,16 @@ resolucion c1@(C fs) c2@(C gs) f1 f2 =  aux c1' c2'
 
 \subsection{Separación de variables}
 
-
 A continuación definamos una serie de conceptos importantes para la resolución.
 
 \begin{Def}
-  La sustitución $[x_1/t_1,\dots,x_n/t_n]$ es un \textbf{renombramiento} si todos los $t_i$ son variables.
+  La sustitución $[x_1/t_1,\dots,x_n/t_n]$ es un \textbf{renombramiento} si
+  todos los $t_i$ son variables.
 \end{Def}
 
 \begin{nota}
-  Mediante un renombramiento se obtiene una cláusula equivalente a la que teníamos.
+  Mediante un renombramiento se obtiene una cláusula equivalente a la que
+  teníamos.
 \end{nota}
 
 \index{\texttt{renombramiento}}
@@ -558,10 +588,12 @@ renombramiento (C fs) sust = C [sustitucionForm sust f | f <- fs]
 \end{code}
 
 \begin{Def}
-  Las cláusulas $C_1$ y $C_2$ \textbf{están separadas} si no tienen ninguna variable común. 
+  Las cláusulas $C_1$ y $C_2$ \textbf{están separadas} si no tienen ninguna
+  variable común.
 \end{Def}
 
-La función \texttt{(varsClaus c)} obtiene la lista de las variables que aparecen en la cláusula \texttt{c}.
+La función \texttt{(varsClaus c)} obtiene la lista de las variables que
+aparecen en la cláusula \texttt{c}.
 
 \index{\texttt{varsClaus}}
 \begin{code}
@@ -570,13 +602,18 @@ varsClaus (C fs) = concat [varEnForm f | f <- fs]
 \end{code}
 
 \begin{Def}
-  Una \textbf{separación de las variables} de $C_1$ y $C_2$ es un par de renombramientos $(\theta_1,\theta_2)$ tales que $C_1\theta_1$ y $C_2\theta_2$ están separadas.
+  Una \textbf{separación de las variables} de $C_1$ y $C_2$ es un par de
+  renombramientos $(\theta_1,\theta_2)$ tales que $C_1\theta_1$ y $C_2\theta_2$
+  están separadas.
 \end{Def}
 
 
- Vayamos definiendo funciones de manera progresiva para el cálculo de la resolvente binaria de dos cláusulas.
+Vayamos definiendo funciones de manera progresiva para el cálculo de la
+resolvente binaria de dos cláusulas.
 
- Definimos \texttt{(mismoNombre l1 l2)} que determina si dos literales son iguales en nombre aunque no tengan las mismos términos. Nos interesan aquellos que sean negacione suno del otro, por ello sólo tenemos en cuenta dos casos.
+Definimos \texttt{(mismoNombre l1 l2)} que determina si dos literales son
+iguales en nombre aunque no tengan las mismos términos. Nos interesan aquellos
+que sean negacione suno del otro, por ello sólo tenemos en cuenta dos casos.
 
 \index{\texttt{mismoNombre}}
 \begin{code}
@@ -595,8 +632,9 @@ Un par de ejemplos que ilustran la función.
 -- True
 \end{code}
 
-
-Definimos \texttt{(RenAux n str vs)} que dada una lista de variables \texttt{vs} obtiene una sustitución de las variables nombrándolas según un nombre \texttt{str} y una secuencia de números empezando en \texttt{n}.
+Definimos \texttt{(RenAux n str vs)} que dada una lista de variables
+\texttt{vs} obtiene una sustitución de las variables nombrándolas según un
+nombre \texttt{str} y una secuencia de números empezando en \texttt{n}.
 
 \index{\texttt{renAux}}
 \begin{code}
@@ -605,7 +643,8 @@ renAux _ _ [] = []
 renAux n str (v:vs) = (v,Var (Variable str [n])): (renAux (n+1) str vs)
 \end{code}
 
-Definimos \texttt{(separacionVars c1 c2)} que separa las variables de ambas cláusulas, devolviendo un par con las cláusulas ya separadas.
+Definimos \texttt{(separacionVars c1 c2)} que separa las variables de ambas
+cláusulas, devolviendo un par con las cláusulas ya separadas.
 
 \index{\texttt{separacionVars}}
 \begin{code}
@@ -627,33 +666,38 @@ $$C_1=\{P(x),Q(x,y)\} \text{ y } \{\neg Q(x),R(g(x))\} $$
 -- ({¬P[x1],Q[f[x1]]},{¬Q[y1],R[g[y1]]})
 \end{code}
 
-
 \subsection{Resolvente binaria}
 
-En esta sección definiremos la resolvente binaria en lógica de primer orden. Para ello definiremos una serie de funciones auxiliares hasta alcanzar la meta de la resolvente de dos cláusulas.
+En esta sección definiremos la resolvente binaria en lógica de primer
+orden. Para ello definiremos una serie de funciones auxiliares hasta alcanzar
+la meta de la resolvente de dos cláusulas.
 
-Definimos \texttt{(litMisNom c1 c2)} que determina los literales comunes en ambas cláusulas.
+Definimos \texttt{(litMisNom c1 c2)} que determina los literales comunes en
+ambas cláusulas.
 
 \begin{code}
 litMisNom :: Clausula -> Clausula -> (Form, Form)
 litMisNom (C fs) (C gs) = head [(f,g) | f <- fs,g <- gs, mismoNombre f g] 
 \end{code}
 
-
-Definimos \texttt{(unifClau l1 l2)} que determina las unificaciones posibles entre dos literales.
+Definimos \texttt{(unifClau l1 l2)} que determina las unificaciones posibles
+entre dos literales.
 
 \begin{code}
 unifClau (Atom _ ts) (Atom _ ts') = unificadoresListas ts ts'
 unifClau (Atom _ ts) (Neg (Atom _ ts')) = unificadoresListas ts ts'
-unifClau (Neg (Atom _ ts)) (Atom _ ts') = unificadoresListas ts ts'                      
-\end{code}
+unifClau (Neg (Atom _ ts)) (Atom _ ts') = unificadoresListas ts ts'             \end{code}
 
 \begin{Def}
-  La cláusula $C$ es una \textbf{resolvente binaria} de las cláusulas $C_1$ y $C_2$ si existen una separación de variables $(\theta_1,\theta_2)$ de $C_1$ y $C_2$, un literal $L_1\in C_1$, un literal $L_2\in C_2$ y un UMG $\sigma $ de $L_1\sigma_1$ y $L_2^c\theta_2$ tales que
+  La cláusula $C$ es una \textbf{resolvente binaria} de las cláusulas $C_1$ y
+  $C_2$ si existen una separación de variables $(\theta_1,\theta_2)$ de $C_1$ y
+  $C_2$, un literal $L_1\in C_1$, un literal $L_2\in C_2$ y un UMG $\sigma $ de
+  $L_1\sigma_1$ y $L_2^c\theta_2$ tales que
    $$C=(C_1\theta_1\sigma \backslash \{L_1\theta_2\sigma_1\})\cup (C_2\theta_2\sigma \backslash \{L_2\theta_2\sigma \} ) $$
  \end{Def}
 
-Definimos la resolvente binaria de dos cláusulas mediante la función \texttt{(resolBin c1 c2)}.
+Definimos la resolvente binaria de dos cláusulas mediante la función
+\texttt{(resolBin c1 c2)}.
 
 \begin{code}
 resolBin c1 c2 | s /= [] = renombramiento (c1'' +! c2'') (head s)
