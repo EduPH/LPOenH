@@ -148,25 +148,78 @@ every picture/.append style={
 \dominitoc
 
 \begin{titlepage}
- \topmargin 2cm
+ \vspace*{2cm}
   \begin{center}
-        {\huge \textbf{Lógica de primer orden en Haskell}}
-      \end{center}
-         \vspace{4cm}
-         \begin{center}
-         \leavevmode\includegraphics[totalheight=6cm]{sello.png}\\[3cm]
-        {\normalsize Facultad de Matemáticas} \\
-        {\normalsize Departamento de Ciencias de la Computación e Inteligencia Artificial}\\
-        {\normalsize Trabajo Fin de Grado} \\
-      \end{center}
-      \begin{center}
-           {\large \textbf{Eduardo Paluzo Hidalgo}}
-         \end{center}
-  \end{titlepage}
-\newpage
+    {\huge \textbf{Lógica de primer orden en Haskell}}
+  \end{center}
+  \vspace{4cm}
+  \begin{center}
+    \leavevmode\includegraphics[totalheight=6cm]{sello.png}\\[3cm]
+    {\normalsize Facultad de Matemáticas} \\
+    {\normalsize Departamento de Ciencias de la Computación e Inteligencia Artificial}\\
+    {\normalsize Trabajo Fin de Grado} \\
+  \end{center}
+  \begin{center}
+    {\large \textbf{Eduardo Paluzo Hidalgo}}
+  \end{center}
+  \newpage
+ 
+ \begin{flushright}
+   \vspace*{5cm}
+   \begin{minipage}{8.45cm}
+     \textit{Me gustaría agradecer:}
+     
+      A mis padres y mi abuela estar siempre ahí, facilitándome
+      infinitamente la vida.
 
-\comentario{La portada debe de ser análoga a la de
-  \href{http://bit.ly/2a8PGz7}{Dani}.}
+     
+      A mi profesora María del Carmen
+      haberme motivado a elegir matemáticas.
+
+      A mi tutor José Antonio la paciencia y dedicación
+      que ha demostrado, así como el haberme dado la
+      oportunidad de trabajar con él.
+      \end{minipage}
+
+      \vspace*{7.5mm}
+
+  \end{flushright}
+  \vspace*{\fill}
+
+  \newpage
+
+
+  
+  % \begin{flushright}
+  \begin{center}
+   \vspace*{5cm}
+    \begin{minipage}{14cm}
+      El presente Trabajo Fin de Grado se ha realizado en el Departamento de Ciencias de la Computación e Inteligencia Artificial de la Universidad de Sevilla.
+
+      \vspace*{7.5mm}
+
+      Supervisado por
+      % \vspace*{5mm}
+    \end{minipage}\par
+    José Antonio Alonso Jiménez
+    % \end{flushright}
+    \end{center}
+  \vspace*{\fill}
+
+  \newpage
+
+  \vspace*{3cm}
+  {\huge \textit{Abstract}}
+
+  \vspace{2cm}
+  This final degree project consists in the implementation of First Order Logic theory and algorithms
+  in Haskell, a functional programming language. Furthermore, a relation between maths
+  and programming based on Curry-Howard correspondence is established, giving an intuitive sort of examples.
+  Moreover, it aims to give an introduction to Haskell and other sources as git and doctest.
+
+  
+\end{titlepage}
+\newpage
 
 \input{licencia/licenciaCC}
 \newpage 
