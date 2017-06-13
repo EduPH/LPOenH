@@ -99,7 +99,7 @@ función \texttt{(M.lookup)}
 -- Just "Elisabeth"
 \end{code}
 
-Como una función que podría resultar útil es \texttt{(M.findWithDefault     
+Una función que podría resultar útil es \texttt{(M.findWithDefault     
   def k map)}, que busca la definición de \texttt{k} en el diccionario \texttt{map} y,
 en caso de no aparecer, devuelve \texttt{def}.
 
