@@ -402,4 +402,3 @@ de ejemplos en tipos de datos abstractos. Estos generadores se emplean
 en la comprobación de propiedades con QuickCheck.
 \entrada{Generadores}
 
-\entrada{Map}

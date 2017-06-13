@@ -99,6 +99,19 @@ función \texttt{(M.lookup)}
 -- Just "Elisabeth"
 \end{code}
 
+Como una función que podría resultar útil es \texttt{(M.findWithDefault     
+  def k map)}, que busca la definición de \texttt{k} en el diccionario \texttt{map} y,
+en caso de no aparecer, devuelve \texttt{def}.
+
+\begin{code}
+-- | Ejemplos
+-- >>> let l = M.fromList [(1,"Pablo"),(10,"Elisabeth"),(7,"Cristina"),(0,"Luis")]
+-- >>> M.findWithDefault "Manuela" 1 l
+-- "Pablo"
+-- >>> M.findWithDefault "Manuela" 5 l
+-- "Manuela"
+\end{code}
+
 La función \texttt{(M.adjust)} actualiza una entrada de un diccionario
 aplicando una función determinada.
 
@@ -108,3 +121,4 @@ aplicando una función determinada.
 -- >>> M.adjust (++ " the Queen") 10 l
 -- fromList [(0,"Luis"),(1,"Pablo"),(7,"Cristina"),(10,"Elizabeth the Queen")]
 \end{code}
+

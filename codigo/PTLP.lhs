@@ -326,15 +326,6 @@ Un ejemplo de una sustitución libre
 -- [z]
 \end{code}
 
-\section{Sustitucion mediante diccionarios}
-
-\comentario{Pendiente de decidir su inclusión.}
-
-En esta sección definiremos las sustituciones, de una manera alternativa,
-mediante la librería \texttt{Data.Map}.
-\entrada{SustitucionMap}
-
-
 \section{Unificación}
 
 \begin{Def}
