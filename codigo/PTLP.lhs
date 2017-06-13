@@ -18,7 +18,7 @@ r = Atom "r" []
 \end{code}
 
 
-\section{Sustitución}
+\section{Sustitución}\label{sec:sustitucion}
 
 
 \begin{Def}
@@ -326,7 +326,7 @@ Un ejemplo de una sustitución libre
 -- [z]
 \end{code}
 
-\section{Unificación}
+\section{Unificación}\label{sec:unificacion}
 
 \begin{Def}
   Un \textbf{unificador} de dos términos $t_1$ y $t_2$ es una sustitución $S$ tal que

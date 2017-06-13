@@ -28,7 +28,7 @@ sustTerm (Ter f ts) d = Ter f (sustTerms ts d)
 
 \begin{nota}
   El tipo sustitución que definimos en la sección sobre sustitución en el capítulo
-  ``El método de los tableros semánticos'' \ref{sec:tableros} será sustituido por un diccionario del
+  ``El método de los tableros semánticos'' \ref{sec:sustitucion} será sustituido por un diccionario del
   tipo \texttt{Map Variable Termino}.
 \end{nota}
 
