@@ -7,6 +7,7 @@ definido sobre sustitución.
 \begin{code}
 module UnifMap where
 import LPH
+import PTLP
 import Data.List
 import Data.Map (Map)
 import qualified Data.Map as M
@@ -42,9 +43,22 @@ unifListas [] [] = [M.empty]
 unifListas [] _  = []
 unifListas _ []  = []
 unifListas (t:ts) (r:rs) =
-  [composicion u1 u2
+  [composicionMap u1 u2
   | u1 <- unifTerminos t r
-  , u2 <- unifListas (sustTerms u1 ts) (sustTerms u1 rs)]   
+  , u2 <- unifListas (sustTerms ts u1) (sustTerms rs u1)]   
 \end{code}
 
+Veamos algunos ejemplos:
+
+\begin{code}
+-- | Ejemplos
+-- >>> unifListas [tx] [ty]
+-- [fromList [(x,y)]]
+-- >>> unifListas [tx] [tx]
+-- [fromList []]
+-- >>> unifListas [tx,tx] [a,b]
+-- []
+-- >>> unifListas [tx,b] [a,ty]
+-- [fromList [(x,a),(y,b)]]
+\end{code}
 \comentario{Falta las definición de composicion y comprobar ejemplos.}

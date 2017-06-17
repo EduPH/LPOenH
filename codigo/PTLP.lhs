@@ -382,7 +382,7 @@ unificadoresListas [] [] = [identidad]
 unificadoresListas [] _  = []
 unificadoresListas _ []  = []
 unificadoresListas (t:ts) (r:rs) = 
-  [composicion u1 u2
+  [nub (composicion u1 u2)
   | u1 <- unificadoresTerminos t r
   , u2 <- unificadoresListas (susTerms u1 ts) (susTerms u1 rs)]   
 \end{code}
