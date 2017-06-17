@@ -556,7 +556,7 @@ type Interpretacion a = (InterpretacionR a, InterpretacionF a)
   $\mathcal{I}_A: Form(L) \rightarrow Bool$ por
   \begin{itemize*}
   \item Si $F$ es $t_1=t_2$,  
-    $\mathcal{I}_A(F) = H_=(\mathcal{I}_A(t_1),\mathcal{I}_A(t_2)$
+    $\mathcal{I}_A(F) = H_=(\mathcal{I}_A(t_1),I_A(t_2))$
   \item Si $F$ es $P(t_1,\dots ,t_n)$,  
     $\mathcal{I}_A(F) = H_{I(P)}(\mathcal{I}_A(t_1), \dots ,\mathcal{I}_A(t_n))$
   \item Si $F$ es $\neg G$, 
