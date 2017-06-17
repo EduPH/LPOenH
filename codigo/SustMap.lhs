@@ -78,5 +78,7 @@ conmutativa. Definamos la función \texttt{(composicionMap d1 d2)} que compone
 ambos diccionarios.
 
 \begin{code}
-composicionMap d1 d2 = undefined  
+composicionMap d1 d2 = M.unionWith f d1 d2
+    where
+      f x y = sustTerm x d2
 \end{code}
