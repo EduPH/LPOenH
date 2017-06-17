@@ -71,3 +71,12 @@ Veamos algunos ejemplos:
 -- >>> sustitucion formula3 sust
 -- (R[y,x]⟹∃z (R[y,z]⋀R[z,x]))
 \end{code}
+
+
+En nuestra otra definición de sustitución comprobamos que su composición no era
+conmutativa. Definamos la función \texttt{(composicionMap d1 d2)} que compone
+ambos diccionarios.
+
+\begin{code}
+composicionMap d1 d2 = undefined  
+\end{code}

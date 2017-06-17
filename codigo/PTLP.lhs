@@ -251,7 +251,8 @@ definimos la función \texttt{(composicion s1 s2)}
 composicion :: Sust -> Sust -> Sust
 composicion s1 s2 = 
   hacerApropiada [(y,susTerm s1 y') | (y,y') <- s2 ] ++
-  [x | x <- s1, fst x `notElem` dominio s2]
+  [x | x <- s1, fst x `notElem` dominio s2] ++ 
+  [x | x <- s2, fst x `notElem` dominio s1]
 \end{code}
 
 Por ejemplo,
@@ -259,7 +260,7 @@ Por ejemplo,
 \begin{code}
 -- | Ejemplos
 -- >>> composicion [(x,tx)] [(y,ty)]  
--- [(x,x)]
+-- [(x,x),(y,y)]
 -- >>> composicion [(x,tx)] [(x,ty)]  
 -- [(x,y)]
 \end{code}
