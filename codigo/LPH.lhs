@@ -1,7 +1,9 @@
 El contenido de esta sección se encuentra en el módulo \texttt{LPH}. Se
 pretende asentar las bases de la lógica de primer orden y su implementación en
 Haskell, con el objetivo de construir los cimientos para las posteriores
-implementaciones de algoritmos en los siguientes capítulos.
+implementaciones de algoritmos en los siguientes capítulos. Una fuente                 
+sobre lógica en Haskell es \cite{Alonso-07}.
+
 
 \begin{code}
 {-# LANGUAGE DeriveGeneric #-}
