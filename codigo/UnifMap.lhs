@@ -61,4 +61,3 @@ Veamos algunos ejemplos:
 -- >>> unifListas [tx,b] [a,ty]
 -- [fromList [(x,a),(y,b)]]
 \end{code}
-\comentario{Falta las definición de composicion y comprobar ejemplos.}
