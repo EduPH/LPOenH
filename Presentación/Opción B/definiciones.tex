@@ -1,0 +1,95 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Código                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DefineVerbatimEnvironment{code}{Verbatim}
+{fontsize=\normalsize,
+ fontfamily=cmtt,
+ fontshape=n,
+ formatcom=\color{blue},
+ baselinestretch=1,
+ frame=single}
+
+\DefineVerbatimEnvironment{sesion}{Verbatim}
+{commandchars=\\\{\},
+ codes={\catcode`$=3\catcode`$=3},
+ fontsize=\normalsize,
+ fontfamily=cmtt,
+ fontshape=n,
+ formatcom=\color{red},
+ % xleftmargin=2em,
+ baselinestretch=1,
+ frame=leftline
+}
+
+\DefineVerbatimEnvironment{codigo}{Verbatim}
+{% commandchars=\\\{\},
+ codes={\catcode`$=3\catcode`$=3},
+ fontsize=\normalsize,
+ fontfamily=cmtt,
+ baselinestretch=1,
+ frame=single}
+
+\DefineVerbatimEnvironment{nverbatim}{Verbatim}
+{commandchars=\\\{\},
+ codes={\catcode`$=3\catcode`$=3},
+ fontsize=\normalsize,
+ fontfamily=cmtt,
+ baselinestretch=1,
+ xleftmargin=2em}
+
+\DefineVerbatimEnvironment{nverbatim*}{Verbatim}
+{% commandchars=\\\{\},
+ codes={\catcode`$=3\catcode`$=3},
+ fontsize=\normalsize,
+ fontfamily=cmtt,
+ baselinestretch=1,
+ xleftmargin=2em}
+
+\newenvironment{enumerate*}%
+  {\vspace*{-0mm}
+   \begin{enumerate}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parskip}{0pt}}%
+  {\vspace*{-0mm}
+   \end{enumerate}}
+
+\newenvironment{itemize*}%
+  {\vspace*{-0mm}
+   \begin{itemize}%
+    \setlength{\itemsep}{0pt}%
+    \setlength{\parskip}{0pt}}%
+  {\vspace*{-0mm}
+   \end{itemize}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% § Definiciones                                                           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \newcommand{\comentario}[1]{{\colorbox{yellow}{Comentario}: {#1}}
+\newcommand{\comentario}[1]{\todo[inline]{#1}}
+\newcommand{\entrada}[1]{\input{../codigo/#1.lhs}}
+\newcommand{\ignora}[1]{}
+\newcommand{\programa}[1]{\VerbatimInput[frame=single,
+                                         firstline=7]{#1}}
+\newcommand{\entradaCodigo}[1]{\VerbatimInput[% frame=single,
+                                              firstline=6]
+                                              {../codigo/#1.hs}}
+\newcommand{\valor}{$\leadsto$}
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Teoremas                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\theoremstyle{definition}
+\newtheorem{Def}{Definición}[section]
+\theoremstyle{teorema}
+\newtheorem{Teo}{Teorema}[section]
+\theoremstyle{remark}
+\newtheorem{nota}{Nota}[section]
+\newtheorem{Prop}{Proposición}[section]
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 

@@ -1,0 +1,669 @@
+\documentclass[final]{beamer}
+\usepackage[utf8x]{inputenc}       % Acentos de UTF8
+\usepackage[spanish]{babel}        % Castellanización.
+\usepackage[T1]{fontenc}           % Codificación T1 con European Computer
+                                   % Modern.  
+\usepackage{graphicx}
+\usepackage{fancyvrb}              % Verbatim extendido
+\usepackage{makeidx}               % Índice
+\usepackage{amsmath}               % AMS LaTeX
+\usepackage{amsthm} 
+\usepackage{latexsym}
+\usepackage{mathpazo}              % Fuentes semejante a palatino
+\usepackage[scaled=.90]{helvet}
+\usepackage{cmtt}
+\input definiciones
+
+\usepackage[scale=1.24]{beamerposter} % Use the beamerposter package for laying out the poster
+
+\usetheme{confposter} % Use the confposter theme supplied with this template
+
+\setbeamercolor{block title}{fg=ngreen,bg=white} % Colors of the block titles
+\setbeamercolor{block body}{fg=black,bg=white} % Colors of the body of blocks
+\setbeamercolor{block alerted title}{fg=white,bg=dblue!70} % Colors of the highlighted block titles
+\setbeamercolor{block alerted body}{fg=black,bg=dblue!10} % Colors of the body of highlighted blocks
+% Many more colors are available for use in beamerthemeconfposter.sty
+%-----------------------------------------------------------
+% Define the column widths and overall poster size
+% To set effective sepwid, onecolwid and twocolwid values, first choose how many columns you want and how much separation you want between columns
+% In this template, the separation width chosen is 0.024 of the paper width and a 4-column layout
+% onecolwid should therefore be (1-(# of columns+1)*sepwid)/# of columns e.g. (1-(4+1)*0.024)/4 = 0.22
+% Set twocolwid to be (2*onecolwid)+sepwid = 0.464
+% Set threecolwid to be (3*onecolwid)+2*sepwid = 0.708
+
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\twocolwid}
+\newlength{\threecolwid}
+\setlength{\paperwidth}{48in} % A0 width: 46.8in
+\setlength{\paperheight}{36in} % A0 height: 33.1in
+\setlength{\sepwid}{0.024\paperwidth} % Separation width (white space) between columns
+\setlength{\onecolwid}{0.22\paperwidth} % Width of one column
+\setlength{\twocolwid}{0.464\paperwidth} % Width of two columns
+\setlength{\threecolwid}{0.708\paperwidth} % Width of three columns
+\setlength{\topmargin}{-0.5in} % Reduce the top margin size
+%-----------------------------------------------------------
+
+\usepackage{graphicx}  % Required for including images
+
+\usepackage{booktabs} % Top and bottom rules for tables
+%----------------------------------------------------------------------------------------
+%	Título
+%----------------------------------------------------------------------------------------
+
+\title{Lógica de primer orden en Haskell} % Poster title
+
+\author{Eduardo Paluzo Hidalgo} % Author(s)
+
+\institute{Universidad de Sevilla} % Institution(s)
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\addtobeamertemplate{block end}{}{\vspace*{2ex}} % White space under blocks
+\addtobeamertemplate{block alerted end}{}{\vspace*{2ex}} % White space under highlighted (alert) blocks
+
+\setlength{\belowcaptionskip}{2ex} % White space under figures
+\setlength\belowdisplayshortskip{2ex} % White space under equations
+
+\begin{frame}[t,fragile] % The whole poster is enclosed in one beamer frame
+
+\begin{columns}[t] % The whole poster consists of three major columns, the second of which is split into two columns twice - the [t] option aligns each column's content to the top
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The first column
+
+%----------------------------------------------------------------------------------------
+%	Contenido
+%----------------------------------------------------------------------------------------
+
+\begin{alertblock}{Contenido}
+
+  En este trabajo se han implementado las bases de la lógica de primer orden, así como
+  una serie de algoritmos. En concreto:
+  
+\begin{itemize}
+\item Sintáxis y semántica de la lógica de primer orden.
+\item Método de los tableros semánticos.
+\item Modelos de Herbrand.
+\item Resolución en lógica de primer orden.
+\item Correspondencia de Curry-Howard.
+\end{itemize}
+
+\end{alertblock}
+
+%----------------------------------------------------------------------------------------
+%	Introducción
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Introducción}
+
+  La lógica de primer orden surge como una extensión de la lógica proposicional
+  ante carencias que ésta presenta. Aquí se ha realizado una implementación
+  de la lógica de primer orden, de su lenguaje y de ciertos algoritmos.
+  Además, se ha establecido una relación entre las matemáticas y la
+  programación motivada por la realización de esta implementación.
+  
+
+\end{block}
+%-----------------------------------------------
+%  Sintáxis y semántica
+%------------------------------------------------
+
+\begin{block}{Sintáxis y semántica}
+
+  La lógica de primer orden presenta cuantificadores, siendo éste el principal elemento
+  que la diferencia con la proposicional. Por ello, lo primero que se realizó es
+  asentar su base y representación en Haskell.
+
+\begin{code}
+data Form = Atom Nombre [Termino]
+          | Ig Termino Termino
+          | Neg Form
+          | Impl Form Form
+          | Equiv Form Form
+          | Conj [Form]
+          | Disy [Form]
+          | PTodo Variable Form
+          | Ex Variable Form
+  deriving (Eq,Ord,Generic)  
+\end{code}
+
+Definiendo su representación en la clase \texttt{Show}, se obtienen fórmulas de este tipo:
+
+\begin{sesion}
+ghci> PTodo x (Ex y (Impl (Atom "R"[tx]) (Atom "P" [ty])))
+∀x ∃y (R[x]⟹P[y])
+\end{sesion}
+
+Posteriormente, se definieron los términos funcionales y la
+evaluación de fórmulas.
+
+\end{block}
+\begin{block}{Evaluación de fórmulas}
+  Dada una estructura $\mathcal{I} = (U,I)$ de $L$ y una asignación
+  $A$ sobre $\mathcal{I}$, se define la \textbf{función evaluación de fórmulas}
+  $\mathcal{I}_A: Form(L) \rightarrow Bool$ por
+  \begin{itemize*}
+  \item Si $F$ es $t_1=t_2$,  
+    $\mathcal{I}_A(F) = H_=(\mathcal{I}_A(t_1),I_A(t_2))$
+  \item Si $F$ es $P(t_1,\dots ,t_n)$,  
+    $\mathcal{I}_A(F) = H_{I(P)}(\mathcal{I}_A(t_1), \dots ,\mathcal{I}_A(t_n))$
+  \item Si $F$ es $\neg G$, 
+    $\mathcal{I}_A(F) = H_{\neg}(\mathcal{I}_A(G))$
+  \item Si $F$ es $G*H$, 
+    $\mathcal{I}_A(F) = H_*(\mathcal{I}_A(G),\mathcal{I}_A(H))$
+  \item Si $F$ es $\forall x G$,
+    \begin{equation*}
+      \mathcal{I}_A(F) = \left\{
+      \begin{array}{ll} 
+        1, \text{ si para todo } u \in U \text{ se tiene } \mathcal{I}_{A [ x / u ]} = 1 \\
+        0, \text{ en caso contario}.
+      \end{array} \right.
+    \end{equation*}
+  \item Si $F$ es $\exists x G$,
+     \begin{equation*}
+      \mathcal{I}_A(F) = \left\{
+      \begin{array}{ll}
+        1, \text{ si existe algún } u \in U \text{ tal que } 
+           \mathcal{I}_{A [x / u ]} = 1 \\
+        0, \text{ en caso contario}.
+      \end{array} \right.
+    \end{equation*}
+  \end{itemize*}
+\end{block}
+
+
+ 
+------------------------------------------------------------------------
+
+\end{column} % End of the first column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\twocolwid} % Begin a column which is two columns wide (column 2)
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column
+
+\begin{column}{\onecolwid}\vspace{-.6in} % The first column within column 2 (column 2.1)
+
+  \begin{block}{Implementación}
+    \begin{code}
+valorF :: Eq a => Universo a -> Interpretacion a
+             -> Asignacion a -> Form -> Bool
+valorF u (iR,iF) a (Atom r ts) =
+  iR r (map (valorT iF a) ts)
+valorF u (_,iF) a (Ig t1 t2) = 
+  valorT iF a t1 == valorT iF a t2
+valorF u i a (Neg g) =
+  not (valorF u i a g)
+valorF u i a (Impl f1 f2) =
+  valorF u i a f1 <= valorF u i a f2
+valorF u i a (Equiv f1 f2) =
+  valorF u i a f1 == valorF u i a f2
+valorF u i a (Conj fs) =
+  all (valorF u i a) fs
+valorF u i a (Disy fs) =
+  any (valorF u i a) fs
+valorF u i a (PTodo v g) = 
+  and [valorF u i (sustituye a v d) g | d <- u]
+valorF u i a (Ex v g)  =
+  or  [valorF u i (sustituye a v d) g | d <- u]
+    \end{code}
+  
+  \end{block}
+
+  \begin{block}{Generadores}
+    Se han implementado generadores de los tipos construidos para la lógica de primer orden.
+    Pudiendo, en caso necesario, realizar comprobaciones con \texttt{QuickCheck} sobre
+    propiedades.
+  \end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+
+\begin{column}{\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
+
+% ---------------------------------------------------------------------------------------
+% TABLEROS SEMÁNTICOS
+%---------------------------------------------------------------------------------------
+
+  \begin{block}{Tableros semánticos}
+    El método de los tableros semánticos se emplea para la demostración de teoremas en
+    lógica de predicados. Para su implementación, se requirió de la implementación de:
+
+    \begin{itemize}
+    \item \textbf{Sustitución:} Para cambiar variables por términos en una fórmula.
+    \item \textbf{Unificación:} Se trata de sustituciones que mantienen equivalencias
+      en las fórmulas y que permiten, en caso de existencia, renombrar términos con el
+      mismo nombre.
+    \item \textbf{Forma de Skolem:} Empleando equivalencias entre fórmulas, se obtiene
+      una representación ($\forall x_1 \dots \forall x_n G$) donde $G$ no tiene
+      cuantificadores. 
+    \end{itemize}
+    Una vez realizadas todas estas implementaciones, se puede definir el método de tableros,
+    consiguiendo así un demostrador. El algoritmo es el siguiente:
+
+    \begin{itemize*}
+\item El árbol cuyo único nodo tiene como etiqueta $S$ es
+  un tablero de $S$.
+\item Sea $\mathcal{T}$ un tablero de $S$ y $S_1$ la etiqueta de
+  una hoja  de $\mathcal{T}$.
+  \begin{enumerate}
+  \item Si $S_1$ contiene una fórmula y su negación, entonces el árbol
+    obtenido añadiendo como hijo de $S_1$ el nodo etiquetado con
+    $\left\{ \perp \right\}$ es un tablero de $S$.
+  \item Si $S_1$ contiene una doble negación $\neg \neg F$, entonces
+    el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
+    con $(S_1 \backslash \left\{\neg \neg F \right\})\cup \left\{ F \right\}$
+    es un tablero de $S$.
+  \item Si $S_1$ contiene una fórmula alfa $F$ de componentes $F_1$ y $F_2$,
+    entonces el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
+    con $(S_1 \backslash \left\{ F \right\})\cup \left\{ F_1,F_2 \right\}$
+    es un tablero de $S$.
+  \item Si $S_1$ contiene una fórmula beta de $F$ de componentes $F_1$ y $F_2$,
+    entonces el árbol obtenido añadiendo como hijos de $S_1$ los nodos
+    etiquetados con $(S_1 \backslash \left\{ F \right\}) \cup \left\{ F_1 \right\}$ y
+    $(S_1 \backslash \left\{ F \right\})\cup \left\{ F_2 \right\}$ es un tablero
+    de $S$.
+  \end{enumerate}
+\end{itemize*}
+    
+    
+  \end{block}
+
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2 - any content after this will now take up 2 columns width
+
+
+%----------------------------------------------------------------------------------------
+%	Centro
+%----------------------------------------------------------------------------------------
+\begin{alertblock}{Implementación}
+  \begin{code}
+ramificacion :: Nodo -> Tablero
+ramificacion (Nd i pos neg []) = [Nd i pos neg []]
+ramificacion (Nd i pos neg (f:fs)) 
+  | atomo f    = if literalATer f `elem` neg
+                 then []
+                 else [Nd i ( literalATer f : pos) neg fs]
+  | negAtomo f = if literalATer f `elem` pos
+                 then []
+                 else [Nd i pos (literalATer f : neg) fs]
+  | dobleNeg f = [Nd i pos neg (componentes f ++ fs)]
+  | alfa f     = [Nd i pos neg (componentes f ++ fs)]
+  | beta f     = [Nd (i++[n]) pos neg (f':fs)
+                 | (f',n) <- zip (componentes f) [0..]]
+  | gamma f    = [Nd i pos neg (f':(fs++[f]))]
+  where
+    (xs,g) = descomponer f
+    b      = [(Variable nombre j, Var (Variable nombre i)) 
+             | (Variable nombre j) <- xs]
+    f'     = sustitucionForm b g
+  \end{code}
+\end{alertblock} 
+%----------------------------------------------------------------------------------------
+
+  
+
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column again
+
+\begin{column}{\onecolwid} % The first column within column 2 (column 2.1)
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+
+
+\begin{column}{\onecolwid} % The second column within column 2 (column 2.2)
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2
+
+\end{column} % End of the second column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The third column
+
+% -------------------------------------------------------------------------------------
+%  HERBRAND
+% -----------------------------------------------------------------------------
+  
+\begin{block}{Modelos de Herbrand}
+El \textbf{universo de Herbrand} de $L$ es el conjunto de términos básicos de
+ $F$. Se reprenta por $\mathcal{UH}(L)$.
+
+ Representado en Haskell por:
+  
+\begin{code}
+universoHerbrand :: Int -> Signatura -> [Termino]
+universoHerbrand 0 (cs,_,_) 
+  | null cs   = [a]
+  | otherwise = [Ter c [] | c <- cs]
+universoHerbrand n s@(_,fs,_) =
+  u `union`
+  [Ter f ts | (f,k) <- fs
+            , ts <- variacionesR k u]
+  where u = universoHerbrand (n-1) s 
+\end{code}
+
+
+La \textbf{base de Herbrand} $\mathcal{BH}(L)$ de un lenguaje $L$ es el
+conjunto de átomos básicos de $L$.
+
+
+\begin{code}
+baseHerbrand :: Int -> Signatura -> BaseH
+baseHerbrand n s@(_,_,rs) =
+  [Atom r ts | (r,k) <- rs
+             , ts <- variacionesR k u]
+  where u = universoHerbrand n s
+\end{code}
+
+   Una \textbf{interpretación de Herbrand} es una interpretación
+  $\mathcal{I} = (\mathcal{U},I)$ tal que
+  \begin{itemize}
+  \item $\mathcal{U}$ es el universo de Herbrand de $F$.
+  \item $I(c) = c$, para constante $c$ de $F$.
+  \item $I(f) = f$, para cada símbolo funcional de $F$.
+  \end{itemize}
+Siendo su implementación:  
+  \begin{code}
+    interpretacionH :: AtomosH -> InterpretacionH
+interpretacionH fs = (iR,iF)
+  where iF f ts   = Ter  f ts
+        iR r ts   = Atom r ts `elem` fs
+  \end{code}
+Un \textbf{modelo de Herbrand} de una fórmula $F$ es una interpretación de
+Herbrand de $F$ que es modelo de $F$.
+  
+  Cuya implementación es:
+
+  \begin{code}
+modelosH :: Int -> [Form] -> [AtomosH]
+modelosH n fs = [gs | gs <- subsequences bH
+ , and [valorH uH (interpretacionH gs) f | f <- fs]]
+  where uH = universoHerbrandForms n fs
+        bH = baseHerbrandForms n fs
+  \end{code}
+
+
+\end{block}
+
+\begin{Prop}
+  Sea $S$ un conjunto de fórmulas básicas. Son equivalentes:
+  \begin{enumerate}
+    \item $S$ es consistente.
+    \item $S$ tiene un modelo de Herbrand.
+  \end{enumerate}
+\end{Prop}
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of the third column
+
+\end{columns} % End of all the columns in the poster
+
+\end{frame}
+
+% End of the enclosing frame
+
+% SEGUNDA DIAPOSITIVA
+
+\begin{frame}[t,fragile] % The whole poster is enclosed in one beamer frame
+
+\begin{columns}[t] % The whole poster consists of three major columns, the second of which is split into two columns twice - the [t] option aligns each column's content to the top
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The first column
+
+%----------------------------------------------------------------------------------------
+%	Contenido
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Forma clausal}
+ Una \textbf{forma clausal} de una fórmula $F$ es un conjunto de cláusulas
+ equivalente a $F$.
+
+ Siendo el algoritmo para su cálculo:
+ \begin{enumerate}
+\item Sea $F_1 = \exists y_1 \dots \exists y_n F$, donde $y_i$ con
+  $i=1,\dots ,n$ son las variables libres de F.
+\item Sea $F_2$ una forma normal prenexa conjuntiva rectificada de $F_1$.
+\item Sea $F_3= \texttt{ Skolem }(F_2)$, que tiene la forma
+  $$\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
+\end{enumerate}
+
+Y nuestra implementación:
+
+\begin{code}
+formaClausal :: Form -> Clausulas
+formaClausal  = form3CAC . skolem .formaNPConjuntiva
+\end{code}
+
+Por ejemplo:
+
+\begin{sesion}
+-- | Ejemplo
+-- >>> let c1 = formaClausal (Impl p q)
+-- >>> let c2 = formaClausal (Impl q r)
+-- >>> c1 ++! c2
+-- \{\{¬p,q\},\{¬q,r\}\}
+\end{sesion}
+\end{block}
+
+ 
+------------------------------------------------------------------------
+
+
+\begin{block}{Resolución en lógica de primer orden}
+  La cláusula $C$ es una \textbf{resolvente binaria} de las cláusulas $C_1$ y
+  $C_2$ si existen una separación de variables $(\theta_1,\theta_2)$ de $C_1$ y
+  $C_2$, un literal $L_1\in C_1$, un literal $L_2\in C_2$ y un UMG $\sigma $ de
+  $L_1\sigma_1$ y $L_2^c\theta_2$ tales que
+  $$C=(C_1\theta_1\sigma \backslash \{L_1\theta_2\sigma_1\})\cup (C_2\theta_2\sigma \backslash \{L_2\theta_2\sigma \} ) $$.
+
+  Siendo nuestra implementación:
+
+  \begin{code}
+resolBin c1 c2 | s /= [] =
+          renombramiento (c1'' +! c2'') (head s)
+               | otherwise =
+          error "No se puede unificar"
+    where
+      (c1', c2') = separacionVars c1 c2
+      (p,q) = (litMisNom c1' c2')
+      s = unifClau p q
+      c1'' = borra p c1'
+      c2'' = borra q c2'
+\end{code}
+
+
+Y un ejemplo sería:
+
+\begin{sesion}
+-- | Ejemplo
+-- >>> let c1 = C [Neg (Atom "P" [tx]), Atom "Q" [Ter "f" [tx]]]
+-- >>> let c2 = C [Neg (Atom "Q" [tx]), Atom "R" [Ter "g" [tx]]]
+-- >>> resolBin c1 c2
+-- \{¬P[x1],R[g[f[x1]]]\}
+\end{sesion}
+\end{block}
+
+\end{column} % End of the first column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\twocolwid} % Begin a column which is two columns wide (column 2)
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column
+
+\begin{column}{\onecolwid}\vspace{-.6in} % The first column within column 2 (column 2.1)
+
+  \begin{alertblock}{Correspondencia de Curry-Howard}
+    Se establece la siguiente correspondencia entre matemáticas y programación:
+    \begin{itemize}
+    \item Las proposiciones son tipos.
+    \item Las demostraciones son programas.
+    \end{itemize}
+  \end{alertblock}
+
+  \begin{block}{Demostraciones gratis}
+    Debido a lo que establece la correspondencia podemos analizar
+    proposiciones de la siguiente manera. Dada una proposición
+    podemos expresarla mediante un tipo adecuado, y una vez que obtenemos
+    el tipo, la existencia de una función con ese tipo de dato establece
+    que la proposición es cierta, es decir, es equivalente a dar una
+    demostración de la misma.
+    
+  \end{block}
+  
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+
+\begin{column}{\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
+
+% ---------------------------------------------------------------------------------------
+% Ejemplos
+%---------------------------------------------------------------------------------------
+
+  \begin{block}{Ejemplos de la correspondencia}
+    \begin{itemize}
+    \item La proposición $(a \rightarrow a)$ vendría demostrada por:
+    \begin{code}
+    identidad :: a -> a
+    identidad x = x
+  \end{code}
+\item  La implicación $(a \rightarrow b \rightarrow a \wedge b)$ no es más que:
+  \begin{code}
+ (,) :: a -> b -> (a, b)
+ (,) x y = (x,y) 
+\end{code}
+\item La regla $(a \wedge b \rightarrow a)$ se vería demostrada por:
+  \begin{code}
+fst :: (a,b) -> a
+fst (x,y) = x
+\end{code}
+\item la siguiente proposición $((a \rightarrow b \rightarrow c) \rightarrow (b \rightarrow a \rightarrow c) )$ es:
+  \begin{code}
+flip :: (a -> b -> c) -> b -> a -> c
+flip f x y = f y x  
+\end{code}
+
+    \end{itemize}
+  \end{block}
+  
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2 - any content after this will now take up 2 columns width
+
+
+%----------------------------------------------------------------------------------------
+%	Centro
+%----------------------------------------------------------------------------------------
+\begin{alertblock}{Conclusión}
+  Matemáticas y programación son dos caras de una misma moneda.
+\end{alertblock} 
+%----------------------------------------------------------------------------------------
+
+  
+
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column again
+
+\begin{column}{\onecolwid} % The first column within column 2 (column 2.1)
+
+  \begin{block}{Usando github}
+    Para el desarrollo del trabajo se ha empleado github. Github permite:
+    \begin{itemize}
+    \item Coordinación dinámica entre tutor y alumno.
+    \item Control de versiones.
+    \item Manejo eficiente de un proyecto.
+    \item Aprendizaje de \texttt{git}.
+    \end{itemize}
+    
+  \end{block}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+
+
+\begin{column}{\onecolwid} % The second column within column 2 (column 2.2)
+
+  \begin{block}{Usando Doctest}
+    Para la prueba de los ejemplos que se han ido planteando
+    ante cada implementación a lo largo del trabajo se ha empleado
+    \texttt{doctest}. Permite localizar errores, así como
+    hacer comprobaciones de coherencia entre implementaciones
+    de distintos módulos.
+  \end{block}
+  
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2
+
+\end{column} % End of the second column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The third column
+
+% -------------------------------------------------------------------------------------
+%  HERBRAND
+% -----------------------------------------------------------------------------
+  
+%----------------------------------------------------------------------------------------
+%	REFERENCias
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Referencias}
+
+\nocite{*} % Insert publications even if they are not cited in the poster
+\small{\bibliographystyle{unsrt}
+\bibliography{TFG1}\vspace{0.75in}}
+\end{block}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of the third column
+
+\end{columns} % End of all the columns in the poster
+
+\end{frame}
+
+
+
+
+
+
+
+% End of the enclosing frame
+
+
+
+
+
+\end{document}

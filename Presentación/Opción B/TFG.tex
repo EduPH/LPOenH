@@ -1,0 +1,180 @@
+\documentclass{beamer}
+
+\usepackage[utf8x]{inputenc}       % Acentos de UTF8
+\usepackage[spanish]{babel}        % Castellanización.
+\usepackage[T1]{fontenc}           % Codificación T1 con European Computer
+                                   % Modern.  
+\usepackage{graphicx}
+\usepackage{fancyvrb}              % Verbatim extendido
+\usepackage{makeidx}               % Índice
+\usepackage{amsmath}               % AMS LaTeX
+\usepackage{amsthm} 
+\usepackage{latexsym}
+\usepackage{mathpazo}              % Fuentes semejante a palatino
+\usepackage[scaled=.90]{helvet}
+\usepackage{cmtt}
+\usepackage{xfrac}
+\renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+
+\usepackage{courier}
+
+\usetheme{Frankfurt}
+\usecolortheme{dove}
+% Template
+\useinnertheme{rectangles} %rectangle bullets etc
+\beamertemplatenavigationsymbolsempty	%no navigation bar
+\setbeamercovered{transparent}		%future bullet points transparent 
+\setbeamertemplate{frametitle}[default][colsep=-4bp,rounded=false,shadow=false] %no shadows
+\definecolor{dark-gray}{gray}{0.80} %color for the navigation squares
+
+
+% Pie
+\setbeamercolor{section in head/foot}{fg=black, bg=white}
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{section in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor~~\beamer@ifempty{\insertshortinstitute}{}{(\insertshortinstitute)}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{section in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{section in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+%
+
+\setbeamertemplate{mini frame}
+{%
+  \begin{pgfpicture}{0pt}{0pt}{.1cm}{.1cm}
+    \pgfpathrectangle{\pgfpointorigin}{\pgfpoint{\the\beamer@boxsize}{\the\beamer@boxsize}}
+    \pgfusepath{fill,stroke}
+  \end{pgfpicture}%
+}
+
+\def\slideentry#1#2#3#4#5#6{%
+  %section number, subsection number, slide number, first/last frame, page number, part number
+  \ifnum#6=\c@part\ifnum#2>0\ifnum#3>0%
+    \ifbeamer@compress%
+      \advance\beamer@xpos by1\relax%
+    \else%
+      \beamer@xpos=#3\relax%
+      \beamer@ypos=#2\relax%
+    \fi%
+  \hbox to 2pt{%
+    \beamer@tempdim=-\beamer@vboxoffset%
+    \advance\beamer@tempdim by-\beamer@boxsize%
+    \multiply\beamer@tempdim by\beamer@ypos%
+    \advance\beamer@tempdim by -.05cm%
+    \raise\beamer@tempdim\hbox{%
+      \beamer@tempdim=\beamer@boxsize%
+      \multiply\beamer@tempdim by\beamer@xpos%
+      \advance\beamer@tempdim by -\beamer@boxsize%
+      \advance\beamer@tempdim by 1pt%
+      \kern\beamer@tempdim
+      \global\beamer@section@min@dim\beamer@tempdim
+      \hbox{\beamer@link(#4){%
+          \usebeamerfont{mini frame}%
+          \ifnum\c@section>#1%
+            \color{dark-gray}%
+          \else%
+            \ifnum\c@section=#1%
+              \ifnum\c@subsection>#2%
+                \color{dark-gray}%
+              \else%
+                \ifnum\c@subsection=#2%
+                  \ifnum\c@subsectionslide>#3%
+                    \color{dark-gray}%
+                  \else%
+                    \color{fg}%
+                  \fi%
+                \else%
+                  \color{dark-gray}%
+                \fi%
+              \fi%
+            \else%
+              \color{dark-gray}%
+            \fi%
+          \fi%
+          \usebeamertemplate{mini frame}%
+        }}}\hskip-10cm plus 1fil%
+  }\fi\fi%
+  \else%
+  \fakeslideentry{#1}{#2}{#3}{#4}{#5}{#6}%
+  \fi\ignorespaces
+  }
+
+  %
+
+  
+\def\pdftex@driver{pdftex.def}
+\ifx\Gin@driver\pdftex@driver
+  \def\pgfsys@color@unstacked#1{%
+    \pdfliteral{\csname\string\color@#1\endcsname}%
+  }
+\fi
+
+
+
+\input definiciones
+
+%Information to be included in the title page:
+\title[LPO en Haskell]{Lógica de primer orden en Haskell}
+\author[Eduardo P.]{Eduardo Paluzo Hidalgo}
+\institute[US]{Universidad de Sevilla}
+\date{\today}
+
+\titlegraphic{\includegraphics[width=2cm]{sello}
+}
+
+\begin{document}
+ 
+\frame{\titlepage}
+
+\frame{\tableofcontents}
+\section{Introducción}
+\begin{frame}
+  \frametitle{Introducción}
+  La realización de este trabajo ha supuesto:
+  \begin{itemize}
+  \item Implementación de la lógica de primer orden en Haskell.
+  \item Implementación de algoritmos propios de la lógica de primer orden.
+  \item Relación entre matemáticas y programación.
+  \item Aprendizaje de recursos como git y doctest.
+  \item Empleo de librerías de Haskell.
+  \end{itemize}
+\end{frame}
+
+\section{Sintáxis y semántica}
+
+\subsection{Implementación de la lógica}
+\begin{frame}[fragile]
+
+  Implementamos las fórmulas
+  
+  \frametitle{Sintáxis y semántica}
+  \begin{code}
+    data Form = Atom Nombre [Termino]
+          | Ig Termino Termino
+          | Neg Form
+          | Impl Form Form
+          | Equiv Form Form
+          | Conj [Form]
+          | Disy [Form]
+          | PTodo Variable Form
+          | Ex Variable Form
+  deriving (Eq,Ord,Generic)
+  \end{code}
+\end{frame}
+
+\section{El método de los tableros semánticos}
+\section{Modelos de Herbrand}
+\section{Resolución en la lógica de primer orden}
+\section{Correspondencia de Curry-Howard}
+\end{document}

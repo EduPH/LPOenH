@@ -1,0 +1,227 @@
+
+\begin{columns}[t] % The whole poster consists of three major columns, the second of which is split into two columns twice - the [t] option aligns each column's content to the top
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The first column
+
+%----------------------------------------------------------------------------------------
+%	Contenido
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Forma clausal}
+ Una \textbf{forma clausal} de una fórmula $F$ es un conjunto de cláusulas
+ equivalente a $F$.
+
+ Siendo el algoritmo para su cálculo:
+ \begin{enumerate}
+\item Sea $F_1 = \exists y_1 \dots \exists y_n F$, donde $y_i$ con
+  $i=1,\dots ,n$ son las variables libres de F.
+\item Sea $F_2$ una forma normal prenexa conjuntiva rectificada de $F_1$.
+\item Sea $F_3= \texttt{ Skolem }(F_2)$, que tiene la forma
+  $$\forall x_1 \dots \forall x_p [(L_1\vee \dots \vee L_n)
+  \wedge \dots \wedge (M_1\vee \dots \vee M_m)]$$
+\end{enumerate}
+
+Y nuestra implementación:
+
+\begin{code}
+formaClausal :: Form -> Clausulas
+formaClausal  = form3CAC . skolem .formaNPConjuntiva
+\end{code}
+
+Por ejemplo:
+
+\begin{sesion}
+-- | Ejemplo
+-- >>> let c1 = formaClausal (Impl p q)
+-- >>> let c2 = formaClausal (Impl q r)
+-- >>> c1 ++! c2
+-- \{\{¬p,q\},\{¬q,r\}\}
+\end{sesion}
+\end{block}
+
+
+------------------------------------------------------------------------
+
+
+\begin{block}{Resolución en lógica de primer orden}
+  La cláusula $C$ es una \textbf{resolvente binaria} de las cláusulas $C_1$ y
+  $C_2$ si existen una separación de variables $(\theta_1,\theta_2)$ de $C_1$ y
+  $C_2$, un literal $L_1\in C_1$, un literal $L_2\in C_2$ y un UMG $\sigma $ de
+  $L_1\sigma_1$ y $L_2^c\theta_2$ tales que
+  $$C=(C_1\theta_1\sigma \backslash \{L_1\theta_2\sigma_1\})\cup (C_2\theta_2\sigma \backslash \{L_2\theta_2\sigma \} ) $$.
+
+  Siendo nuestra implementación:
+
+  \begin{code}
+resolBin c1 c2 | s /= [] =
+          renombramiento (c1'' +! c2'') (head s)
+               | otherwise =
+          error "No se puede unificar"
+    where
+      (c1', c2') = separacionVars c1 c2
+      (p,q) = (litMisNom c1' c2')
+      s = unifClau p q
+      c1'' = borra p c1'
+      c2'' = borra q c2'
+\end{code}
+
+
+Y un ejemplo sería:
+
+\begin{sesion}
+-- | Ejemplo
+-- >>> let c1 = C [Neg (Atom "P" [tx]), Atom "Q" [Ter "f" [tx]]]
+-- >>> let c2 = C [Neg (Atom "Q" [tx]), Atom "R" [Ter "g" [tx]]]
+-- >>> resolBin c1 c2
+-- \{¬P[x1],R[g[f[x1]]]\}
+\end{sesion}
+\end{block}
+
+\end{column} % End of the first column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\twocolwid} % Begin a column which is two columns wide (column 2)
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column
+
+\begin{column}{\onecolwid}\vspace{-.6in} % The first column within column 2 (column 2.1)
+
+  \begin{alertblock}{Correspondencia de Curry-Howard}
+    Se establece la siguiente correspondencia entre matemáticas y programación:
+    \begin{itemize}
+    \item Las proposiciones son tipos.
+    \item Las demostraciones son programas.
+    \end{itemize}
+  \end{alertblock}
+
+  \begin{block}{Demostraciones gratis}
+    Debido a lo que establece la correspondencia podemos analizar
+    proposiciones de la siguiente manera. Dada una proposición
+    podemos expresarla mediante un tipo adecuado, y una vez que obtenemos
+    el tipo, la existencia de una función con ese tipo de dato establece
+    que la proposición es cierta, es decir, es equivalente a dar una
+    demostración de la misma.
+
+  \end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+
+\begin{column}{\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
+
+% ---------------------------------------------------------------------------------------
+% Ejemplos
+%---------------------------------------------------------------------------------------
+
+  \begin{block}{Ejemplos de la correspondencia}
+    \begin{itemize}
+    \item La proposición $(a \rightarrow a)$ vendría demostrada por:
+    \begin{code}
+    identidad :: a -> a
+    identidad x = x
+  \end{code}
+\item  La implicación $(a \rightarrow b \rightarrow a \wedge b)$ no es más que:
+  \begin{code}
+ (,) :: a -> b -> (a, b)
+ (,) x y = (x,y)
+\end{code}
+\item La regla $(a \wedge b \rightarrow a)$ se vería demostrada por:
+  \begin{code}
+fst :: (a,b) -> a
+fst (x,y) = x
+\end{code}
+\item la siguiente proposición $((a \rightarrow b \rightarrow c) \rightarrow (b \rightarrow a \rightarrow c) )$ es:
+  \begin{code}
+flip :: (a -> b -> c) -> b -> a -> c
+flip f x y = f y x
+\end{code}
+
+    \end{itemize}
+  \end{block}
+
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2 - any content after this will now take up 2 columns width
+
+
+%----------------------------------------------------------------------------------------
+%	Centro
+%----------------------------------------------------------------------------------------
+\begin{alertblock}{Conclusión}
+  Matemáticas y programación son dos caras de una misma moneda.
+\end{alertblock}
+%----------------------------------------------------------------------------------------
+
+
+
+
+\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column again
+
+\begin{column}{\onecolwid} % The first column within column 2 (column 2.1)
+
+  \begin{block}{Usando github}
+    Para el desarrollo del trabajo se ha empleado github. Github permite:
+    \begin{itemize}
+    \item Coordinación dinámica entre tutor y alumno.
+    \item Control de versiones.
+    \item Manejo eficiente de un proyecto.
+    \item Aprendizaje de \texttt{git}.
+    \end{itemize}
+
+  \end{block}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.1
+
+
+\begin{column}{\onecolwid} % The second column within column 2 (column 2.2)
+
+  \begin{block}{Usando Doctest}
+    Para la prueba de los ejemplos que se han ido planteando
+    ante cada implementación a lo largo del trabajo se ha empleado
+    \texttt{doctest}. Permite localizar errores, así como
+    hacer comprobaciones de coherencia entre implementaciones
+    de distintos módulos.
+  \end{block}
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of column 2.2
+
+\end{columns} % End of the split of column 2
+
+\end{column} % End of the second column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
+
+\begin{column}{\onecolwid} % The third column
+
+% -------------------------------------------------------------------------------------
+%  HERBRAND
+% -----------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+%	REFERENCias
+%----------------------------------------------------------------------------------------
+
+\begin{block}{Referencias}
+
+\nocite{*} % Insert publications even if they are not cited in the poster
+\small{\bibliographystyle{unsrt}
+\bibliography{TFG1}\vspace{0.75in}}
+\end{block}
+
+
+%----------------------------------------------------------------------------------------
+
+\end{column} % End of the third column
+
+\end{columns} % End of all the columns in the poster
+

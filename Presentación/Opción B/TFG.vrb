@@ -1,0 +1,16 @@
+
+  Implementamos las fórmulas
+
+  \frametitle{Sintáxis y semántica}
+  \begin{code}
+    data Form = Atom Nombre [Termino]
+          | Ig Termino Termino
+          | Neg Form
+          | Impl Form Form
+          | Equiv Form Form
+          | Conj [Form]
+          | Disy [Form]
+          | PTodo Variable Form
+          | Ex Variable Form
+  deriving (Eq,Ord,Generic)
+  \end{code}
