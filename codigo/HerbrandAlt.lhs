@@ -173,7 +173,7 @@ función \texttt{(signaturaForms fs)}.
 -- >>> let f2 = Impl f1 (Atom "Q" [a,Ter "f" [b]])
 -- >>> let f3 = Atom "S" [Ter "g" [a,b]]
 -- >>> signaturaForms [f1,f2,f3]
--- (["a","b"],[("f",2),("g",2)],[("R",1),("Q",2),("S",1)])
+-- (["a","b"],[("f",1),("g",2)],[("R",1),("Q",2),("S",1)])
 \end{code}
 
 Su definición es 
