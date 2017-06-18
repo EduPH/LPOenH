@@ -746,7 +746,7 @@ varEnForm (Ex x f)      = varEnForm f
   ligada a un cuantificador existencial o universal. ($\forall x, \exists x$)
 \end{Def}
 
-La función \texttt{(variablesLibres f} devuelve las variables libres de la
+La función \texttt{(variablesLibres f)} devuelve las variables libres de la
 fórmula \texttt{f}.
 
 \begin{code}

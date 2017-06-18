@@ -4,7 +4,7 @@ module PTLP where
 import LPH
 import Data.List
 import Test.QuickCheck -- Para ejemplos
-import Generadores     -- Para ejemplos
+import GeneradoresForm     -- Para ejemplos
 import Text.PrettyPrint
 import Text.PrettyPrint.GenericPretty 
 \end{code}
@@ -243,6 +243,12 @@ sustitucionForms :: Sust -> [Form] -> [Form]
 sustitucionForms s = map (sustitucionForm s)
 \end{code}
 
+
+\begin{Def}
+  La composición de las sustituciones $\sigma_1$ y $\sigma_2$ es la sustitución $\sigma_1\sigma_2$
+  definida por $x(\sigma_1\sigma_2)=(x\sigma_1)\sigma_2$, para toda variable $x$.
+\end{Def}
+
 Nos podemos preguntar si la sustitución conmuta con la composición. Para ello
 definimos la función \texttt{(composicion s1 s2)}
 
@@ -289,7 +295,7 @@ composicion [(y,ty)] [(x,tx)]  ==  [(y,y)]
 
 \begin{nota}
   Las comprobaciones con QuickCheck emplean código del módulo
-  \texttt{Generadores}.
+  \texttt{GeneradoresForm}.
 \end{nota}
 
 \begin{Def}
