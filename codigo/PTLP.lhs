@@ -257,8 +257,7 @@ definimos la función \texttt{(composicion s1 s2)}
 composicion :: Sust -> Sust -> Sust
 composicion s1 s2 = 
   hacerApropiada [(y,susTerm s1 y') | (y,y') <- s2 ] ++
-  [x | x <- s1, fst x `notElem` dominio s2] ++ 
-  [x | x <- s2, fst x `notElem` dominio s1]
+  [x | x <- s1, fst x `notElem` dominio s2] 
 \end{code}
 
 Por ejemplo,
@@ -289,8 +288,8 @@ ghci> quickCheck composicionConmutativa
 Un contraejemplo más claro es
 
 \begin{sesion}
-composicion [(x,tx)] [(y,ty)]  ==  [(x,x)]
-composicion [(y,ty)] [(x,tx)]  ==  [(y,y)]
+composicion [(z,ty)] [(x,tz)]  == [(x,y),(z,y)]
+composicion [(x,tz)] [(z,ty)]  == [(z,y),(x,z)]
 \end{sesion}
 
 \begin{nota}
