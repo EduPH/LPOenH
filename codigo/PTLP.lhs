@@ -246,7 +246,7 @@ sustitucionForms s = map (sustitucionForm s)
 
 \begin{Def}
   La composición de las sustituciones $\sigma_1$ y $\sigma_2$ es la sustitución $\sigma_1\sigma_2$
-  definida por $x(\sigma_1\sigma_2)=(x\sigma_1)\sigma_2$, para toda variable $x$.
+  definida por $(\sigma_1\sigma_2)x=\sigma_1(\sigma_2x)$, para toda variable $x$.
 \end{Def}
 
 Nos podemos preguntar si la sustitución conmuta con la composición. Para ello

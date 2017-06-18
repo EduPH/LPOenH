@@ -80,7 +80,10 @@ ambos diccionarios.
 \begin{code}
 composicionMap :: Map Variable Termino
                -> Map Variable Termino -> Map Variable Termino
-composicionMap d1 d2 = M.unionWith f d1 d2
+composicionMap d1 d2 =  
+    M.fromList ([(y,sustTerm y' d1) | (y,y') <- d2']++
+               [ x | x <- d1', fst x `notElem` (M.keys d2)])
     where
-      f x y = sustTerm x d2
+      d1' = M.toList d1
+      d2' = M.toList d2
 \end{code}
