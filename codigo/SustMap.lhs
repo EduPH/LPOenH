@@ -87,3 +87,13 @@ composicionMap d1 d2 =
       d1' = M.toList d1
       d2' = M.toList d2
 \end{code}
+
+Por ejemplo,
+
+\begin{code}
+-- | Ejemplos
+-- >>> composicionMap (M.fromList [(x,ty)]) (M.fromList [(y,tz)])
+-- fromList [(x,y),(y,z)]
+-- >>> composicionMap (M.fromList [(y,tz)]) (M.fromList [(x,ty)])
+-- fromList [(x,z),(y,z)]
+\end{code}
