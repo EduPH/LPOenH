@@ -1151,6 +1151,7 @@ definimos la función \texttt{dobleNeg f}.
 
 \index{\texttt{dobleNeg}}
 \begin{code}
+dobleNeg :: Form -> Bool
 dobleNeg (Neg (Neg f)) = True
 dobleNeg _             = False
 \end{code}
