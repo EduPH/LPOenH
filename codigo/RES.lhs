@@ -684,9 +684,11 @@ Definimos \texttt{(unifClau l1 l2)} que determina las unificaciones posibles
 entre dos literales.
 
 \begin{code}
+unifClau :: Form -> Form -> [Sust]
 unifClau (Atom _ ts) (Atom _ ts') = unificadoresListas ts ts'
 unifClau (Atom _ ts) (Neg (Atom _ ts')) = unificadoresListas ts ts'
-unifClau (Neg (Atom _ ts)) (Atom _ ts') = unificadoresListas ts ts'             \end{code}
+unifClau (Neg (Atom _ ts)) (Atom _ ts') = unificadoresListas ts ts'             
+\end{code}
 
 \begin{Def}
   La cláusula $C$ es una \textbf{resolvente binaria} de las cláusulas $C_1$ y
