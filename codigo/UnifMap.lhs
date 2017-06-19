@@ -33,9 +33,19 @@ unifTerminos (Ter f ts) (Ter g rs) =
   [u | f == g, u <- unifListas ts rs]
 \end{code}
 
-\comentario{Añadir los ejemplos de unificación de términos del curso de
-  Lógica (tema 12)} 
+Como acostumbramos, vemos algunos ejemplos de su aplicación.
 
+\begin{code}
+-- | Ejemplos
+-- >>> unifTerminos (Ter "f" [tx,Ter "g" [tz]]) (Ter "f" [Ter "g" [ty],tx])
+-- [fromList [(x,g[y]),(z,y)]]
+-- >>> unifTerminos (Ter "f" [tx,ty]) (Ter "f" [ty,tx])
+-- [fromList [(x,y)]]
+-- >>> unifTerminos (Ter "f" [tx,ty]) (Ter "g" [a,b])
+-- []
+-- >>> unifTerminos (Ter "f" [tx]) (Ter "f" [Ter "g" [tx]])
+-- []
+\end{code}
 Finalmente, se generaliza para listas de términos mediante la función
 \texttt{(unifListas ts rs d)}
 
