@@ -8,7 +8,7 @@
  fontshape=n,
  formatcom=\color{blue},
  baselinestretch=1,
- frame=single}
+ frame=lines}
 
 \DefineVerbatimEnvironment{sesion}{Verbatim}
 {commandchars=\\\{\},
@@ -28,7 +28,7 @@
  fontsize=\normalsize,
  fontfamily=cmtt,
  baselinestretch=1,
- frame=single}
+ frame=lines}
 
 \DefineVerbatimEnvironment{nverbatim}{Verbatim}
 {commandchars=\\\{\},
@@ -70,9 +70,9 @@
 \newcommand{\comentario}[1]{\todo[inline]{#1}}
 \newcommand{\entrada}[1]{\input{../codigo/#1.lhs}}
 \newcommand{\ignora}[1]{}
-\newcommand{\programa}[1]{\VerbatimInput[frame=single,
+\newcommand{\programa}[1]{\VerbatimInput[frame=lines,
                                          firstline=7]{#1}}
-\newcommand{\entradaCodigo}[1]{\VerbatimInput[% frame=single,
+\newcommand{\entradaCodigo}[1]{\VerbatimInput[% frame=lines,
                                               firstline=6]
                                               {../codigo/#1.hs}}
 \newcommand{\valor}{$\leadsto$}
