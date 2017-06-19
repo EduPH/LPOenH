@@ -1,4 +1,3 @@
-
 \section{Sustitución con la librería Data.Map}
 
 En esta sección procuraremos dar una implementación alternativa de la
@@ -72,10 +71,9 @@ Veamos algunos ejemplos:
 -- (R[y,x]⟹∃z (R[y,z]⋀R[z,x]))
 \end{code}
 
-
-En nuestra otra definición de sustitución comprobamos que su composición no era
-conmutativa. Definamos la función \texttt{(composicionMap d1 d2)} que compone
-ambos diccionarios.
+En nuestra primera definición de sustitución comprobamos que su composición
+no era conmutativa. Definamos la función \texttt{(composicionMap d1 d2)}
+que compone ambos diccionarios.
 
 \begin{code}
 composicionMap :: Map Variable Termino
