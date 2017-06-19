@@ -62,5 +62,4 @@ Veamos algunos ejemplos:
 -- [fromList [(x,a),(y,b)]]
 \end{code}
 
-\comentario{Es incorrecta la definición de unificación. Por ejemplo,
-  (unifListas [tx] [Ter "f" [tx]]) da [fromList []] uen lugar de []}
+
