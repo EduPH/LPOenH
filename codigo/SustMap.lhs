@@ -71,19 +71,14 @@ Veamos algunos ejemplos:
 -- (R[y,x]⟹∃z (R[y,z]⋀R[z,x]))
 \end{code}
 
-Se define la función \texttt{(hacerApropiadaM d)} que elimina las sustituciones que
-dejan la variable igual. 
+Se define la función \texttt{(hacerApropiadaM d)} que elimina los pares
+con sus dos componentes iguales
 
 \index{\texttt{hacerApropiadaM}}
 \begin{code}
 hacerApropiadaM :: Map Variable Termino -> Map Variable Termino
-hacerApropiadaM d = fst (M.partitionWithKey p d)
-     where
-       p k (Var x) = k/=x
-       p k _ = True
-                   
+hacerApropiadaM = M.filterWithKey (\k t -> t /= Var x)
 \end{code}
-
 
 Por ejemplo,
 
@@ -92,7 +87,6 @@ Por ejemplo,
 -- >>> hacerApropiadaM (M.fromList [(x,tx),(y,tz),(z,tz)])
 -- fromList [(y,z)]
 \end{code}
-
 
 En nuestra primera definición de sustitución comprobamos que su composición
 no era conmutativa. Definamos la función \texttt{(composicionMap d1 d2)}
