@@ -71,6 +71,28 @@ Veamos algunos ejemplos:
 -- (R[y,x]⟹∃z (R[y,z]⋀R[z,x]))
 \end{code}
 
+Se define la función \texttt{(hacerApropiadaM d)} que elimina las sustituciones que
+dejan la variable igual. 
+
+\index{\texttt{hacerApropiadaM}}
+\begin{code}
+hacerApropiadaM :: Map Variable Termino -> Map Variable Termino
+hacerApropiadaM d = fst (M.partitionWithKey p d)
+    where
+      p k (Var x) = k/=x
+                   
+\end{code}
+
+
+Por ejemplo,
+
+\begin{code}
+-- | Ejemplo  
+-- >>> hacerApropiadaM (M.fromList [(x,tx),(y,tz),(z,tz)])
+-- fromList [(y,z)]
+\end{code}
+
+
 En nuestra primera definición de sustitución comprobamos que su composición
 no era conmutativa. Definamos la función \texttt{(composicionMap d1 d2)}
 que compone ambos diccionarios.
@@ -79,8 +101,8 @@ que compone ambos diccionarios.
 composicionMap :: Map Variable Termino
                -> Map Variable Termino -> Map Variable Termino
 composicionMap d1 d2 =  
-    M.fromList ([(y,sustTerm y' d1) | (y,y') <- d2']++
-               [ x | x <- d1', fst x `notElem` (M.keys d2)])
+    hacerApropiadaM (M.fromList ([(y,sustTerm y' d1) | (y,y') <- d2']++
+               [ x | x <- d1', fst x `notElem` (M.keys d2)]))
     where
       d1' = M.toList d1
       d2' = M.toList d2

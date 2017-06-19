@@ -26,9 +26,9 @@ unifTerminos (Var x) (Var y)
   | x == y    = [M.fromList []]
   | otherwise = [M.fromList [(x,Var y)]]
 unifTerminos (Var x) t = 
-  [M.fromList [(x,t)| x `notElem` varEnTerm t]]
+  [M.fromList [(x,t)]| x `notElem` varEnTerm t]
 unifTerminos t (Var y) =
-  [M.fromList [(y,t) | y `notElem` varEnTerm t]]
+  [M.fromList [(y,t)] | y `notElem` varEnTerm t]
 unifTerminos (Ter f ts) (Ter g rs) =
   [u | f == g, u <- unifListas ts rs]
 \end{code}
