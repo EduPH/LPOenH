@@ -78,8 +78,9 @@ dejan la variable igual.
 \begin{code}
 hacerApropiadaM :: Map Variable Termino -> Map Variable Termino
 hacerApropiadaM d = fst (M.partitionWithKey p d)
-    where
-      p k (Var x) = k/=x
+     where
+       p k (Var x) = k/=x
+       p k _ = True
                    
 \end{code}
 
@@ -100,7 +101,7 @@ que compone ambos diccionarios.
 \begin{code}
 composicionMap :: Map Variable Termino
                -> Map Variable Termino -> Map Variable Termino
-composicionMap d1 d2 =  
+composicionMap d1 d2 =
     hacerApropiadaM (M.fromList ([(y,sustTerm y' d1) | (y,y') <- d2']++
                [ x | x <- d1', fst x `notElem` (M.keys d2)]))
     where
