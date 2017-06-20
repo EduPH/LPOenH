@@ -151,14 +151,60 @@
   \end{itemize}
 \end{frame}
 
+
+\begin{frame}
+  Haskell tiene las siguientes características:
+
+  \begin{itemize}
+  \item Es un lenguaje de programación de tipo estático, es decir, el tipo de una variable
+    se conoce en el momento de la compilación. Lleva a la necesidad de especificar los tipos. 
+  \item Infiere los tipos.
+  \item Es puramente funcional, es decir, \textbf{toda función en Haskell es una función en el sentido matemático}
+  \item Es perezoso, es decir, las funciones no evalúan sus argumentos.
+  \item Tiene una amplia gama de paquetes ya que las contribuciones ``Open source'' son muy activas. 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  La lógica de primer orden surge como extensión de la lógica proposicional ante carencias que ésta presenta. Es decir, se trata
+  de una extensión de la lógica proposicional persiguiendo mayor fidelidad en el objetivo que la lógica proposicional
+  persigue, modelar el razonamiento y aportar una manera de formalización.
+  
+\end{frame}
 \section{Sintaxis y semántica}
 
 \subsection{Implementación de la lógica}
+
+\begin{frame}
+  El \textbf{lenguaje de la lógica de primer orden} está compuesto por
+
+\begin{enumerate}
+\item Variables proposicionales $p,q,r,\dots$
+\item Conectivas lógicas:
+  \begin{center}
+   \begin{tabular}{| l | l |}
+     \hline
+      $\neg$            & \text{Negación} \\ \hline
+      $\vee$            & \text{Disyunción} \\ \hline
+      $\wedge$          & \text{Conjunción} \\ \hline
+      $\rightarrow$     & \text{Condicional} \\ \hline
+      $\leftrightarrow$ & \text{Bicondicional}\\
+     \hline
+   \end{tabular}
+ \end{center}
+\item Símbolos auxiliares $"(",")"$
+\item Cuantificadores: $\forall$ (Universal) y $\exists$ (Existencial)
+\item Símbolo de igualdad: $=$
+\item Constantes: $a,b,\dots,a_1,a_2,\dots$
+\item Símbolos de relación: $P,Q,R,\dots $
+\item Símbolos de función: $f,g,h\dots $
+\end{enumerate}
+\end{frame}
 \begin{frame}[fragile]
 
   Implementamos las fórmulas
   
-  \frametitle{Sintáxis y semántica}
+  \frametitle{Sintaxis y semántica}
   \begin{code}
     data Form = Atom Nombre [Termino]
           | Ig Termino Termino
@@ -173,7 +219,88 @@
   \end{code}
 \end{frame}
 
+\begin{frame}[fragile]
+  Ejemplos de fórmulas:
+
+  \vspace{5mm}
+\begin{sesion}
+> Disy [PTodo x (Atom "P" [tx]),Ex y (Atom "Q" [ty])]
+(∀x P[x]⋁∃y Q[y])
+
+
+> Neg (Ex x (Impl (Atom "P" [tx]) (PTodo x (Atom "P" [tx]))))
+¬∃x (P[x]⟹∀x P[x])
+\end{sesion}
+\end{frame}
+
+\begin{frame}
+ Una fórmula es susceptible de ser interpretada, lo que permite que dependiendo de la interpretación, su evaluación puede ser verdadera o falsa. 
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{code}
+type Interpretacion a =
+      (InterpretacionR a, InterpretacionF a)  
+\end{code}
+
+\begin{code}
+valorF :: Eq a => Universo a -> Interpretacion a
+             -> Asignacion a -> Form -> Bool
+valorF u (iR,iF) a (Atom r ts) =   
+    iR r (map (valorT iF a) ts)
+valorF u (_,iF) a (Ig t1 t2)   =   
+    valorT iF a t1 == valorT iF a t2
+valorF u i a (Neg g)           =  
+    not (valorF u i a g)
+valorF u i a (Impl f1 f2)      =  
+    valorF u i a f1 <= valorF u i a f2
+valorF u i a (Equiv f1 f2)     =  
+    valorF u i a f1 == valorF u i a f2
+\end{code}  
+\end{frame}
+
+
+\begin{frame}[fragile]
+\begin{code}
+valorF u i a (Conj fs)   =
+    all (valorF u i a) fs
+valorF u i a (Disy fs)   =  
+    any (valorF u i a) fs
+valorF u i a (PTodo v g) = 
+    and [valorF u i (sustituye a v d) g | d <- u]
+valorF u i a (Ex v g)    = 
+    or  [valorF u i (sustituye a v d) g | d <- u]    
+\end{code}
+\end{frame}
+
+\begin{frame}[fragile]
+Veamos un ejemplo:
+\begin{code}  
+asignacion :: Variable -> Int
+asignacion _ = 0
+interpretacionF :: String -> [Int] -> Int
+interpretacionF "cero" []    = 0
+interpretacionF "s"    [i]   = succ i
+interpretacionF "mas"  [i,j] = i + j
+interpretacionF "por"  [i,j] = i * j
+interpretacionF _ _          = 0
+interpretacionR :: String -> [Int] -> Bool
+interpretacionR "R" [x,y] = x < y  
+interpretacionR _ _       = False
+interpretacion = (interpretacionR,interpretacionF)
+formula = Ex x (Atom "R" [cero,tx])
+\end{code}
+\begin{sesion}
+  
+> valorF [0..] interpretacion asignacion formula
+True
+\end{sesion}
+\end{frame}
 \section{El método de los tableros semánticos}
+\begin{frame}
+  
+\end{frame}
+
 \section{Modelos de Herbrand}
 \section{Resolución en la lógica de primer orden}
 \section{Correspondencia de Curry-Howard}

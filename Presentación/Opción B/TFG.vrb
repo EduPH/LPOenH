@@ -1,16 +1,21 @@
+Veamos un ejemplo:
+\begin{code}
+asignacion :: Variable -> Int
+asignacion _ = 0
+interpretacionF :: String -> [Int] -> Int
+interpretacionF "cero" []    = 0
+interpretacionF "s"    [i]   = succ i
+interpretacionF "mas"  [i,j] = i + j
+interpretacionF "por"  [i,j] = i * j
+interpretacionF _ _          = 0
+interpretacionR :: String -> [Int] -> Bool
+interpretacionR "R" [x,y] = x < y
+interpretacionR _ _       = False
+interpretacion = (interpretacionR,interpretacionF)
+formula = Ex x (Atom "R" [cero,tx])
+\end{code}
+\begin{sesion}
 
-  Implementamos las fórmulas
-
-  \frametitle{Sintáxis y semántica}
-  \begin{code}
-    data Form = Atom Nombre [Termino]
-          | Ig Termino Termino
-          | Neg Form
-          | Impl Form Form
-          | Equiv Form Form
-          | Conj [Form]
-          | Disy [Form]
-          | PTodo Variable Form
-          | Ex Variable Form
-  deriving (Eq,Ord,Generic)
-  \end{code}
+> valorF [0..] interpretacion asignacion formula
+True
+\end{sesion}
