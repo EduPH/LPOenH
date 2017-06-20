@@ -15,7 +15,8 @@
 \usepackage{cmtt}
 \usepackage{xfrac}
 \renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
-
+\usepackage{tkz-berge}
+\usetikzlibrary{shapes,trees}
 \usepackage{courier}
 
 \usetheme{Frankfurt}
@@ -174,7 +175,6 @@
 \section{Sintaxis y semántica}
 
 \subsection{Implementación de la lógica}
-
 \begin{frame}
   El \textbf{lenguaje de la lógica de primer orden} está compuesto por
 
@@ -297,13 +297,166 @@ True
 \end{sesion}
 \end{frame}
 \section{El método de los tableros semánticos}
+\subsection{Implementaciones previas}
+\begin{frame}
+  El método de los tableros semánticos tiene como objetivo determinar si una fórmula es consistente, así como la búsqueda de modelos. Para su implementación es necesaria:
+  \begin{itemize}
+  \item Sustitución: aplicación que asocia términos a variables.
+  \item Unificación: una sustitución $S$ de dos términos $t_1$ y $t_2$ tal que $S(t_1)=S(t_2)$. 
+  \item Formas normales $\longrightarrow$ forma de Skolem.
+  \end{itemize}
+\underline{Teorema}: El cálculo de tableros semánticos es \textbf{adecuado} y \textbf{completo}.  
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{center}
+  Fórmulas alfa
+\vspace{5mm}
+
+
+   $\begin{array}{|l|l| } \hline
+     \neg (F_1 \rightarrow F_2) & F_1 \wedge F_2               \\ \hline
+     \neg(F_1 \vee F_2)         & F_1 \wedge \neg F_2          \\ \hline
+     F_1 \leftrightarrow F_2    & (F_1 \rightarrow F_2) \wedge 
+                                  (F_2 \rightarrow F_1)        \\ \hline
+   \end{array}$
+   \vspace{5mm}
+
+Fórmulas beta
+
+\vspace{5mm}
+   $\begin{array}{|l|l|} \hline
+    F_1 \rightarrow F_2             & \neg F_1 \vee F_2                \\ \hline
+    \neg (F_1 \wedge F_2)           & \neg F_1 \vee \neg F_2           \\ \hline
+    \neg (F_1 \leftrightarrow F_2)  & \neg (F_1 \rightarrow F_2 ) \vee 
+                                      (\neg F_2 \rightarrow F_1)       \\ \hline
+    \end{array}$
+
+    \vspace{3mm}
+    Fórmulas gamma \quad
+    $\begin{array}{|l|c|} \hline
+    \forall x F      & F [x/t]       \\ \hline
+    \neg \exists x F & \neg F [x/t ] \\ \hline
+     \end{array}$
+     \vspace{3mm}
+
+     Fórmulas delta \quad 
+      $\begin{array}{|l|l|} \hline
+    \exists x F    & F[x / a]       \\ \hline
+    \neg \forall F & \neg F [x / a] \\ \hline
+  \end{array}$
+    
+\end{center}    
+\end{frame}
+
+\subsection{Algoritmo}
+\begin{frame}
+\begin{itemize}
+\item Sea $\mathcal{T}$ un tablero de $S$ y $S_1$ la etiqueta de
+  una hoja  de $\mathcal{T}$.
+  \begin{enumerate}
+  \item Si $S_1$ contiene una fórmula y su negación, entonces el árbol
+    obtenido añadiendo como hijo de $S_1$ el nodo etiquetado con
+    $\left\{ \perp \right\}$ es un tablero de $S$.
+  \item Si $S_1$ contiene una doble negación $\neg \neg F$, entonces
+    el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
+    con $(S_1 \backslash \left\{\neg \neg F \right\})\cup \left\{ F \right\}$
+    es un tablero de $S$.
+  \item Si $S_1$ contiene una fórmula alfa $F$ de componentes $F_1$ y $F_2$,
+    entonces el árbol obtenido añadiendo como hijo de $S_1$ el nodo etiquetado
+    con $(S_1 \backslash \left\{ F \right\})\cup \left\{ F_1,F_2 \right\}$
+    es un tablero de $S$.
+  \item Si $S_1$ contiene una fórmula beta de $F$ de componentes $F_1$ y $F_2$,
+    entonces el árbol obtenido añadiendo como hijos de $S_1$ los nodos
+    etiquetados con $(S_1 \backslash \left\{ F \right\}) \cup \left\{ F_1 \right\}$ y
+    $(S_1 \backslash \left\{ F \right\})\cup \left\{ F_2 \right\}$ es un tablero
+    de $S$.
+  \end{enumerate}
+\end{itemize}  
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{code}
+ramificacionP :: Int -> Nodo -> (Int,Tablero)
+ramificacionP k nodo@(Nd i pos neg []) = (k,[nodo])
+ramificacionP k (Nd i pos neg (f:fs))
+  | atomo    f = 
+      if literalATer f `elem` neg
+      then (k,[])
+      else (k,[Nd i (literalATer f : pos) neg fs])
+  | negAtomo f = 
+      if literalATer f `elem` neg
+      then (k,[]) 
+      else (k,[Nd i pos (literalATer f : neg) fs])
+  | dobleNeg f = 
+      (k,[Nd i pos neg (componentes f ++ fs)])
+  | alfa     f = 
+      (k,[Nd i pos neg (componentes f ++ fs)])
+  | beta     f = 
+      (k,[Nd (i++[n]) pos neg (f':fs)
+         | (f',n) <- zip (componentes f) [0..] ])
+  
+\end{code}  
+\end{frame}
+
+\begin{frame}[fragile]
+  \begin{code}
+ramificacionP k (Nd i pos neg (f:fs))
+    | gamma    f = (k-1, [Nd i pos neg (f':(fs++[f]))])
+    where 
+      (xs,g) = descomponer f
+      b      = [(Variable nombre j, Var (Variable nombre i))
+               | (Variable nombre j) <- xs]
+      f'     = sustitucionForm b g
+  \end{code}
+\end{frame}
+
+\subsection{Aplicación del algoritmo}
+
+\begin{frame}[fragile]
+  La implementación del método de tableros permite definir la función \texttt{(refuta k f)}
+  que intenta refutar la fórmula \texttt{f} a profundidad \texttt{k}.
+  \begin{code}
+refuta :: Int -> Form -> Bool
+refuta k f = esCerrado tab /= []
+    where tab = expandeTablero k (tableroInicial f)  
+  \end{code}
+  Además, también se pueden implementar las siguientes funciones para determinar si una fórmula
+  es un teorema y su satisfacibilidad. 
+  \begin{code}
+esTeorema, satisfacible :: Int -> Form -> Bool
+esTeorema n = refuta n . skolem . Neg
+satisfacible n = not . refuta n . skolem
+\end{code}
+\end{frame}
+
+\begin{frame}[fragile]
+  Por ejemplo:
+
+\begin{code}  
+> formula1
+(P[x]⋁¬P[x])
+> esTeorema 1 formula1
+True
+> formula2
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+> esTeorema 20 formula2
+False
+\end{code}  
+\end{frame}
+\section{Modelos de Herbrand}
+
 \begin{frame}
   
 \end{frame}
-
-\section{Modelos de Herbrand}
 \section{Resolución en la lógica de primer orden}
+\begin{frame}
+  
+\end{frame}
 \section{Correspondencia de Curry-Howard}
+\begin{frame}
+  
+\end{frame}
 \end{document}
 %%% Local Variables:
 %%% mode: latex

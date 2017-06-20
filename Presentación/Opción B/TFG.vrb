@@ -1,21 +1,12 @@
-Veamos un ejemplo:
-\begin{code}
-asignacion :: Variable -> Int
-asignacion _ = 0
-interpretacionF :: String -> [Int] -> Int
-interpretacionF "cero" []    = 0
-interpretacionF "s"    [i]   = succ i
-interpretacionF "mas"  [i,j] = i + j
-interpretacionF "por"  [i,j] = i * j
-interpretacionF _ _          = 0
-interpretacionR :: String -> [Int] -> Bool
-interpretacionR "R" [x,y] = x < y
-interpretacionR _ _       = False
-interpretacion = (interpretacionR,interpretacionF)
-formula = Ex x (Atom "R" [cero,tx])
-\end{code}
-\begin{sesion}
+Por ejemplo:
 
-> valorF [0..] interpretacion asignacion formula
+\begin{code}
+> formula1
+(P[x]⋁¬P[x])
+> esTeorema 1 formula1
 True
-\end{sesion}
+> formula2
+∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
+> esTeorema 20 formula2
+False
+\end{code}
