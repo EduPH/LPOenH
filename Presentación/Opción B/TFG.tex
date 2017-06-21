@@ -454,6 +454,44 @@ False
     Herbrand es equivalente a ser consistente)
   \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]
+  El \textbf{universo de Herbrand} de $F$ es el conjunto de términos básicos.
+\begin{sesion}
+> f3
+(R[f[x]]⟹Q[a,g[b]])
+> universoHerbrandForm 2 f3
+[a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
+f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
+\end{sesion}
+\end{frame}
+
+\begin{frame}[fragile]
+La \textbf{base de Herbrand} es el conjunto de átomos básicos.
+
+\begin{sesion}
+> f1
+P[f[x]]
+> baseHerbrandForm 2 f1
+[P[a],P[f[a]],P[f[f[a]]]]  
+\end{sesion}
+\end{frame}
+
+\begin{frame}[fragile]
+  \textbf{Modelos de Herbrand:}
+
+  \vspace{5mm}
+\begin{code}
+modelosHForm :: Int -> Form -> [AtomosH]
+modelosHForm n f =
+ [fs | fs <- subsequences bH
+      , valorH uH (interpretacionH fs) f]
+  where uH = universoHerbrandForm n f
+        bH = baseHerbrandForm n f
+\end{code}  
+  
+\end{frame}
+
 \section{Resolución en la lógica de primer orden}
 \begin{frame}
   \textbf{Resolución:}
@@ -548,7 +586,7 @@ curry :: ((a, b) -> c) -> a -> b -> c
 \end{frame}
 
 \begin{frame}[fragile]
-  $$(a\rightarrow b) \wedge (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
+  $$(a\rightarrow b) \vee (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
 
   \pause
   

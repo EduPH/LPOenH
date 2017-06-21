@@ -1,4 +1,4 @@
-$$(a\rightarrow b) \wedge (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
+$$(a\rightarrow b) \vee (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
 
   \pause
 
