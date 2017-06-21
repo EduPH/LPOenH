@@ -299,7 +299,7 @@ True
 \section{El método de los tableros semánticos}
 \subsection{Implementaciones previas}
 \begin{frame}
-  El método de los tableros semánticos tiene como objetivo determinar si una fórmula es consistente, así como la búsqueda de modelos. Para su implementación es necesaria:
+  El \textbf{método de los tableros semánticos} tiene como objetivo determinar si una fórmula es consistente, así como la búsqueda de modelos. Para su implementación es necesaria:
   \begin{itemize}
   \item Sustitución: aplicación que asocia términos a variables.
   \item Unificación: una sustitución $S$ de dos términos $t_1$ y $t_2$ tal que $S(t_1)=S(t_2)$. 
@@ -447,15 +447,136 @@ False
 \section{Modelos de Herbrand}
 
 \begin{frame}
-  
+  \textbf{Modelos de Herbrand:}
+  \begin{itemize}
+  \item Método constructivo para generar interpretaciones de fórmulas o conjuntos de ellas.
+  \item Sirve para determinar la consistencia de un conjunto de cláusulas. (Tener un modelo de
+    Herbrand es equivalente a ser consistente)
+  \end{itemize}
 \end{frame}
 \section{Resolución en la lógica de primer orden}
 \begin{frame}
-  
+  \textbf{Resolución:}
+
+  \begin{itemize}
+  \item Forma clausal.
+  \item Resolventes binarias en lógica proposicional y lógica de primer orden.
+  \end{itemize}
+  La resolución aporta reglas para obtener deducciones lógicas a partir de cláusulas.
+
+  Se pueden implementar diversos algoritmos que aplican resolución.
 \end{frame}
 \section{Correspondencia de Curry-Howard}
 \begin{frame}
+  \textbf{Correspondencia de Curry-Howard:}
+\vspace{5mm}
+  \begin{itemize}
+  \item Las proposiciones son tipos.
+  \item Las demostraciones son funciones.
+  \end{itemize}
+\end{frame}
+
+
+\subsection{Ejemplos}
+\begin{frame}[fragile]  
+  $$a \rightarrow a$$
+\pause
+\begin{sesion}
+a -> a
+\end{sesion}
+\pause
+\begin{code}
+identidad :: a-> a
+identidad x = x
+\end{code}  
+
+\end{frame}
+
+\begin{frame}[fragile]
+  $$a \rightarrow b \rightarrow a\wedge b $$
+\pause
+
+\begin{sesion}
+a -> b -> (a,b)
+\end{sesion}
+\pause
+
+\begin{code}
+(,) :: a -> b -> (a,b)
+(,) x y = (x,y)
+\end{code}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  $$a \wedge b \rightarrow a $$
+\pause
+
+\begin{sesion}  
+(a,b) -> a
+\end{sesion}
+
+\pause
+
+\begin{code}
+fst :: (a,b) -> a
+fst (x,y) = x
+\end{code}
+
+\end{frame}
+
+\begin{frame}[fragile]
+  $$a \rightarrow a\wedge b $$
+
+\pause
+\begin{sesion}
+a -> (a,b)
+\end{sesion}
   
+\pause
+No existe ninguna función.
+\end{frame}
+
+\begin{frame}[fragile]
+  $$((a\wedge b) \rightarrow c) \rightarrow (a \rightarrow b \rightarrow c) $$
+\pause
+  
+\begin{code}
+curry :: ((a, b) -> c) -> a -> b -> c
+  
+\end{code}
+\end{frame}
+
+\begin{frame}[fragile]
+  $$(a\rightarrow b) \wedge (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
+
+  \pause
+  
+\begin{code}
+fun :: Either (a -> c) (b -> c) -> a -> b -> c
+fun (Left f)  x y = f x
+fun (Right g) x y = g y
+\end{code}
+\end{frame}
+
+\begin{frame}
+\begin{table}[htbp]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Haskell & Lógica \\
+\hline \hline
+Variables de tipo:  \texttt{a} & V. proposicionales: $p$  \\ \hline
+Tipos & Proposiciones \\ \hline
+Tipos de funciones: \texttt{a -> b} & Implicaciones: $p\rightarrow q$ \\ \hline
+Tuplas: \texttt{(a,b)} & Conjunciones : $p\wedge q$ \\ \hline
+Either: \texttt{Either a b} & Disyunciones: $p\vee q$ \\ \hline  
+Tipo habitado & Demostración \\ \hline  
+\end{tabular}
+\end{center}
+\end{table}
+  
+
 \end{frame}
 \end{document}
 %%% Local Variables:

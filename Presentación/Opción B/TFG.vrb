@@ -1,12 +1,9 @@
-Por ejemplo:
+$$(a\rightarrow b) \wedge (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
+
+  \pause
 
 \begin{code}
-> formula1
-(P[x]⋁¬P[x])
-> esTeorema 1 formula1
-True
-> formula2
-∀x ∀y (R[x,y]⟹∃z (R[x,z]⋀R[z,y]))
-> esTeorema 20 formula2
-False
+fun :: Either (a -> c) (b -> c) -> a -> b -> c
+fun (Left f)  x y = f x
+fun (Right g) x y = g y
 \end{code}
