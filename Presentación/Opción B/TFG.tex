@@ -127,12 +127,12 @@
 
 %Information to be included in the title page:
 \title[LPO en Haskell]{Lógica de primer orden en Haskell}
+
+\titlegraphic{\includegraphics[width=2cm]{sello}}
 \author[Eduardo P.]{Eduardo Paluzo Hidalgo}
 \institute[US]{Universidad de Sevilla}
 \date{\today}
 
-\titlegraphic{\includegraphics[width=2cm]{sello}
-}
 
 \begin{document}
  
@@ -392,21 +392,21 @@ ramificacionP k (Nd i pos neg (f:fs))
       (k,[Nd i pos neg (componentes f ++ fs)])
   | alfa     f = 
       (k,[Nd i pos neg (componentes f ++ fs)])
-  | beta     f = 
-      (k,[Nd (i++[n]) pos neg (f':fs)
-         | (f',n) <- zip (componentes f) [0..] ])
-  
 \end{code}  
 \end{frame}
 
 \begin{frame}[fragile]
   \begin{code}
 ramificacionP k (Nd i pos neg (f:fs))
+    | beta     f = 
+        (k,[Nd (i++[n]) pos neg (f':fs)
+           | (f',n) <- zip (componentes f) [0..] ])
     | gamma    f = (k-1, [Nd i pos neg (f':(fs++[f]))])
     where 
       (xs,g) = descomponer f
-      b      = [(Variable nombre j, Var (Variable nombre i))
-               | (Variable nombre j) <- xs]
+      b      =
+          [(Variable nombre j, Var (Variable nombre i))
+          | (Variable nombre j) <- xs]
       f'     = sustitucionForm b g
   \end{code}
 \end{frame}
@@ -464,6 +464,17 @@ False
 [a,b,f[a],f[b],g[a],g[b],f[f[a]],f[f[b]],f[g[a]],
 f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
 \end{sesion}
+
+\underline{Proposición:}
+  \begin{equation*}
+    H_0(L)= \left\{
+      \begin{array}{ll}
+        C, & \text{si } C \neq \emptyset \\
+        {a}, & \text{en caso contrario (a nueva constante)} 
+      \end{array} \right.
+  \end{equation*}
+  
+  $H_{i+1}(L) = H_i(L)\cup \{f(t_1,\dots,t_n):f\in \mathcal{F}_n \text{ y } t_i\in H_i (L)\}$
 \end{frame}
 
 \begin{frame}[fragile]
@@ -503,6 +514,34 @@ modelosHForm n f =
   La resolución aporta reglas para obtener deducciones lógicas a partir de cláusulas.
 
   Se pueden implementar diversos algoritmos que aplican resolución.
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{code}
+resolBin c1 c2 
+    | s /= [] = renombramiento (c1'' +! c2'') (head s)
+    | otherwise = error "No se puede unificar"
+    where
+      (c1', c2') = separacionVars c1 c2
+      (p,q) = (litMisNom c1' c2')
+      s = unifClau p q
+      c1'' = borra p c1'
+      c2'' = borra q c2'
+\end{code}  
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{sesion}
+> let c1 = C [Neg (Atom "P" [tx]), Atom "Q" [Ter "f" [tx]]]
+> let c2 = C [Neg (Atom "Q" [tx]), Atom "R" [Ter "g" [tx]]]
+> c1
+\{¬P[x],Q[f[x]]\}
+> c2
+\{¬Q[x],R[g[x]]\}
+> resolBin c1 c2
+\{¬P[x1],R[g[f[x1]]]\}
+\end{sesion}
+
 \end{frame}
 \section{Correspondencia de Curry-Howard}
 \begin{frame}
@@ -577,11 +616,11 @@ No existe ninguna función.
 
 \begin{frame}[fragile]
   $$((a\wedge b) \rightarrow c) \rightarrow (a \rightarrow b \rightarrow c) $$
-\pause
+
+  \pause
   
 \begin{code}
-curry :: ((a, b) -> c) -> a -> b -> c
-  
+curry :: ((a, b) -> c) -> a -> b -> c  
 \end{code}
 \end{frame}
 
