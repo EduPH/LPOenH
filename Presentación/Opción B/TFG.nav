@@ -90,8 +90,21 @@
 \headcommand {\beamer@framepages {42}{43}}
 \headcommand {\slideentry {6}{1}{7}{44/44}{Ejemplos}{0}}
 \headcommand {\beamer@framepages {44}{44}}
-\headcommand {\beamer@partpages {1}{44}}
-\headcommand {\beamer@subsectionpages {28}{44}}
+\headcommand {\sectionentry {7}{Bibliograf\IeC {\'\i }a}{45}{Bibliograf\IeC {\'\i }a}{0}}
 \headcommand {\beamer@sectionpages {27}{44}}
-\headcommand {\beamer@documentpages {44}}
-\headcommand {\def \inserttotalframenumber {34}}
+\headcommand {\beamer@subsectionpages {28}{44}}
+\headcommand {\slideentry {7}{0}{1}{45/45}{}{0}}
+\headcommand {\beamer@framepages {45}{45}}
+\headcommand {\slideentry {7}{0}{1}{45/46}{}{0}}
+\headcommand {\beamer@framepages {45}{46}}
+\headcommand {\slideentry {7}{0}{1}{45/47}{}{0}}
+\headcommand {\beamer@framepages {45}{47}}
+\headcommand {\slideentry {7}{0}{1}{45/48}{}{0}}
+\headcommand {\beamer@framepages {45}{48}}
+\headcommand {\slideentry {7}{0}{1}{45/49}{}{0}}
+\headcommand {\beamer@framepages {45}{49}}
+\headcommand {\beamer@partpages {1}{49}}
+\headcommand {\beamer@subsectionpages {45}{49}}
+\headcommand {\beamer@sectionpages {45}{49}}
+\headcommand {\beamer@documentpages {49}}
+\headcommand {\def \inserttotalframenumber {39}}
