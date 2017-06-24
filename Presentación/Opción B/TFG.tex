@@ -624,6 +624,24 @@ curry :: ((a, b) -> c) -> a -> b -> c
 \end{code}
 \end{frame}
 
+
+\begin{frame}[fragile]
+  $$a \rightarrow (a \vee b)$$
+
+  \pause
+
+\begin{sesion}
+a -> Either a b  
+\end{sesion}
+
+\pause
+
+\begin{code}
+introDisy :: a -> Either a b
+introDisy x = Left x  
+\end{code}
+  
+\end{frame}
 \begin{frame}[fragile]
   $$(a\rightarrow c) \vee (b\rightarrow c) \rightarrow a \rightarrow b \rightarrow c  $$
 
