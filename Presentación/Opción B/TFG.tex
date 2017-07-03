@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 \usepackage[utf8x]{inputenc}       % Acentos de UTF8
 \usepackage[spanish]{babel}        % Castellanización.
@@ -168,7 +168,7 @@
 \end{frame}
 
 \begin{frame}
-  La lógica de primer orden surge como extensión de la lógica proposicional ante carencias que ésta presenta. Es decir, se trata
+  La \textbf{lógica de primer orden} surge como extensión de la lógica proposicional ante carencias que ésta presenta. Es decir, se trata
   de una extensión de la lógica proposicional persiguiendo mayor fidelidad en el objetivo que la lógica proposicional
   persigue, modelar el razonamiento y aportar una manera de formalización.
   
@@ -274,7 +274,7 @@ valorF u i a (Ex v g)    =
 \end{code}
 \end{frame}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,allowframebreaks]
 Veamos un ejemplo:
 \begin{code}  
 asignacion :: Variable -> Int
@@ -332,16 +332,22 @@ Fórmulas beta
     \neg (F_1 \leftrightarrow F_2)  & \neg (F_1 \rightarrow F_2 ) \vee 
                                       (\neg F_2 \rightarrow F_1)       \\ \hline
     \end{array}$
+\end{center}
 
-    \vspace{3mm}
+  
+\end{frame}
+
+\begin{frame}[fragile]
+\begin{center}    
     Fórmulas gamma \quad
     $\begin{array}{|l|c|} \hline
     \forall x F      & F [x/t]       \\ \hline
     \neg \exists x F & \neg F [x/t ] \\ \hline
      \end{array}$
-     \vspace{3mm}
+     
+     \vspace{5mm}
 
-     Fórmulas delta \quad 
+    Fórmulas delta \quad 
       $\begin{array}{|l|l|} \hline
     \exists x F    & F[x / a]       \\ \hline
     \neg \forall F & \neg F [x / a] \\ \hline
@@ -467,6 +473,7 @@ f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
 \end{sesion}
 
 \underline{Proposición:}
+
   \begin{equation*}
     H_0(L)= \left\{
       \begin{array}{ll}
@@ -475,7 +482,8 @@ f[g[b]],g[f[a]],g[f[b]],g[g[a]],g[g[b]]]
       \end{array} \right.
   \end{equation*}
   
-  $H_{i+1}(L) = H_i(L)\cup \{f(t_1,\dots,t_n):f\in \mathcal{F}_n \text{ y } t_i\in H_i (L)\}$
+ \quad \quad \quad  $H_{i+1}(L) = H_i(L)\cup \{f(t_1,\dots,t_n):f\in \mathcal{F}_n \text{ y } t_i\in H_i (L)\}$
+
 \end{frame}
 
 \begin{frame}[fragile]
