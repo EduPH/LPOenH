@@ -1,7 +1,7 @@
 
 Para terminar veamos algunos ejemplos entre la lógica y la
-programación en Haskell, se pueden ver más ejemplos, así como un análisis sobre la correspondencia en \cite{Wikibooks16}, \cite{Gonzalez-17} y \cite{HaskellWiki2010}  . Para ello, creemos un módulo que contenga
-nuestro ejemplos.
+programación en Haskell. Se pueden ver ejemplos, así como un análisis sobre la correspondencia en \cite{Wikibooks16}, \cite{Gonzalez-17} y \cite{HaskellWiki2010}  . Para ello, creemos un módulo que contenga
+nuestros ejemplos.
 
 \begin{code}
 module CHC where

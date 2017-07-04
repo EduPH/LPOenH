@@ -16,7 +16,7 @@ import Tableros
 \section{Universo de Herbrand}
 
 \begin{Def}
-  La \textbf{aridad} de un operador $f(x_1,\dots,x_n)$ es el número número de
+  La \textbf{aridad} de un operador $f(x_1,\dots,x_n)$ es el número de
   argumentos a los que se aplica.
 \end{Def}
 
@@ -26,7 +26,7 @@ import Tableros
   como los de relación.
 \end{Def}
 
-Se define un tipo de dato para la signatura, cuya estrucura es
+Se define un tipo de dato para la signatura, cuya estructura es
 
 $$ \texttt{( constantes, (funciones, aridad) , (relaciones, aridad) )} $$
 
@@ -431,7 +431,7 @@ baseHerbrandForms n fs =
   baseHerbrandForm n (Conj fs)
 \end{code}
 
-\section{Interpretacion de Herbrand}
+\section{Interpretación de Herbrand}
 
 \begin{Def}
   Una \textbf{interpretación de Herbrand} es una interpretación

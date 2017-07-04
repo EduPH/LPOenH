@@ -656,7 +656,7 @@ separacionVars c1 c2 = (renombramiento c1 s1, renombramiento c2 s2)
 \end{code}
 
 En el siguiente ejemplo vemos la separación de variables de las cláusulas
-$$C_1=\{P(x),Q(x,y)\} \text{ y } \{\neg Q(x),R(g(x))\} $$
+$$C_1=\{\neg P(x),Q(f(x))\} \text{ y } \{\neg Q(x),R(g(x))\} $$
 
 \begin{code}
 -- | Ejemplos

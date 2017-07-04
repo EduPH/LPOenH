@@ -160,7 +160,7 @@ simetrica = ParaTodo x (ParaTodo y ( Atomo "R" [x,y] `Implica`
   \begin{enumerate}
   \item $\mathcal{U}$ es un conjunto no vacío, denominado universo.
   \item $I$ es una función con dominio el conjunto de símbolos propios de $L$. 
-    $L: \texttt{Símbolos} \rightarrow \texttt{Símbolos}$ tal que
+    $I: \texttt{Símbolos} \rightarrow \texttt{Símbolos}$ tal que
     \begin{itemize*}
     \item si $c$ es una constante de $L$, entonces $I(c) \in \mathcal{U}$
     \item si $f$ es un símbolo de función n--aria de $L$, entonces
